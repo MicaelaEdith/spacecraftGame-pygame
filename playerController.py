@@ -21,6 +21,7 @@ class Player():
         self.keyDownCount=0
         self.maxYPosition=screenHeight-(screenHeight/1.5)
         self.slowArea=self.maxYPosition+(self.maxYPosition/2)
+        self.up=False
      
     def setPlayer(self, name):
         self.name=name
@@ -31,24 +32,36 @@ class Player():
             self.keyDownCount+=1.5
             if event.key==pygame.K_LEFT:
                 self.xPosition-=4
+            if event.key==pygame.K_LEFT and event.key==pygame.K_UP and self.yPosition>self.maxYPosition:
+                self.xPosition-=4
+                self.up=True
             if event.key==pygame.K_RIGHT:
                 self.xPosition+=4
+            if event.key==pygame.K_RIGHT and event.key==pygame.K_UP and self.yPosition>self.maxYPosition:
+                self.xPosition+=4
+                self.up=True
             if event.key==pygame.K_UP and self.yPosition>self.maxYPosition:
-                if(self.yPosition<self.slowArea):
-                    self.yPosition-=2
-                else:
-                    self.yPosition-=4
+                self.up=True
                 
             if event.key==pygame.K_DOWN:
-                self.yPosition+=2
-                
+                self.keyDownCount=0
+                self.yPosition+=1.5
+
             
         if event.type==pygame.KEYUP:
-            self.keyDownCount=0
             if event.key==pygame.K_UP:
-                if(self.yPosition<self.yPositionInit):
-                    self.yPosition+=1.5
-        
+                self.up=False
+
+        if(self.up and self.yPosition>self.maxYPosition):
+            if(self.yPosition<self.slowArea):
+                self.yPosition-=2
+            else:
+                self.yPosition-=4
+
+        else:
+            self.keyDownCount=0
+            if(self.yPosition<self.yPositionInit):
+                self.yPosition+=1
         
     def drawPlayer(self, display):
         if(self.keyDownCount==0):

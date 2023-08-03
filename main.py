@@ -2,6 +2,7 @@ import pygame
 import sys
 import os
 from playerController import Player
+from world import Starts
 
 pygame.init()
 
@@ -24,6 +25,7 @@ display = pygame.display.set_mode((screenWidth, screenHeight))
 pygame.display.set_caption("Juego")
 
 player=Player(xPosition,yPosition,screenHeight)
+starts=Starts(screenWidth)
 
 while True:
     for event in pygame.event.get():
@@ -39,6 +41,7 @@ while True:
     display.fill(blue)
     player.movePlayer(event)
     player.drawPlayer(display)
+    starts.drawStart(display, white, screenHeight)
 
     pygame.display.flip()
     clock.tick(60)
