@@ -22,10 +22,10 @@ if(screenWidth>1920 or screenHeight>1080):
 
 
 display = pygame.display.set_mode((screenWidth, screenHeight))
-pygame.display.set_caption("Juego")
+pygame.display.set_caption("pygame")
 
-player=Player(xPosition,yPosition,screenHeight)
-starts=Starts(screenWidth)
+player=Player(xPosition,yPosition,screenHeight, screenWidth)
+starts=Starts(screenWidth, screenHeight)
 
 while True:
     for event in pygame.event.get():
@@ -40,8 +40,9 @@ while True:
 
     display.fill(blue)
     player.movePlayer(event)
+    starts.drawStarts(display, event)
     player.drawPlayer(display)
-    starts.drawStart(display, white, screenHeight)
+
 
     pygame.display.flip()
     clock.tick(60)
