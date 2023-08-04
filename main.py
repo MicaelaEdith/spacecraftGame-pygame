@@ -2,7 +2,7 @@ import pygame
 import sys
 import os
 from playerController import Player
-from world import Starts
+from world import Starts, Meteorite
 
 pygame.init()
 
@@ -12,6 +12,7 @@ screenWidth, screenHeight= info.current_w, info.current_h
 white=(255,255,255)
 blue=(1,6,26)
 clock=pygame.time.Clock()
+level=1
 
 xPosition=(screenWidth/2)-40
 yPosition=(screenHeight/100*80)+40
@@ -26,6 +27,7 @@ pygame.display.set_caption("pygame")
 
 player=Player(xPosition,yPosition,screenHeight, screenWidth)
 starts=Starts(screenWidth, screenHeight)
+meteorite=Meteorite(screenWidth,screenHeight)
 
 while True:
     for event in pygame.event.get():
@@ -38,9 +40,13 @@ while True:
                 sys.exit()
 
 
+    ############## Level : 1
+
     display.fill(blue)
     player.movePlayer(event)
     starts.drawStarts(display, event)
+    if(level==1):
+        meteorite.drawMeteorite(display, event, player)
     player.drawPlayer(display)
 
 
