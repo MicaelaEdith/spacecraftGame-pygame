@@ -34,39 +34,5 @@ class Starts():
                     i[0]-=2
             if event.type==pygame.KEYUP:
                 if event.key==pygame.K_UP:
-                    self.speed=1
+                    self.speed=1.5
 
-            
-
-
-
-"""
-        self.screenW=screenW
-        self.positionList=[]
-
-        for i in range(20):
-            self.xPosition=random.randrange((self.screenW-(screenW+5)),(screenW-5))
-            self.yPosition=-5
-            self.positionList.append([self.xPosition,self.yPosition])
-    
-    def drawStart(self, event, display, color, screenH):
-
-        for i in self.positionList:
-            pygame.draw.circle(display, color, (self.xPosition, self.yPosition),1.5)
-
-
-            
-            if(self.yPosition<screenH+5):
-                self.yPosition+=1.5
-                if event.type==pygame.KEYDOWN:
-                 if event.key==pygame.K_LEFT:
-                        self.xPosition+=2
-                    if event.key==pygame.K_RIGHT:
-                        self.xPosition-=2
-            else:
-                self.xPosition=random.randrange((self.screenW-(self.screenW+5)),(self.screenW-5))
-                self.yPosition=-5
-            pygame.draw.circle(display, color, (self.xPosition, self.yPosition),1.5)
-"""
-            
-    

@@ -3,6 +3,7 @@ import pygame
 class Player():
     def __init__(self, xPosition, yPosition,screenHeight, screenWidth) -> None:
         self.xPosition=xPosition
+        self.xPositionInit=xPosition
         self.yPosition=yPosition
         self.yPositionInit=yPosition
         self.minXPosition=screenWidth/4
@@ -25,10 +26,11 @@ class Player():
         self.minYPosition=screenHeight-120
         self.slowArea=self.maxYPosition+(self.maxYPosition/2)
         self.up=False
-        self.leftUp=False
-        self.rightUp=False
+        self.left=False
+        self.right=False
         self.leftDown=False
         self.rightDown=False
+        self.aux=None
      
     def setPlayer(self, name):
         self.name=name
@@ -38,15 +40,9 @@ class Player():
         if event.type==pygame.KEYDOWN:
             self.keyDownCount+=1.5
             if event.key==pygame.K_LEFT and self.xPosition>=self.minXPosition:
-                self.xPosition-=4
+                self.left=True
             if event.key==pygame.K_RIGHT and self.xPosition<=self.maxXPosition:
-                self.xPosition+=4
-            if event.key==pygame.K_LEFT and event.key==pygame.K_UP and self.yPosition>=self.maxYPosition:
-                self.leftUp=true
-                self.up=True
-            if event.key==pygame.K_RIGHT and event.key==pygame.K_UP and self.yPosition>=self.maxYPosition:
-                self.rightUp=True
-                self.up=True
+                self.right=True
             if event.key==pygame.K_UP and self.yPosition>=self.maxYPosition:
                 self.up=True 
             if event.key==pygame.K_DOWN and self.yPosition<=self.minYPosition:
@@ -54,25 +50,39 @@ class Player():
                 self.yPosition+=1.5
 
         if event.type==pygame.KEYUP:
-            if event.key==pygame.K_UP or(event.key==pygame.K_RIGHT and event.key==pygame.K_UP)or(event.key==pygame.K_LEFT and event.key==pygame.K_UP):
+            if event.key==pygame.K_UP:
                 self.up=False
-                self.leftUp=False
-                self.rightUp=False
+            if event.key==pygame.K_LEFT:
+                self.left=False
+            if event.key==pygame.K_RIGHT:
+                self.right=False
 
-        if(self.up and self.yPosition>self.maxYPosition):
+        if(self.right and self.xPosition<self.maxXPosition and not self.up):
+            self.xPosition+=3
+            self.left=False
+        if(self.left and self.xPosition>self.minXPosition and not self.up):
+            self.xPosition-=3
+            self.right=False
+
+        if(self.up and self.yPosition>=self.maxYPosition):
             if(self.yPosition<self.slowArea):
-                self.yPosition-=2
-                if(self.leftUp):
+                if(self.left and(self.xPosition>self.minXPosition)):
                     self.xPosition-=1.5
-                if(self.rightUp):
+                    self.yPosition-=2
+                elif(self.right and (self.xPosition<self.maxXPosition)):
                     self.xPosition+=1.5
+                    self.yPosition-=2
+                else:
+                    self.yPosition-=2
             else:
-                self.yPosition-=4
-                if(self.leftUp):
+                if(self.left and (self.xPosition>self.minXPosition)):
                     self.xPosition-=3
-                if(self.rightUp):
+                    self.yPosition-=4
+                elif(self.right and (self.xPosition<self.maxXPosition)):
                     self.xPosition+=3
-
+                    self.yPosition-=4
+                else:
+                    self.yPosition-=4
         else:
             self.keyDownCount=0
             if(self.yPosition<self.yPositionInit):
