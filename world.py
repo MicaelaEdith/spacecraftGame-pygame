@@ -30,11 +30,13 @@ class Starts():
                     self.speed=3
                 if event.key==pygame.K_LEFT:
                     i[0]+=2
-                if event.key==pygame.K_RIGHT:
+                if event.key==pygame.K_RIGHT and i[0]>1:
                     i[0]-=2
             if event.type==pygame.KEYUP:
                 if event.key==pygame.K_UP:
                     self.speed=1
+            if i[0]<1:
+                i[1]=self.screenH+4
 
 class Meteorite():
     def __init__(self, screenW, screenH):
