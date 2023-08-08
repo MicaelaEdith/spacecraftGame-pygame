@@ -2,13 +2,13 @@ import pygame, random
 
 class Player():
     def __init__(self, xPosition, yPosition,screenHeight, screenWidth) -> None:
-        self.xPosition=xPosition
-        self.xPositionInit=xPosition
-        self.yPosition=yPosition
-        self.yPositionInit=yPosition
-        self.minXPosition=screenWidth/4
-        self.maxXPosition=screenWidth/4*3
-        self.point=0
+        self.xPosition=int(xPosition)
+        self.xPositionInit=int(xPosition)
+        self.yPosition=int(yPosition)
+        self.yPositionInit=int(yPosition)
+        self.minXPosition=int(screenWidth/4)
+        self.maxXPosition=int(screenWidth/4*3)
+        self.score=0
         self.health=5
         self.animation=[]
         self.animation.append(pygame.image.load("Assets/Player/spacecraft.png").convert())
@@ -20,15 +20,15 @@ class Player():
         self.rect0=self.animation[0].get_rect()
         self.rect1=self.animation[1].get_rect()
         self.rect2=self.animation[2].get_rect()
-        self.animationList=[]
-        self.animationList.append(self.rect0)
-        self.animationList.append(self.rect1)
-        self.animationList.append(self.rect2)
+        self.rectList=[]
+        self.rectList.append(self.rect0)
+        self.rectList.append(self.rect1)
+        self.rectList.append(self.rect2)
         self.frame=0
         self.keyDownCount=0  # control for "self.frame", this select the img/animation in "drawPlayer()"
-        self.maxYPosition=screenHeight-(screenHeight/1.5)  # highest coord-Y for the player in the screen
-        self.minYPosition=screenHeight-120
-        self.slowArea=self.maxYPosition+(self.maxYPosition/2)
+        self.maxYPosition=int(screenHeight-(screenHeight/1.5))  # highest coord-Y for the player in the screen
+        self.minYPosition=int(screenHeight-120)
+        self.slowArea=int(self.maxYPosition+(self.maxYPosition/2))
         self.up=False
         self.down=False
         self.left=False
@@ -69,11 +69,11 @@ class Player():
                 self.right=False
 
         if(self.up and self.yPosition>self.maxYPosition):
-            self.keyDownCount+=1.5
+            self.keyDownCount+=1
             if(self.yPosition>=self.slowArea):
                 self.yPosition-=4
             else:
-                self.yPosition-=1.5
+                self.yPosition-=1
 
             if event.type==pygame.KEYUP:
                 if event.key==pygame.K_LEFT:
@@ -93,7 +93,7 @@ class Player():
                 if event.key==pygame.K_RIGHT:
                     self.right=False
             if(self.yPosition<self.yPositionInit):
-                self.yPosition+=2.5
+                self.yPosition+=2
 
         if(not self.up and self.yPosition<self.yPositionInit):
             self.yPosition+=1
@@ -104,7 +104,7 @@ class Player():
             self.left=False
             self.xPosition+=4
             if(not self.down):
-                self.keyDownCount+=1.5
+                self.keyDownCount+=1
             if event.type==pygame.KEYUP:
                 if event.key==pygame.K_UP:
                     self.up=False
@@ -113,7 +113,7 @@ class Player():
             self.right=False
             self.xPosition-=4
             if(not self.down):
-                self.keyDownCount+=1.5
+                self.keyDownCount+=1
             if event.type==pygame.KEYUP:
                 if event.key==pygame.K_UP:
                     self.up=False
