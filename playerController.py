@@ -36,6 +36,7 @@ class Player():
         self.leftDown=False
         self.rightDown=False
         self.aux=None
+        self.collided = False
      
     def setPlayer(self, name):
         self.name=name
@@ -122,6 +123,10 @@ class Player():
             self.up=False
             self.left=False
             self.right=False
+
+        for i, rect in enumerate(self.rectList):
+            self.rectList[i].x = self.xPosition
+            self.rectList[i].y = self.yPosition
 
     def drawPlayer(self, display):
 

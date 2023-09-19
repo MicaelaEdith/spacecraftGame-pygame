@@ -43,16 +43,27 @@ while True:
                 pygame.quit()
                 sys.exit()
 
+    player.movePlayer(event)
+
 
     ############## Level : 1
+    for player_rect in player.rectList:
+            for meteorite_rect in meteorite.rectList:
+                if player_rect.colliderect(meteorite_rect):         ### check lists and colliders
+                    if not player.collided:
+                        print("check")
+                        player.collided = True
+                else:
+                    player.collided = False
 
-            
 
     display.fill(blue)
+    starts.drawStarts(display, event)
     meteorite.draw(display, event)     
     player.drawPlayer(display)
-    starts.drawStarts(display, event)
 
-    player.movePlayer(event)
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(30)
+
+
+

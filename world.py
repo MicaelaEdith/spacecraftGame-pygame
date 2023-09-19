@@ -9,6 +9,7 @@ class Starts():
         self.speed=1
         for i in range(50):
             self.xPosition=random.randrange((self.screenW-(screenW+10)),(screenW+10))
+            self.xPosition=random.randrange(int(self.screenW/8),int((screenW/8*7)))
             self.yPosition=random.randrange(-5,self.screenH)
             self.positionList.append([self.xPosition, self.yPosition])
 
@@ -23,7 +24,7 @@ class Starts():
                 i[1]+=self.speed
             else:
                 i[1]=-5
-                i[0]=random.randrange(int((self.screenW-(self.screenW+5))),int((self.screenW-5)))
+                i[0]=random.randrange(int(self.screenW/8),int((self.screenW/8*7)))
             
             if event.type==pygame.KEYDOWN:
                 if event.key==pygame.K_UP:
@@ -50,7 +51,7 @@ class Meteorite():
         self.positionList=[]
         self.rectList=[]
 
-        for i in range(8):
+        for i in range(10):
             self.xPosition=random.randrange(int((self.screenW-(self.screenW/4*3))),int((self.screenW/4*3)))
             self.yPosition=random.randrange(-1000,-100)
             #self.image=pygame.transform.rotate(self.image, random.randrange(-90,90))
@@ -59,6 +60,21 @@ class Meteorite():
             self.rectList.append(self.rect)
 
     def draw(self, display, event):
+        for i, position in enumerate(self.positionList):
+            xP, yP = position
+            meteorite_rect = self.rectList[i]  # Obtén el rectángulo correspondiente
+
+            if yP < self.screenH + 5:
+                yP += self.speed
+            else:
+                yP = random.randrange(-700, -100)
+                xP = random.randrange(int((self.screenW - (self.screenW / 4 * 3.5))), int((self.screenW / 4 * 3.5)))
+
+            self.positionList[i] = [xP, yP]
+            meteorite_rect.x, meteorite_rect.y = xP, yP  # Actualiza el rectángulo con la nueva posición
+
+
+
         for i in self.positionList:
             display.blit(self.image, [i[0], i[1]])
 
@@ -70,7 +86,7 @@ class Meteorite():
                 i[1]+=self.speed
             else:
                 i[1]=random.randrange(-700,-100)
-                i[0]=random.randrange(int((self.screenW-(self.screenW/4*3))),int((self.screenW/4*3)))
+                i[0]=random.randrange(int((self.screenW-(self.screenW/4*3.5))),int((self.screenW/4*3.5)))
             
             if event.type==pygame.KEYDOWN:
                 if event.key==pygame.K_UP:
@@ -82,4 +98,5 @@ class Meteorite():
             if event.type==pygame.KEYUP:
                 if event.key==pygame.K_UP:
                     self.speed=2
-    
+
+        
