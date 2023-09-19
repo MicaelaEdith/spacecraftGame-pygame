@@ -63,7 +63,11 @@ class Meteorite():
     def draw(self, display, event):
         for i, position in enumerate(self.positionList):
             xP, yP = position
+<<<<<<< HEAD
             meteorite_rect = self.rectList[i]  
+=======
+            meteorite_rect = self.rectList[i]
+>>>>>>> 717db8891534329d2f5189b18b5d9a7d58fe163f
 
             if yP < self.screenH + 5:
                 yP += self.speed
@@ -72,7 +76,11 @@ class Meteorite():
                 xP = random.randrange(int((self.screenW - (self.screenW / 4 * 3.5))), int((self.screenW / 4 * 3.5)))
 
             self.positionList[i] = [xP, yP]
+<<<<<<< HEAD
             meteorite_rect.x, meteorite_rect.y = xP, yP 
+=======
+            meteorite_rect.x, meteorite_rect.y = xP, yP
+>>>>>>> 717db8891534329d2f5189b18b5d9a7d58fe163f
 
 
 
