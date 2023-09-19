@@ -47,22 +47,23 @@ class Meteorite():
         self.chromaKey=([1,7,27])
         self.image=pygame.image.load("Assets/Objects/meteorite.png")
         self.image.set_colorkey(self.chromaKey)
-        self.rect=self.image.get_rect()
         self.positionList=[]
         self.rectList=[]
 
         for i in range(10):
             self.xPosition=random.randrange(int((self.screenW-(self.screenW/4*3))),int((self.screenW/4*3)))
             self.yPosition=random.randrange(-1000,-100)
-            #self.image=pygame.transform.rotate(self.image, random.randrange(-90,90))
-            #self.image.set_colorkey(self.chromaKey)
+            self.meteoriteRect = self.image.get_rect()
+            self.meteoriteRect.x = self.xPosition
+            self.meteoriteRect.y = self.yPosition
             self.positionList.append([self.xPosition, self.yPosition])
-            self.rectList.append(self.rect)
+            self.rectList.append(self.meteoriteRect)
+
 
     def draw(self, display, event):
         for i, position in enumerate(self.positionList):
             xP, yP = position
-            meteorite_rect = self.rectList[i]  # Obtén el rectángulo correspondiente
+            meteorite_rect = self.rectList[i]  
 
             if yP < self.screenH + 5:
                 yP += self.speed
@@ -71,7 +72,7 @@ class Meteorite():
                 xP = random.randrange(int((self.screenW - (self.screenW / 4 * 3.5))), int((self.screenW / 4 * 3.5)))
 
             self.positionList[i] = [xP, yP]
-            meteorite_rect.x, meteorite_rect.y = xP, yP  # Actualiza el rectángulo con la nueva posición
+            meteorite_rect.x, meteorite_rect.y = xP, yP 
 
 
 

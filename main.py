@@ -47,9 +47,9 @@ while True:
 
 
     ############## Level : 1
-    for player_rect in player.rectList:
-            for meteorite_rect in meteorite.rectList:
-                if player_rect.colliderect(meteorite_rect):         ### check lists and colliders
+    for i in player.rectList:
+            for j in meteorite.rectList:
+                if i.colliderect(j):
                     if not player.collided:
                         print("check")
                         player.collided = True

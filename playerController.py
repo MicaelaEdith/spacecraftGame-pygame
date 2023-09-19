@@ -124,7 +124,7 @@ class Player():
             self.left=False
             self.right=False
 
-        for i, rect in enumerate(self.rectList):
+        for i in range(len(self.rectList)):
             self.rectList[i].x = self.xPosition
             self.rectList[i].y = self.yPosition
 
