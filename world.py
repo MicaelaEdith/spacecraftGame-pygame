@@ -63,11 +63,7 @@ class Meteorite():
     def draw(self, display, event):
         for i, position in enumerate(self.positionList):
             xP, yP = position
-<<<<<<< HEAD
             meteorite_rect = self.rectList[i]  
-=======
-            meteorite_rect = self.rectList[i]
->>>>>>> 717db8891534329d2f5189b18b5d9a7d58fe163f
 
             if yP < self.screenH + 5:
                 yP += self.speed
@@ -76,11 +72,7 @@ class Meteorite():
                 xP = random.randrange(int((self.screenW - (self.screenW / 4 * 3.5))), int((self.screenW / 4 * 3.5)))
 
             self.positionList[i] = [xP, yP]
-<<<<<<< HEAD
             meteorite_rect.x, meteorite_rect.y = xP, yP 
-=======
-            meteorite_rect.x, meteorite_rect.y = xP, yP
->>>>>>> 717db8891534329d2f5189b18b5d9a7d58fe163f
 
 
 
@@ -107,5 +99,30 @@ class Meteorite():
             if event.type==pygame.KEYUP:
                 if event.key==pygame.K_UP:
                     self.speed=2
+
+class PlatformSpeed():
+    def __init__(self):
+        self.xPosition=500
+        self.yPosition=500
+        self.image1=pygame.image.load("Assets/Objects/platform1.png")
+        self.image2=pygame.image.load("Assets/Objects/platform2.png")
+        self.chromaKey=([1,7,27])
+        self.image1.set_colorkey(self.chromaKey)
+        self.image2.set_colorkey(self.chromaKey)
+        self.image=self.image1
+        self.rect=self.image.get_rect()
+        self.turboSpeed=False
+        self.count=0
+
+    def draw(self, display):
+        if (self.count%2==0):
+            self.image=self.image2
+            self.count+=.5
+        else:
+            self.image=self.image1
+            self.count+=.5
+
+        display.blit(self.image,[self.xPosition,self.yPosition])
+        
 
         

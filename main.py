@@ -2,7 +2,7 @@ import pygame, random
 import sys
 import os
 from playerController import Player
-from world import Starts, Meteorite
+from world import Starts, Meteorite, PlatformSpeed
 
 pygame.init()
 
@@ -14,7 +14,8 @@ screenHeight+=1
 white=(255,255,255)
 blue=(1,6,26)
 clock=pygame.time.Clock()
-level=1
+speedP=PlatformSpeed()
+level=2
 
 xPosition=int((screenWidth/2)-40)
 yPosition=int((screenHeight/100*80)+40)
@@ -44,26 +45,38 @@ while True:
                 sys.exit()
 
     player.movePlayer(event)
-
+    display.fill(blue)
+    starts.drawStarts(display, event)
 
     ############## Level : 1
-    for i in player.rectList:
+    if(level==1):
+        for i in player.rectList:
             for j in meteorite.rectList:
-                if i.colliderect(j):
-                    if not player.collided:
+                if (i.colliderect(j)):
+                    if (not player.collided):
                         print("check")
                         player.collided = True
                 else:
                     player.collided = False
+        meteorite.draw(display, event)     
+
+    ############# Level:2
+    elif(level==2):
+    #    for i in player.rectList:
+      #    if(player.rect1.collidepoint(speedP.xPosition, speedP.yPosition)):     #fix this
+       #     player.speed=10        
+        #    print("speed")
+
+        speedP.draw(display)
 
 
-    display.fill(blue)
-    starts.drawStarts(display, event)
-    meteorite.draw(display, event)     
     player.drawPlayer(display)
+         
+
 
     pygame.display.flip()
     clock.tick(30)
+
 
 
 

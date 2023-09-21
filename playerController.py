@@ -9,6 +9,7 @@ class Player():
         self.minXPosition=int(screenWidth/4)
         self.maxXPosition=int(screenWidth/4*3)
         self.score=0
+        self.speed=1
         self.health=5
         self.animation=[]
         self.animation.append(pygame.image.load("Assets/Player/spacecraft.png").convert())
@@ -72,9 +73,10 @@ class Player():
         if(self.up and self.yPosition>self.maxYPosition):
             self.keyDownCount+=1
             if(self.yPosition>=self.slowArea):
-                self.yPosition-=4
+                self.yPosition-=4*self.speed
             else:
-                self.yPosition-=1
+                self.yPosition-=1*self.speed
+
 
             if event.type==pygame.KEYUP:
                 if event.key==pygame.K_LEFT:
