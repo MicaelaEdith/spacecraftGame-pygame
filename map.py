@@ -1,5 +1,21 @@
 import pygame, random
 
+class Button(pygame.sprite.Sprite):
+    def __init__(self, x, y, image_path):
+        super().__init__()
+        self.image = pygame.image.load(image_path)
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.clicked = False
+
+    def draw(self, display):
+        display.blit(self.image, self.rect.topleft)
+
+    def is_clicked(self, mouse_pos):
+        if self.rect.collidepoint(mouse_pos):
+            self.clicked = True
+        else:
+            self.clicked = False
+
 class Starts():
     def __init__(self, screenW, screenH):
         self.screenW=int(screenW)
@@ -7,38 +23,34 @@ class Starts():
         self.white=(240,240,240)
         self.positionList=[]
         self.speed=1
+        self.quiet=False
         for i in range(50):
             self.xPosition=random.randrange((self.screenW-(screenW+10)),(screenW+10))
             self.xPosition=random.randrange(int(self.screenW/8),int((screenW/8*7)))
             self.yPosition=random.randrange(-5,self.screenH)
             self.positionList.append([self.xPosition, self.yPosition])
 
-    def drawStarts(self, display, event):
+    def drawStarts(self, display):
         for i in self.positionList:
             self.xP=i[0]
             self.yP=i[1]
 
             pygame.draw.circle(display,self.white,(int(self.xP), int(self.yP)),1)
-
-            if(i[1]<self.screenH+5):
-                i[1]+=self.speed
+            if not self.quiet: 
+                if(i[1]<self.screenH+5):
+                    i[1]+=self.speed
+                else:
+                    i[1]=-5
+                    i[0]=random.randrange(int(self.screenW/8),int((self.screenW/8*7)))
             else:
-                i[1]=-5
-                i[0]=random.randrange(int(self.screenW/8),int((self.screenW/8*7)))
-            
-            if event.type==pygame.KEYDOWN:
-                if event.key==pygame.K_UP:
-                    self.speed=3
-                if event.key==pygame.K_LEFT:
-                    i[0]+=2
-                if event.key==pygame.K_RIGHT and i[0]>1:
-                    i[0]-=2
-            if event.type==pygame.KEYUP:
-                if event.key==pygame.K_UP:
-                    self.speed=1
-            if i[0]<1:
-                i[1]=self.screenH+4
+                if(i[1]<self.screenH+2.5):
+                    i[1]+=self.speed
+                else:
+                    i[1]=-2.5
+                    i[0]=random.randrange(int(self.screenW/8),int((self.screenW/8*7)))
 
+
+"""
 class Meteorite():
     def __init__(self, screenW, screenH):
         self.screenW=int(screenW)
@@ -124,5 +136,4 @@ class PlatformSpeed():
 
         display.blit(self.image,[self.xPosition,self.yPosition])
         
-
-        
+"""
