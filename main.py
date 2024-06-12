@@ -11,7 +11,9 @@ info = pygame.display.Info()
 screenWidth, screenHeight = info.current_w, info.current_h
 white = (255, 255, 255)
 blue = (1, 6, 26)
+blue_light = (1, 4, 16)
 clock = pygame.time.Clock()
+start = True
 
 if screenWidth > 1920 or screenHeight > 1080:
     screenWidth = 1920
@@ -31,10 +33,10 @@ starts2.quiet = True
 
 # Crear botones
 buttons_left = [
-    Button(50, screenHeight // 2 + 100,"Assets/Buttons/up_arrow.png"),
-    Button(50, screenHeight // 2 + 200, "Assets/Buttons/down_arrow.png"),
-    Button(0, screenHeight // 2 + 150, "Assets/Buttons/left_arrow.png"),
-    Button(100, screenHeight // 2 + 150, "Assets/Buttons/right_arrow.png"),
+    Button(80, screenHeight // 2 + 100,"Assets/Buttons/up_arrow.png"),
+    Button(80, screenHeight // 2 + 200, "Assets/Buttons/down_arrow.png"),
+    Button(30, screenHeight // 2 + 150, "Assets/Buttons/left_arrow.png"),
+    Button(130, screenHeight // 2 + 150, "Assets/Buttons/right_arrow.png"),
 ]
 
 buttons_right = [
@@ -42,6 +44,11 @@ buttons_right = [
     Button(screenWidth - 100, screenHeight // 2 + 100, "Assets/Buttons/actionB.png"),
     Button(screenWidth - 200, screenHeight // 2 + 200, "Assets/Buttons/actionC.png"),
     Button(screenWidth - 100, screenHeight // 2 + 200, "Assets/Buttons/actionD.png"),
+]
+
+buttons_menu = [
+    Button(screenWidth - 100, screenHeight// 21, "Assets/Buttons/actionA.png"), #start
+    Button(screenWidth - 100, screenHeight// 21 + 80, "Assets/Buttons/actionA.png"), #mute
 ]
 
 # Variables para acciones
@@ -57,6 +64,9 @@ while True:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit()
+
+
+
         if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
             for button in buttons_left + buttons_right:
@@ -74,14 +84,29 @@ while True:
             c = buttons_right[2].clicked
             d = buttons_right[3].clicked
 
-    player.movePlayer()
-    display.fill(blue)
-    starts1.drawStarts(display)
-    starts2.drawStarts(display)
-    player.drawPlayer(display)
-    
+
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            for button in buttons_menu:
+                button.is_clicked(mouse_pos)
+
+            if buttons_menu[0].clicked:
+                start = not start
+
+
+    if start:
+        player.movePlayer()
+        display.fill(blue)
+        starts1.drawStarts(display)
+        starts2.drawStarts(display)
+        player.drawPlayer(display)
+    else:
+        display.fill(blue_light)
+
+        
     # Dibujar botones
-    for button in buttons_left + buttons_right:
+    for button in buttons_left + buttons_right + buttons_menu:
         button.draw(display)
          
     pygame.display.flip()
