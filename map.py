@@ -1,20 +1,5 @@
 import pygame, random
 
-class Button(pygame.sprite.Sprite):
-    def __init__(self, x, y, image_path):
-        super().__init__()
-        self.image = pygame.image.load(image_path)
-        self.rect = self.image.get_rect(topleft=(x, y))
-        self.clicked = False
-
-    def draw(self, display):
-        display.blit(self.image, self.rect.topleft)
-
-    def is_clicked(self, mouse_pos):
-        if self.rect.collidepoint(mouse_pos):
-            self.clicked = True
-        else:
-            self.clicked = False
 
 class Starts():
     def __init__(self, screenW, screenH):
@@ -26,7 +11,7 @@ class Starts():
         self.quiet = False
         for i in range(50):
             self.xPosition = random.randrange((self.screenW - (screenW + 10)), (screenW + 10))
-            self.xPosition = random.randrange(int(self.screenW / 8), int((screenW / 8 * 7)))
+            self.xPosition = random.randrange(1, int(screenW - 1))
             self.yPosition = random.randrange(-5, self.screenH)
             self.positionList.append([self.xPosition, self.yPosition])
 
@@ -41,13 +26,13 @@ class Starts():
                     i[1] += self.speed
                 else:
                     i[1] = -5
-                    i[0] = random.randrange(int(self.screenW / 8), int((self.screenW / 8 * 7)))
+                    i[0] = random.randrange(1, int(self.screenW - 1))
             else:
                 if(i[1] < self.screenH + 2.5):
                     i[1] += self.speed
                 else:
                     i[1] = -2.5
-                    i[0] = random.randrange(int(self.screenW / 8), int((self.screenW / 8 * 7)))
+                    i[0] = random.randrange(1, int(self.screenW - 1))
 
 
 """

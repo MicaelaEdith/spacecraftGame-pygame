@@ -1,8 +1,8 @@
 import pygame
 import os, sys
 from playerController import Player
-from map import Starts, Button
-from menu import Menu, Pause
+from map import Starts
+from menu import Menu, Pause, Button
 
 pygame.init()
 
@@ -38,7 +38,7 @@ yPosition = int(screenHeight / 100 * 80 + 40)
 player = Player(xPosition, yPosition, screenHeight, screenWidth)
 starts1 = Starts(screenWidth, screenHeight)
 starts2 = Starts(screenWidth, screenHeight)
-starts2.speed = 1
+starts2.speed = .5
 starts2.quiet = True
 
 # Crear botones
@@ -66,19 +66,19 @@ a, b, c, d = False, False, False, False
 
 # Bucle Menu
 while not game:
-	for event in pygame.event.get():
-		if event.type == pygame.MOUSEBUTTONDOWN:
-	            mouse_pos = pygame.mouse.get_pos()
-	            for button in buttons_menu:
-	                button.is_clicked(mouse_pos)
-	
-	            if buttons_menu[0].clicked:
-	                game = True
-	
+    for event in pygame.event.get():
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_pos = pygame.mouse.get_pos()
+            for button in buttons_menu:
+                button.is_clicked(mouse_pos)
+            if buttons_menu[0].clicked:
+                game = True  
+    menu.draw(display)
+    buttons_menu[0].draw(display)    
+    pygame.display.flip()
+    clock.tick(60)
 
-	menu.draw(display)
-	buttons_menu[0].draw(display)
-
+    
 # Bucle principal
 while game:
     for event in pygame.event.get():
