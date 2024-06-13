@@ -2,6 +2,7 @@ import pygame
 import os, sys
 from playerController import Player
 from map import Starts, Button
+from menu import Menu, Pause
 
 pygame.init()
 
@@ -11,16 +12,25 @@ info = pygame.display.Info()
 screenWidth, screenHeight = info.current_w, info.current_h
 white = (255, 255, 255)
 blue = (1, 6, 26)
-blue_light = (1, 4, 16)
+blue_light = (4, 19, 40)
+alpha = 5
 clock = pygame.time.Clock()
 start = True
+game = False
+
 
 if screenWidth > 1920 or screenHeight > 1080:
     screenWidth = 1920
     screenHeight = 1080
 
 display = pygame.display.set_mode((screenWidth, screenHeight))
-pygame.display.set_caption("Tango triste para un asteroide")
+pygame.display.set_caption("Tango triste en un asteroide")
+
+
+#Menu principal y pausa
+menu = Menu(screenWidth,screenHeight)
+start_menu = Pause(screenWidth, screenHeight)
+
 
 # Inicialización del jugador y el fondo de estrellas
 xPosition = int((screenWidth / 2) - 40)
@@ -33,7 +43,7 @@ starts2.quiet = True
 
 # Crear botones
 buttons_left = [
-    Button(80, screenHeight // 2 + 100,"Assets/Buttons/up_arrow.png"),
+    Button(80, screenHeight // 2 + 100, "Assets/Buttons/up_arrow.png"),
     Button(80, screenHeight // 2 + 200, "Assets/Buttons/down_arrow.png"),
     Button(30, screenHeight // 2 + 150, "Assets/Buttons/left_arrow.png"),
     Button(130, screenHeight // 2 + 150, "Assets/Buttons/right_arrow.png"),
@@ -47,15 +57,30 @@ buttons_right = [
 ]
 
 buttons_menu = [
-    Button(screenWidth - 100, screenHeight// 21, "Assets/Buttons/actionA.png"), #start
-    Button(screenWidth - 100, screenHeight// 21 + 80, "Assets/Buttons/actionA.png"), #mute
+    Button(screenWidth - 100, screenHeight // 21, "Assets/Buttons/actionA.png"),  # start
+    Button(screenWidth - 100, screenHeight // 21 + 80, "Assets/Buttons/actionA.png"),  # mute
 ]
 
 # Variables para acciones
 a, b, c, d = False, False, False, False
 
+# Bucle Menu
+while not game:
+	for event in pygame.event.get():
+		if event.type == pygame.MOUSEBUTTONDOWN:
+	            mouse_pos = pygame.mouse.get_pos()
+	            for button in buttons_menu:
+	                button.is_clicked(mouse_pos)
+	
+	            if buttons_menu[0].clicked:
+	                game = True
+	
+
+	menu.draw(display)
+	buttons_menu[0].draw(display)
+
 # Bucle principal
-while True:
+while game:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -64,8 +89,6 @@ while True:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit()
-
-
 
         if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
@@ -84,8 +107,6 @@ while True:
             c = buttons_right[2].clicked
             d = buttons_right[3].clicked
 
-
-
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
             for button in buttons_menu:
@@ -94,20 +115,17 @@ while True:
             if buttons_menu[0].clicked:
                 start = not start
 
-
     if start:
         player.movePlayer()
         display.fill(blue)
         starts1.drawStarts(display)
         starts2.drawStarts(display)
         player.drawPlayer(display)
+        for button in buttons_left + buttons_right + buttons_menu:
+            button.draw(display)
     else:
-        display.fill(blue_light)
+        start_menu.draw(display)
+        buttons_menu[0].draw(display)        
 
-        
-    # Dibujar botones
-    for button in buttons_left + buttons_right + buttons_menu:
-        button.draw(display)
-         
     pygame.display.flip()
     clock.tick(60)
