@@ -1,7 +1,7 @@
 import pygame
 import os, sys
 from playerController import Player
-from map import Starts
+from map import Starts, Meteorite
 from menu import Menu, Pause, Button
 
 pygame.init()
@@ -14,6 +14,7 @@ white = (255, 255, 255)
 blue = (1, 6, 26)
 blue_light = (4, 19, 40)
 alpha = 5
+
 clock = pygame.time.Clock()
 start = True
 game = False
@@ -39,15 +40,26 @@ player = Player(xPosition, yPosition, screenHeight, screenWidth)
 starts1 = Starts(screenWidth, screenHeight)
 starts2 = Starts(screenWidth, screenHeight)
 starts2.speed = .5
+starts2.white = (125,120,168)
 starts2.quiet = True
+starts3 = Starts(screenWidth, screenHeight)
+starts3.speed = .2
+starts3.white = (105,80,80)
+starts3.quiet = True
+
+# Elementos de interaccion
+
+meteorite = Meteorite(screenWidth, screenHeight)
 
 # Crear botones
 buttons_left = [
-    Button(80, screenHeight // 2 + 100, "Assets/Buttons/up_arrow.png"),
-    Button(80, screenHeight // 2 + 200, "Assets/Buttons/down_arrow.png"),
-    Button(30, screenHeight // 2 + 150, "Assets/Buttons/left_arrow.png"),
-    Button(130, screenHeight // 2 + 150, "Assets/Buttons/right_arrow.png"),
+
+    Button(80, screenHeight // 2 + 90, "Assets/Buttons/up_arrow.png"),
+    Button(80, screenHeight // 2 + 150, "Assets/Buttons/down_arrow.png"),
+    Button(40, screenHeight // 2 + 120, "Assets/Buttons/left_arrow.png"),
+    Button(120, screenHeight // 2 + 120, "Assets/Buttons/right_arrow.png"),
 ]
+
 
 buttons_right = [
     Button(screenWidth - 200, screenHeight // 2 + 100, "Assets/Buttons/actionA.png"),
@@ -120,7 +132,10 @@ while game:
         display.fill(blue)
         starts1.drawStarts(display)
         starts2.drawStarts(display)
+        starts3.drawStarts(display)
+        #meteorite.draw(display)
         player.drawPlayer(display)
+        
         for button in buttons_left + buttons_right + buttons_menu:
             button.draw(display)
     else:

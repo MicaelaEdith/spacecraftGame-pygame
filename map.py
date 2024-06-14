@@ -5,7 +5,7 @@ class Starts():
     def __init__(self, screenW, screenH):
         self.screenW = int(screenW)
         self.screenH = int(screenH)
-        self.white = (240, 240, 240)
+        self.white = (241, 240, 245)
         self.positionList = []
         self.speed = 1
         self.quiet = False
@@ -35,7 +35,6 @@ class Starts():
                     i[0] = random.randrange(1, int(self.screenW - 1))
 
 
-"""
 class Meteorite():
     def __init__(self, screenW, screenH):
         self.screenW = int(screenW)
@@ -48,7 +47,7 @@ class Meteorite():
         self.rectList = []
 
         for i in range(10):
-            self.xPosition = random.randrange(int((self.screenW - (self.screenW / 4 * 3))), int((self.screenW / 4 * 3)))
+            self.xPosition = random.randrange(2, int(self.screenW -95))
             self.yPosition = random.randrange(-1000, -100)
             self.meteoriteRect = self.image.get_rect()
             self.meteoriteRect.x = self.xPosition
@@ -56,7 +55,7 @@ class Meteorite():
             self.positionList.append([self.xPosition, self.yPosition])
             self.rectList.append(self.meteoriteRect)
 
-    def draw(self, display, event):
+    def draw(self, display):
         for i, position in enumerate(self.positionList):
             xP, yP = position
             meteorite_rect = self.rectList[i]  
@@ -65,7 +64,7 @@ class Meteorite():
                 yP += self.speed
             else:
                 yP = random.randrange(-700, -100)
-                xP = random.randrange(int((self.screenW - (self.screenW / 4 * 3.5))), int((self.screenW / 4 * 3.5)))
+                xP = random.randrange(2, int(self.screenW -95))
 
             self.positionList[i] = [xP, yP]
             meteorite_rect.x, yP = xP, yP 
@@ -81,19 +80,9 @@ class Meteorite():
                 i[1] += self.speed
             else:
                 i[1] = random.randrange(-700, -100)
-                i[0] = random.randrange(int((self.screenW - (self.screenW / 4 * 3.5))), int((self.screenW / 4 * 3.5)))
+                i[0] = random.randrange(2, int((self.screenW -95 )))
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    self.speed = 4
-                if event.key == pygame.K_LEFT:
-                    i[0] += 2
-                if event.key == pygame.K_RIGHT:
-                    i[0] -= 2
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_UP:
-                    self.speed = 2
-
+"""
 class PlatformSpeed():
     def __init__(self):
         self.xPosition = 500

@@ -6,8 +6,8 @@ class Player():
         self.xPositionInit = int(xPosition)
         self.yPosition = int(yPosition)
         self.yPositionInit = int(yPosition)
-        self.minXPosition = int(screenWidth / 4)
-        self.maxXPosition = int(screenWidth / 4 * 3)
+        self.minXPosition = int(screenWidth / 6)
+        self.maxXPosition = int(screenWidth / 6 * 4.5)
         self.score = 0
         self.speed = 1
         self.health = 5
@@ -18,6 +18,7 @@ class Player():
         self.animation[0].set_colorkey([1, 6, 26])
         self.animation[1].set_colorkey([1, 7, 27])
         self.animation[2].set_colorkey([1, 7, 27])
+        self.original_images = self.animation.copy()
         self.rect0 = self.animation[0].get_rect()
         self.rect1 = self.animation[1].get_rect()
         self.rect2 = self.animation[2].get_rect()
@@ -27,7 +28,7 @@ class Player():
         self.rectList.append(self.rect2)
         self.frame = 0
         self.keyDownCount = 0  # control for "self.frame", this select the img/animation in "drawPlayer()"
-        self.maxYPosition = int(screenHeight - (screenHeight / 1.5))  # highest coord-Y for the player in the screen
+        self.maxYPosition = int(screenHeight - (screenHeight / 1.2))  # highest coord-Y for the player in the screen
         self.minYPosition = int(screenHeight - 120)
         self.slowArea = int(self.maxYPosition + (self.maxYPosition / 2))
         self.angle = 0
@@ -85,11 +86,11 @@ class Player():
             self.frame = 2
 
         if self.movement['left']:
-            self.angle = 15
+            self.angle = -4
         elif self.movement['right']:
-            self.angle = -15
+            self.angle = 4
+        else:
+            self.angle = 0
 
-        if self.angle == 0:
-            self.animation[self.frame] = pygame.transform.rotate(self.animation[self.frame], self.angle)
-
-        display.blit(self.animation[self.frame], [self.xPosition, self.yPosition])
+        rotated_image = pygame.transform.rotate(self.original_images[self.frame], self.angle)
+        display.blit(rotated_image, [self.xPosition, self.yPosition])

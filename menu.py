@@ -6,10 +6,14 @@ class Menu():
 		self.init_menu = pygame.Surface((screenWidth, screenHeight))
 		self.init_menu.set_alpha(5)
 		self.init_menu.fill((50,50,50))
-		
+		self.font = pygame.font.Font(None,50)
+		self.text = self.font.render("Tango triste en un asteroide",0,(200,50,150))
+		self.width = screenWidth
+		self.height = screenHeight
 		
 	def draw(self, display):
 		display.blit(self.init_menu, (0, 0))
+		display.blit(self.text,(60,self.height / 6 *4))
 
 
 class Pause():
