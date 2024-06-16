@@ -40,11 +40,11 @@ player = Player(xPosition, yPosition, screenHeight, screenWidth)
 starts1 = Starts(screenWidth, screenHeight)
 starts2 = Starts(screenWidth, screenHeight)
 starts2.speed = .5
-starts2.white = (125,120,168)
+starts2.white = (128,122,170)
 starts2.quiet = True
 starts3 = Starts(screenWidth, screenHeight)
 starts3.speed = .2
-starts3.white = (105,80,80)
+starts3.white = (87,80,80)
 starts3.quiet = True
 
 # Elementos de interaccion
@@ -126,6 +126,14 @@ while game:
 
             if buttons_menu[0].clicked:
                 start = not start
+    
+                
+                            #level meteorite            
+    for i in meteorite.rectList:
+        for j in player.rectList:
+            if j.colliderect(i):
+            	start = not start                
+
 
     if start:
         player.movePlayer()
@@ -133,7 +141,7 @@ while game:
         starts1.drawStarts(display)
         starts2.drawStarts(display)
         starts3.drawStarts(display)
-        #meteorite.draw(display)
+        meteorite.draw(display)
         player.drawPlayer(display)
         
         for button in buttons_left + buttons_right + buttons_menu:
