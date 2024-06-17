@@ -33,11 +33,29 @@ class Player():
         self.slowArea = int(self.maxYPosition + (self.maxYPosition / 2))
         self.angle = 0
         self.collided = False
+
+        self.explosion_images = []
+
+        for i in range(1, 5):
+            image = pygame.image.load(f"Assets/Objects/Demage ({i}).png").convert()
+            image.set_colorkey([1, 6, 26])
+            self.explosion_images.append(image)
+        self.explosion_frame = 0
+        self.explosion_active = False
+        self.explosion_timer = 0
+
+
         self.movement = {
             'up': False,
             'down': False,
             'left': False,
             'right': False
+        }
+        self.action = {
+        	'a': False,
+        	'b': False,
+        	'c': False,
+        	'd': False
         }
 
     def setPlayer(self, name):
@@ -77,6 +95,16 @@ class Player():
             self.rectList[i].x = self.xPosition
             self.rectList[i].y = self.yPosition
 
+        for i in range(len(self.rectList)):
+            self.rectList[i].topleft = (self.xPosition, self.yPosition)
+
+    def action(self):
+        if self.action['a']:
+            self.speed =12
+        if self.action['b']:
+            self.speed = 3		
+
+
     def drawPlayer(self, display):
         if self.keyDownCount == 0:
             self.frame = 0
@@ -94,3 +122,15 @@ class Player():
 
         rotated_image = pygame.transform.rotate(self.original_images[self.frame], self.angle)
         display.blit(rotated_image, [self.xPosition, self.yPosition])
+        
+
+    def drawExplosion(self, display):
+        if self.explosion_active:
+            if self.explosion_timer == 0 or self.explosion_timer % 10 == 0:
+                self.explosion_frame += 1
+                if self.explosion_frame >= len(self.explosion_images):
+                    self.explosion_active = False
+                    self.explosion_frame = 0
+            if self.explosion_frame < len(self.explosion_images):
+                display.blit(self.explosion_images[self.explosion_frame], (self.xPosition, self.yPosition))
+            self.explosion_timer += 1

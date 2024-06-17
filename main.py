@@ -1,7 +1,7 @@
 import pygame
 import os, sys
 from playerController import Player
-from map import Starts, Meteorite
+from map import Deep, Starts, Meteorite
 from menu import Menu, Pause, Button
 
 pygame.init()
@@ -24,7 +24,9 @@ if screenWidth > 1920 or screenHeight > 1080:
     screenWidth = 1920
     screenHeight = 1080
 
-display = pygame.display.set_mode((screenWidth, screenHeight))
+#display = pygame.display.set_mode((screenWidth, screenHeight))
+display = pygame.display.set_mode((screenWidth, screenHeight), pygame.SRCALPHA)
+
 pygame.display.set_caption("Tango triste en un asteroide")
 
 
@@ -37,14 +39,15 @@ start_menu = Pause(screenWidth, screenHeight)
 xPosition = int((screenWidth / 2) - 40)
 yPosition = int(screenHeight / 100 * 80 + 40)
 player = Player(xPosition, yPosition, screenHeight, screenWidth)
+#deep = Deep(screenWidth, screenHeight)
 starts1 = Starts(screenWidth, screenHeight)
 starts2 = Starts(screenWidth, screenHeight)
 starts2.speed = .5
-starts2.white = (128,122,170)
+starts2.white = (125,120,168)
 starts2.quiet = True
 starts3 = Starts(screenWidth, screenHeight)
 starts3.speed = .2
-starts3.white = (87,80,80)
+starts3.white = (105,80,80)
 starts3.quiet = True
 
 # Elementos de interaccion
@@ -114,10 +117,10 @@ while game:
             player.movement['right'] = buttons_left[3].clicked
 
             # Actualizar las acciones basadas en los botones de acción
-            a = buttons_right[0].clicked
-            b = buttons_right[1].clicked
-            c = buttons_right[2].clicked
-            d = buttons_right[3].clicked
+            player.action['a'] = buttons_right[0].clicked
+            player.action['b'] = buttons_right[1].clicked
+            player.action['c'] = buttons_right[2].clicked
+            player.action['d'] = buttons_right[3].clicked
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
@@ -129,20 +132,32 @@ while game:
     
                 
                             #level meteorite            
-    for i in meteorite.rectList:
-        for j in player.rectList:
-            if j.colliderect(i):
-            	start = not start                
+    player.movePlayer()
+    meteorite.draw(display)
+
+    collision_detected = False
+    for player_rect in player.rectList:
+        for meteorite_rect in meteorite.rectList:
+            if player_rect.colliderect(meteorite_rect):
+                collision_detected = True
+                player.explosion_active = True
+                player.explosion_timer = 0
+                break
+        if collision_detected:
+            break
 
 
     if start:
         player.movePlayer()
+        #player.action()
         display.fill(blue)
+        #deep.drawDeep(display)
         starts1.drawStarts(display)
         starts2.drawStarts(display)
         starts3.drawStarts(display)
         meteorite.draw(display)
         player.drawPlayer(display)
+        player.drawExplosion(display)
         
         for button in buttons_left + buttons_right + buttons_menu:
             button.draw(display)

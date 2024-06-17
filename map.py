@@ -1,5 +1,19 @@
 import pygame, random
 
+class Deep():
+	def __init__(self,  screenW, screenH):
+		self.blue=(1, 4, 19)
+		self.deep = pygame.Surface((screenW, screenH))
+		self.deep.set_alpha(random.randrange(1,20))
+		
+	def drawDeep(self, display):
+		while True:
+			self.deep.set_alpha(random.randrange(1,20))
+		display.blit(self.deep, (0,0))
+		
+		
+		
+
 
 class Starts():
     def __init__(self, screenW, screenH):
@@ -34,53 +48,41 @@ class Starts():
                     i[1] = -2.5
                     i[0] = random.randrange(1, int(self.screenW - 1))
 
-
 class Meteorite():
     def __init__(self, screenW, screenH):
         self.screenW = int(screenW)
         self.screenH = int(screenH)
-        self.speed = 4
+        self.speed = 2
         self.chromaKey = [1, 7, 27]
         self.image = pygame.image.load("Assets/Objects/meteorite.png")
         self.image.set_colorkey(self.chromaKey)
         self.positionList = []
         self.rectList = []
 
-        for i in range(10):
-            self.xPosition = random.randrange(2, int(self.screenW -95))
+        for i in range(4):
+            self.xPosition = random.randrange(2, int(self.screenW - 95))
             self.yPosition = random.randrange(-1000, -100)
-            self.meteoriteRect = self.image.get_rect()
-            self.meteoriteRect.x = self.xPosition
-            self.meteoriteRect.y = self.yPosition
+            self.meteoriteRect = self.image.get_rect(topleft=(self.xPosition, self.yPosition))
             self.positionList.append([self.xPosition, self.yPosition])
             self.rectList.append(self.meteoriteRect)
 
     def draw(self, display):
         for i, position in enumerate(self.positionList):
             xP, yP = position
-            meteorite_rect = self.rectList[i]  
+            meteorite_rect = self.rectList[i]
 
             if yP < self.screenH + 5:
                 yP += self.speed
             else:
                 yP = random.randrange(-700, -100)
-                xP = random.randrange(2, int(self.screenW -95))
+                xP = random.randrange(2, int(self.screenW - 95))
 
             self.positionList[i] = [xP, yP]
-            meteorite_rect.x, yP = xP, yP 
+            meteorite_rect.topleft = (xP, yP)
 
-        for i in self.positionList:
-            display.blit(self.image, [i[0], i[1]])
+        for rect in self.rectList:
+            display.blit(self.image, rect.topleft)
 
-        for i in self.positionList:
-            self.xP = i[0]
-            self.yP = i[1]
-
-            if i[1] < self.screenH + 5:
-                i[1] += self.speed
-            else:
-                i[1] = random.randrange(-700, -100)
-                i[0] = random.randrange(2, int((self.screenW -95 )))
 
 """
 class PlatformSpeed():
