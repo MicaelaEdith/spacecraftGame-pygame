@@ -1,18 +1,38 @@
 import pygame, random
+    
+class Deep:
+    def __init__(self, width, height, speed, line_length, line_spacing, color):
+        self.width = width
+        self.height = height
+        self.color = color + (128,)  # Agrega transparencia al color (valor alfa de 128)
+        self.speed = speed
+        self.line_length = line_length
+        self.line_spacing = line_spacing
+        self.lines = []
+        self.generate_lines()
 
-class Deep():
-	def __init__(self,  screenW, screenH):
-		self.blue=(1, 4, 19)
-		self.deep = pygame.Surface((screenW, screenH))
-		self.deep.set_alpha(random.randrange(1,20))
-		
-	def drawDeep(self, display):
-		while True:
-			self.deep.set_alpha(random.randrange(1,20))
-		display.blit(self.deep, (0,0))
-			
+    def generate_lines(self):
+        self.lines.clear()
+        x = 0  # Comienza desde el borde izquierdo de la pantalla
+        y = 0
+        while y < self.height:
+            self.lines.append((x, y, self.line_length))
+            y += self.line_spacing
+            x -= 3  # Desplazamiento hacia la izquierda de 3 píxeles por línea
 
+    def move_lines(self):
+        for i in range(len(self.lines)):
+            line = list(self.lines[i])
+            line[0] += self.speed
+            if line[0] > self.width:
+                line[0] -= self.width + self.line_length - random.randrange(-500, 500)
+            self.lines[i] = tuple(line)
 
+    def drawDeep(self, display):
+        for line in self.lines:
+            pygame.draw.line(display, self.color, (line[0], line[1]), (line[0] + line[2], line[1]), 3)
+
+        self.move_lines()
 class Starts():
     def __init__(self, screenW, screenH):
         self.screenW = int(screenW)

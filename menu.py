@@ -36,8 +36,8 @@ class Button(pygame.sprite.Sprite):
     def draw(self, display):
         display.blit(self.image, self.rect.topleft)
 
-    def is_clicked(self, mouse_pos):
-        if self.rect.collidepoint(mouse_pos):
+    def is_clicked(self, mouse_pos, is_pressed):
+        if self.rect.collidepoint(mouse_pos) and is_pressed:
             self.clicked = True
         else:
             self.clicked = False

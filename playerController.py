@@ -1,4 +1,4 @@
-import pygame 
+import pygame
 
 class Player():
     def __init__(self, xPosition, yPosition, screenHeight, screenWidth) -> None:
@@ -34,6 +34,24 @@ class Player():
         self.angle = 0
         self.collided = False
         self.explosion_images = []
+        self.shoot_type_a = False  # Bandera para el tipo de bala A
+        self.shoot_type_b = False  # Bandera para el tipo de bala B
+        self.shoots_fired = []
+
+        self.pick_images = [
+            pygame.image.load("Assets/Objects/picker0.png").convert(),
+            pygame.image.load("Assets/Objects/picker1.png").convert()
+        ]
+        self.pick_frame = 0  # Frame actual de la animación de recogida
+
+        for img in self.pick_images:
+            img.set_colorkey([1, 7, 27])
+
+        self.pick_type = 0  # Tipo de imagen de recogida actual
+        self.pick_delay = 500  # Delay entre recogidas
+        self.last_pick_time = pygame.time.get_ticks()  # Tiempo del último recogido
+        self.pick_active = False  # Bandera para indicar si se está recogiendo algo
+
 
         for i in range(1, 5):
             image = pygame.image.load(f"Assets/Objects/Demage ({i}).png")
@@ -51,10 +69,10 @@ class Player():
             'right': False
         }
         self.action = {
-        	'a': False,
-        	'b': False,
-        	'c': False,
-        	'd': False
+            'a': False,
+            'b': False,
+            'c': False,
+            'd': False
         }
 
         # Disparo
@@ -68,7 +86,7 @@ class Player():
         
         self.shoots = []
         self.shoot_type = 0
-        self.shoot_delay = 500
+        self.shoot_delay = 1500
         self.last_shoot_time = pygame.time.get_ticks()
 
     def setPlayer(self, name):
@@ -112,32 +130,44 @@ class Player():
             self.rectList[i].topleft = (self.xPosition, self.yPosition)
 
     def actions(self):
-        if self.action['a']:
+        if self.action['a'] and not self.shoot_type_a:  # Verificar si el tipo de bala A no ha sido disparado
             self.action['b'] = False
-            self.speed =12
-        if self.action['b']:
+            self.shoot_type_a = True  # Establecer la bandera a True
+        if self.action['b'] and not self.shoot_type_b:  # Verificar si el tipo de bala B no ha sido disparado
             self.action['a'] = False
-            self.speed = 1	
-
+            self.shoot_type_b = True  # Establecer la bandera a True
+    
     def updateShoots(self):
         current_time = pygame.time.get_ticks()
-        if self.action['a'] and current_time - self.last_shoot_time > self.shoot_delay:
-            shoot_rect = self.shoot_images[self.shoot_type].get_rect(midbottom=(self.xPosition + self.rect0.width // 2, self.yPosition))
-            self.shoots.append(shoot_rect)
-            self.last_shoot_time = current_time
+        if self.action['a']:
+            if current_time - self.last_shoot_time > self.shoot_delay:
+                shoot_rect = self.shoot_images[self.shoot_type].get_rect(midbottom=(self.xPosition + self.rect0.width // 2, self.yPosition))
+                self.shoots_fired.append({'rect': shoot_rect, 'type': self.shoot_type})
+                self.last_shoot_time = current_time
+        elif self.action['b']:
+            if not self.shoot_type_b:  # Cambiar tipo de bala solo si no se ha cambiado antes
+                self.shoot_type = (self.shoot_type + 1) % len(self.shoot_images)
+                self.shoot_type_b = True  # Marcar que se ha cambiado el tipo de bala
+        else:
+            self.shoot_type_b = False  # Restablecer para permitir cambios de tipo de bala en futuros disparos
 
-        for shoot in self.shoots:
-            shoot.y -= 5  # Velocidad de los disparos
+        for shoot in self.shoots_fired:
+            shoot['rect'].y -= 11 if self.shoot_type_a else 14  # Velocidad de los disparos
 
-        self.shoots = [shoot for shoot in self.shoots if shoot.bottom > 0]
+        self.shoots_fired = [shoot for shoot in self.shoots_fired if shoot['rect'].bottom > 0]
 
-        if self.action['b']:
-            self.shoot_type = (self.shoot_type + 1) % len(self.shoot_images)
-            self.action['b'] = False
+    def updatePick(self):
+        current_time = pygame.time.get_ticks()
+        if self.action['d']:
+            if current_time - self.last_pick_time > self.pick_delay:
+                self.pick_active = True
+                self.last_pick_time = current_time
+        else:
+            self.pick_active = False
 
     def drawShoots(self, display):
-        for shoot in self.shoots:
-            display.blit(self.shoot_images[self.shoot_type], shoot.topleft)
+        for shoot in self.shoots_fired:
+            display.blit(self.shoot_images[shoot['type']], shoot['rect'].topleft)
 
     def drawPlayer(self, display):
         if self.keyDownCount == 0:
@@ -156,9 +186,16 @@ class Player():
 
         rotated_image = pygame.transform.rotate(self.original_images[self.frame], self.angle)
         display.blit(rotated_image, [self.xPosition, self.yPosition])
-        
+    
         # Dibujar disparos
         self.drawShoots(display)
+
+    def drawPick(self, display):
+        if self.pick_active:
+            display.blit(self.pick_images[int(self.pick_frame)], [self.xPosition, self.yPosition -75])
+            self.pick_frame -=.1
+            self.pick_frame = (self.pick_frame + (self.pick_frame-int(self.pick_frame))) % len(self.pick_images)  # Alternar entre las dos imágenes
+
 
     def drawExplosion(self, display):        
         if self.explosion_active:
@@ -169,4 +206,3 @@ class Player():
                     self.explosion_frame = 0
             if int(self.explosion_frame) < len(self.explosion_images) and (self.explosion_frame-int(self.explosion_frame)==0):
                 display.blit(self.explosion_images[int(self.explosion_frame)], (self.xPosition-30, self.yPosition-25))
-            self.explosion_timer += 1

@@ -36,6 +36,8 @@ start_menu = Pause(screenWidth, screenHeight)
 xPosition = int((screenWidth / 2) - 40)
 yPosition = int(screenHeight / 100 * 80 + 40)
 player = Player(xPosition, yPosition, screenHeight, screenWidth)
+#deep1 = Deep(screenWidth, screenHeight, speed=1, line_length=screenWidth, line_spacing=4, color=(0, 4, 24))
+#deep2 = Deep(screenWidth, screenHeight, speed=1, line_length=screenWidth, line_spacing=6, color=(0, 10, 14))
 starts1 = Starts(screenWidth, screenHeight)
 starts2 = Starts(screenWidth, screenHeight)
 starts2.speed = .5
@@ -78,7 +80,7 @@ while not game:
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
             for button in buttons_menu:
-                button.is_clicked(mouse_pos)
+                button.is_clicked(mouse_pos, True)
             if buttons_menu[0].clicked:
                 game = True
     menu.draw(display)
@@ -98,10 +100,15 @@ while game:
                 pygame.quit()
                 sys.exit()
 
+   # Actualizar el estado de los botones al levantar el dedo
+        if event.type == pygame.MOUSEBUTTONUP:
+            for button in buttons_left + buttons_right:
+                button.is_clicked(mouse_pos, False)  # Cambio a False al levantar el dedo
+
         if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
             for button in buttons_left + buttons_right:
-                button.is_clicked(mouse_pos)
+                button.is_clicked(mouse_pos, pygame.mouse.get_pressed()[0])  # Comprobar el botón izquierdo del mouse
 
             # Actualizar el movimiento del jugador basado en los botones presionados
             player.movement['up'] = buttons_left[0].clicked
@@ -115,17 +122,15 @@ while game:
             player.action['c'] = buttons_right[2].clicked
             player.action['d'] = buttons_right[3].clicked
 
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
             for button in buttons_menu:
-                button.is_clicked(mouse_pos)
+                button.is_clicked(mouse_pos, True)
             if buttons_menu[0].clicked:
                 start = not start
 
     if level == 0:
-        player.movePlayer()
-        meteorite.draw(display)
-        meteorite.check_collisions(player)
         collision_detected = False
         for player_rect in player.rectList:
             for meteorite_rect in meteorite.rectList:
@@ -146,6 +151,8 @@ while game:
         player.updateShoots()  # Actualiza los disparos del jugador
         player.actions()
         display.fill(blue)
+        #deep1.drawDeep(display)
+        #deep2.drawDeep(display)
         starts1.drawStarts(display)
         starts2.drawStarts(display)
         starts3.drawStarts(display)
@@ -153,7 +160,12 @@ while game:
             meteorite.draw(display)
 
         player.drawPlayer(display)
+        player.updatePick()
+        player.drawPick(display)
         player.drawExplosion(display)
+
+        meteorite.draw(display)
+        meteorite.check_collisions(player)
 
         for button in buttons_left + buttons_right + buttons_menu:
             button.draw(display)
