@@ -10,9 +10,7 @@ class Deep():
 		while True:
 			self.deep.set_alpha(random.randrange(1,20))
 		display.blit(self.deep, (0,0))
-		
-		
-		
+			
 
 
 class Starts():
@@ -58,6 +56,8 @@ class Meteorite():
         self.image.set_colorkey(self.chromaKey)
         self.positionList = []
         self.rectList = []
+        self.hit_count = [0] * 4  # Para contar los golpes a cada meteorito
+        self.explosion_images = []
 
         for i in range(4):
             self.xPosition = random.randrange(2, int(self.screenW - 95))
@@ -65,6 +65,15 @@ class Meteorite():
             self.meteoriteRect = self.image.get_rect(topleft=(self.xPosition, self.yPosition))
             self.positionList.append([self.xPosition, self.yPosition])
             self.rectList.append(self.meteoriteRect)
+
+        for i in range(1, 5):
+            image = pygame.image.load(f"Assets/Objects/Demage ({i}).png")
+            self.explosion_images.append(image)
+            self.explosion_images[i-1].set_colorkey([0,1,21])
+
+        self.explosion_frame = 0
+        self.explosion_active = [False] * 4
+        self.explosion_timer = [0] * 4
 
     def draw(self, display):
         for i, position in enumerate(self.positionList):
@@ -82,7 +91,39 @@ class Meteorite():
 
         for rect in self.rectList:
             display.blit(self.image, rect.topleft)
+        
+        # Dibujar explosiones
+        for i, active in enumerate(self.explosion_active):
+            if active:
+                self.draw_explosion(display, i)
 
+    def check_collisions(self, player):
+        for i, rect in enumerate(self.rectList):
+            for shoot in player.shoots:
+                if rect.colliderect(shoot):
+                    player.shoots.remove(shoot)
+                    self.hit_count[i] += 1
+                    if self.hit_count[i] >= 2:
+                        self.explosion_active[i] = True
+                        self.explosion_timer[i] = 0
+                        self.hit_count[i] = 0
+                        self.reset_meteorite(i)
+
+    def draw_explosion(self, display, index):
+        if self.explosion_active[index]:
+            timer = self.explosion_timer[index]
+            if timer == 0 or timer % 10 == 0:
+                self.explosion_frame += 0.2
+                if self.explosion_frame >= len(self.explosion_images):
+                    self.explosion_active[index] = False
+                    self.explosion_frame = 0
+            if int(self.explosion_frame) < len(self.explosion_images) and (self.explosion_frame - int(self.explosion_frame) == 0):
+                display.blit(self.explosion_images[int(self.explosion_frame)], (self.positionList[index][0] - 30, self.positionList[index][1] - 25))
+            self.explosion_timer[index] += 1
+
+    def reset_meteorite(self, index):
+        self.positionList[index] = [random.randrange(2, int(self.screenW - 95)), random.randrange(-700, -100)]
+        self.rectList[index].topleft = self.positionList[index]
 
 """
 class PlatformSpeed():

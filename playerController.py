@@ -27,23 +27,22 @@ class Player():
         self.rectList.append(self.rect1)
         self.rectList.append(self.rect2)
         self.frame = 0
-        self.keyDownCount = 0  # control for "self.frame", this select the img/animation in "drawPlayer()"
-        self.maxYPosition = int(screenHeight - (screenHeight / 1.2))  # highest coord-Y for the player in the screen
+        self.keyDownCount = 0
+        self.maxYPosition = int(screenHeight - (screenHeight / 1.2))
         self.minYPosition = int(screenHeight - 120)
         self.slowArea = int(self.maxYPosition + (self.maxYPosition / 2))
         self.angle = 0
         self.collided = False
-
         self.explosion_images = []
 
         for i in range(1, 5):
-            image = pygame.image.load(f"Assets/Objects/Demage ({i}).png").convert()
-            image.set_colorkey([1, 6, 26])
+            image = pygame.image.load(f"Assets/Objects/Demage ({i}).png")
             self.explosion_images.append(image)
+            self.explosion_images[i-1].set_colorkey([0,1,21])
+                          
         self.explosion_frame = 0
         self.explosion_active = False
         self.explosion_timer = 0
-
 
         self.movement = {
             'up': False,
@@ -57,6 +56,20 @@ class Player():
         	'c': False,
         	'd': False
         }
+
+        # Disparo
+        self.shoot_images = [
+            pygame.image.load("Assets/Objects/shoot0.png").convert(),
+            pygame.image.load("Assets/Objects/shoot1.png").convert(),
+            pygame.image.load("Assets/Objects/shoot2.png").convert()
+        ]
+        for img in self.shoot_images:
+            img.set_colorkey([0, 1, 20])
+        
+        self.shoots = []
+        self.shoot_type = 0
+        self.shoot_delay = 500
+        self.last_shoot_time = pygame.time.get_ticks()
 
     def setPlayer(self, name):
         self.name = name
@@ -98,12 +111,33 @@ class Player():
         for i in range(len(self.rectList)):
             self.rectList[i].topleft = (self.xPosition, self.yPosition)
 
-    def action(self):
+    def actions(self):
         if self.action['a']:
+            self.action['b'] = False
             self.speed =12
         if self.action['b']:
-            self.speed = 3		
+            self.action['a'] = False
+            self.speed = 1	
 
+    def updateShoots(self):
+        current_time = pygame.time.get_ticks()
+        if self.action['a'] and current_time - self.last_shoot_time > self.shoot_delay:
+            shoot_rect = self.shoot_images[self.shoot_type].get_rect(midbottom=(self.xPosition + self.rect0.width // 2, self.yPosition))
+            self.shoots.append(shoot_rect)
+            self.last_shoot_time = current_time
+
+        for shoot in self.shoots:
+            shoot.y -= 5  # Velocidad de los disparos
+
+        self.shoots = [shoot for shoot in self.shoots if shoot.bottom > 0]
+
+        if self.action['b']:
+            self.shoot_type = (self.shoot_type + 1) % len(self.shoot_images)
+            self.action['b'] = False
+
+    def drawShoots(self, display):
+        for shoot in self.shoots:
+            display.blit(self.shoot_images[self.shoot_type], shoot.topleft)
 
     def drawPlayer(self, display):
         if self.keyDownCount == 0:
@@ -123,14 +157,16 @@ class Player():
         rotated_image = pygame.transform.rotate(self.original_images[self.frame], self.angle)
         display.blit(rotated_image, [self.xPosition, self.yPosition])
         
+        # Dibujar disparos
+        self.drawShoots(display)
 
-    def drawExplosion(self, display):
+    def drawExplosion(self, display):        
         if self.explosion_active:
             if self.explosion_timer == 0 or self.explosion_timer % 10 == 0:
-                self.explosion_frame += 1
+                self.explosion_frame += .2
                 if self.explosion_frame >= len(self.explosion_images):
                     self.explosion_active = False
                     self.explosion_frame = 0
-            if self.explosion_frame < len(self.explosion_images):
-                display.blit(self.explosion_images[self.explosion_frame], (self.xPosition, self.yPosition))
+            if int(self.explosion_frame) < len(self.explosion_images) and (self.explosion_frame-int(self.explosion_frame)==0):
+                display.blit(self.explosion_images[int(self.explosion_frame)], (self.xPosition-30, self.yPosition-25))
             self.explosion_timer += 1

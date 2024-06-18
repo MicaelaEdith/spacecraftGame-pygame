@@ -14,55 +14,48 @@ white = (255, 255, 255)
 blue = (1, 6, 26)
 blue_light = (4, 19, 40)
 alpha = 5
+level = 0
+up_level = 0
 
 clock = pygame.time.Clock()
 start = True
 game = False
 
-
 if screenWidth > 1920 or screenHeight > 1080:
     screenWidth = 1920
     screenHeight = 1080
 
-#display = pygame.display.set_mode((screenWidth, screenHeight))
 display = pygame.display.set_mode((screenWidth, screenHeight), pygame.SRCALPHA)
-
 pygame.display.set_caption("Tango triste en un asteroide")
 
-
-#Menu principal y pausa
-menu = Menu(screenWidth,screenHeight)
+# Menú principal y pausa
+menu = Menu(screenWidth, screenHeight)
 start_menu = Pause(screenWidth, screenHeight)
-
 
 # Inicialización del jugador y el fondo de estrellas
 xPosition = int((screenWidth / 2) - 40)
 yPosition = int(screenHeight / 100 * 80 + 40)
 player = Player(xPosition, yPosition, screenHeight, screenWidth)
-#deep = Deep(screenWidth, screenHeight)
 starts1 = Starts(screenWidth, screenHeight)
 starts2 = Starts(screenWidth, screenHeight)
 starts2.speed = .5
-starts2.white = (125,120,168)
+starts2.white = (125, 120, 168)
 starts2.quiet = True
 starts3 = Starts(screenWidth, screenHeight)
 starts3.speed = .2
-starts3.white = (105,80,80)
+starts3.white = (105, 80, 80)
 starts3.quiet = True
 
-# Elementos de interaccion
-
+# Elementos de interacción
 meteorite = Meteorite(screenWidth, screenHeight)
 
 # Crear botones
 buttons_left = [
-
     Button(80, screenHeight // 2 + 90, "Assets/Buttons/up_arrow.png"),
     Button(80, screenHeight // 2 + 150, "Assets/Buttons/down_arrow.png"),
     Button(40, screenHeight // 2 + 120, "Assets/Buttons/left_arrow.png"),
     Button(120, screenHeight // 2 + 120, "Assets/Buttons/right_arrow.png"),
 ]
-
 
 buttons_right = [
     Button(screenWidth - 200, screenHeight // 2 + 100, "Assets/Buttons/actionA.png"),
@@ -87,13 +80,13 @@ while not game:
             for button in buttons_menu:
                 button.is_clicked(mouse_pos)
             if buttons_menu[0].clicked:
-                game = True  
+                game = True
     menu.draw(display)
-    buttons_menu[0].draw(display)    
+    for button in buttons_menu:
+        button.draw(display)
     pygame.display.flip()
     clock.tick(60)
 
-    
 # Bucle principal
 while game:
     for event in pygame.event.get():
@@ -126,44 +119,48 @@ while game:
             mouse_pos = pygame.mouse.get_pos()
             for button in buttons_menu:
                 button.is_clicked(mouse_pos)
-
             if buttons_menu[0].clicked:
                 start = not start
-    
-                
-                            #level meteorite            
-    player.movePlayer()
-    meteorite.draw(display)
 
-    collision_detected = False
-    for player_rect in player.rectList:
-        for meteorite_rect in meteorite.rectList:
-            if player_rect.colliderect(meteorite_rect):
-                collision_detected = True
-                player.explosion_active = True
-                player.explosion_timer = 0
-                break
+    if level == 0:
+        player.movePlayer()
+        meteorite.draw(display)
+        meteorite.check_collisions(player)
+        collision_detected = False
+        for player_rect in player.rectList:
+            for meteorite_rect in meteorite.rectList:
+                if player_rect.colliderect(meteorite_rect):
+                    collision_detected = True
+                    player.explosion_active = True
+                    player.explosion_timer = 0
+                    break
+
         if collision_detected:
-            break
+            up_level += 1
 
+    if level == 1:
+        player.movePlayer()
 
     if start:
         player.movePlayer()
-        #player.action()
+        player.updateShoots()  # Actualiza los disparos del jugador
+        player.actions()
         display.fill(blue)
-        #deep.drawDeep(display)
         starts1.drawStarts(display)
         starts2.drawStarts(display)
         starts3.drawStarts(display)
-        meteorite.draw(display)
+        if level == 0:
+            meteorite.draw(display)
+
         player.drawPlayer(display)
         player.drawExplosion(display)
-        
+
         for button in buttons_left + buttons_right + buttons_menu:
             button.draw(display)
     else:
         start_menu.draw(display)
-        buttons_menu[0].draw(display)        
+        for button in buttons_menu:
+            button.draw(display)
 
     pygame.display.flip()
     clock.tick(60)
