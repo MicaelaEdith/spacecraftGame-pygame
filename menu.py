@@ -1,6 +1,5 @@
 import pygame
 from data import Data
-
 class Menu():
 	def __init__(self, screenWidth, screenHeight):
 		self.init_menu = pygame.Surface((screenWidth, screenHeight))
@@ -25,19 +24,15 @@ class Pause():
 	def draw(self, display):
 		display.blit(self.start_menu, (0, 0))
 
-
-class Button(pygame.sprite.Sprite):
+class Button:
     def __init__(self, x, y, image_path):
-        super().__init__()
-        self.image = pygame.image.load(image_path)
+        self.image = pygame.image.load(image_path).convert_alpha()
         self.rect = self.image.get_rect(topleft=(x, y))
         self.clicked = False
 
     def draw(self, display):
         display.blit(self.image, self.rect.topleft)
 
-    def is_clicked(self, mouse_pos, is_pressed):
-        if self.rect.collidepoint(mouse_pos) and is_pressed:
-            self.clicked = True
-        else:
-            self.clicked = False
+    def is_clicked(self, pos, state):
+        if self.rect.collidepoint(pos):
+            self.clicked = state

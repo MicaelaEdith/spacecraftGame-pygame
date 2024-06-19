@@ -29,7 +29,7 @@ class Player():
         self.frame = 0
         self.keyDownCount = 0
         self.maxYPosition = int(screenHeight - (screenHeight / 1.2))
-        self.minYPosition = int(screenHeight - 120)
+        self.minYPosition = int(screenHeight - 170)
         self.slowArea = int(self.maxYPosition + (self.maxYPosition / 2))
         self.angle = 0
         self.collided = False
@@ -37,6 +37,7 @@ class Player():
         self.shoot_type_a = False  # Bandera para el tipo de bala A
         self.shoot_type_b = False  # Bandera para el tipo de bala B
         self.shoots_fired = []
+        self.quiet = True
 
         self.pick_images = [
             pygame.image.load("Assets/Objects/picker0.png").convert(),
@@ -86,42 +87,58 @@ class Player():
         
         self.shoots = []
         self.shoot_type = 0
-        self.shoot_delay = 1500
+        self.shoot_delay = 75
         self.last_shoot_time = pygame.time.get_ticks()
 
     def setPlayer(self, name):
         self.name = name
 
     def movePlayer(self):
+        return_speed = 1  # Velocidad de retorno gradual hacia la posición inicial
+
+        # Lógica para el movimiento hacia arriba
         if self.movement['up'] and self.yPosition > self.maxYPosition:
             self.keyDownCount += 1
+            self.quiet = False
             if self.yPosition >= self.slowArea:
                 self.yPosition -= 4 * self.speed
             else:
                 self.yPosition -= 1 * self.speed
 
+        # Lógica para el movimiento hacia abajo
         if self.movement['down']:
             self.movement['up'] = False
+            #self.quiet = False
             self.keyDownCount = 0
             if self.yPosition < self.yPositionInit:
                 self.yPosition += 2
+        elif not self.movement['up'] and self.yPosition < self.yPositionInit:
+            self.yPosition += return_speed  # Movimiento de retorno gradual hacia la posición inicial
+            self.quiet = True
 
-        if not self.movement['up'] and self.yPosition < self.yPositionInit:
-            self.yPosition += 1
-            self.keyDownCount = 0
-
+        # Lógica para el movimiento hacia la derecha
         if self.movement['right'] and self.xPosition < self.maxXPosition:
             self.movement['left'] = False
+            self.quiet = False
             self.xPosition += 4
             if not self.movement['down']:
                 self.keyDownCount += 1
+        elif not self.movement['right'] and self.xPosition > self.xPositionInit:
+            self.xPosition -= return_speed  # Movimiento de retorno gradual hacia la posición inicial
+            self.quiet = True
 
+        # Lógica para el movimiento hacia la izquierda
         if self.movement['left'] and self.xPosition > self.minXPosition:
+            self.quiet = False
             self.movement['right'] = False
             self.xPosition -= 4
             if not self.movement['down']:
                 self.keyDownCount += 1
+        elif not self.movement['left'] and self.xPosition < self.xPositionInit:
+            self.xPosition += return_speed  # Movimiento de retorno gradual hacia la posición inicial
+            self.quiet = True
 
+        # Actualizar las posiciones de los rectángulos
         for i in range(len(self.rectList)):
             self.rectList[i].x = self.xPosition
             self.rectList[i].y = self.yPosition
@@ -183,6 +200,9 @@ class Player():
             self.angle = 4
         else:
             self.angle = 0
+
+        if self.quiet and not self.movement['up']:
+            self.frame = 0
 
         rotated_image = pygame.transform.rotate(self.original_images[self.frame], self.angle)
         display.blit(rotated_image, [self.xPosition, self.yPosition])

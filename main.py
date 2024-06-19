@@ -1,5 +1,6 @@
 import pygame
-import os, sys
+import os
+import sys
 from playerController import Player
 from map import Deep, Starts, Meteorite
 from menu import Menu, Pause, Button
@@ -36,8 +37,8 @@ start_menu = Pause(screenWidth, screenHeight)
 xPosition = int((screenWidth / 2) - 40)
 yPosition = int(screenHeight / 100 * 80 + 40)
 player = Player(xPosition, yPosition, screenHeight, screenWidth)
-#deep1 = Deep(screenWidth, screenHeight, speed=1, line_length=screenWidth, line_spacing=4, color=(0, 4, 24))
-#deep2 = Deep(screenWidth, screenHeight, speed=1, line_length=screenWidth, line_spacing=6, color=(0, 10, 14))
+# deep1 = Deep(screenWidth, screenHeight, speed=1, line_length=screenWidth, line_spacing=4, color=(0, 4, 24))
+# deep2 = Deep(screenWidth, screenHeight, speed=1, line_length=screenWidth, line_spacing=6, color=(0, 10, 14))
 starts1 = Starts(screenWidth, screenHeight)
 starts2 = Starts(screenWidth, screenHeight)
 starts2.speed = .5
@@ -52,23 +53,24 @@ starts3.quiet = True
 meteorite = Meteorite(screenWidth, screenHeight)
 
 # Crear botones
+ignore_click_left = False
 buttons_left = [
-    Button(80, screenHeight // 2 + 90, "Assets/Buttons/up_arrow.png"),
-    Button(80, screenHeight // 2 + 150, "Assets/Buttons/down_arrow.png"),
-    Button(40, screenHeight // 2 + 120, "Assets/Buttons/left_arrow.png"),
-    Button(120, screenHeight // 2 + 120, "Assets/Buttons/right_arrow.png"),
+    Button(60, screenHeight // 2 + 145, "Assets/Buttons/up_arrow.png"),
+    Button(60, screenHeight // 2 + 200, "Assets/Buttons/down_arrow.png"),
+    Button(20, screenHeight // 2 + 170, "Assets/Buttons/left_arrow.png"),
+    Button(100, screenHeight // 2 + 170, "Assets/Buttons/right_arrow.png"),
 ]
 
 buttons_right = [
-    Button(screenWidth - 200, screenHeight // 2 + 100, "Assets/Buttons/actionA.png"),
-    Button(screenWidth - 100, screenHeight // 2 + 100, "Assets/Buttons/actionB.png"),
-    Button(screenWidth - 200, screenHeight // 2 + 200, "Assets/Buttons/actionC.png"),
-    Button(screenWidth - 100, screenHeight // 2 + 200, "Assets/Buttons/actionD.png"),
+    Button(screenWidth - 220, screenHeight // 2 + 100, "Assets/Buttons/actionA.png"),
+    Button(screenWidth - 120, screenHeight // 2 + 100, "Assets/Buttons/actionB.png"),
+    Button(screenWidth - 220, screenHeight // 2 + 200, "Assets/Buttons/actionC.png"),
+    Button(screenWidth - 120, screenHeight // 2 + 200, "Assets/Buttons/actionD.png"),
 ]
 
 buttons_menu = [
-    Button(screenWidth - 100, screenHeight // 21, "Assets/Buttons/actionA.png"),  # start
-    Button(screenWidth - 100, screenHeight // 21 + 80, "Assets/Buttons/actionA.png"),  # mute
+    Button(screenWidth - 120, screenHeight // 21, "Assets/Buttons/actionA.png"),  # start
+    Button(screenWidth - 120, screenHeight // 21 + 80, "Assets/Buttons/actionA.png"),  # mute
 ]
 
 # Variables para acciones
@@ -82,10 +84,13 @@ while not game:
             for button in buttons_menu:
                 button.is_clicked(mouse_pos, True)
             if buttons_menu[0].clicked:
+                buttons_menu[0].clicked = False
                 game = True
+
     menu.draw(display)
     for button in buttons_menu:
         button.draw(display)
+
     pygame.display.flip()
     clock.tick(60)
 
@@ -99,8 +104,7 @@ while game:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit()
-
-   # Actualizar el estado de los botones al levantar el dedo
+    # Actualizar el estado de los botones al levantar el dedo
         if event.type == pygame.MOUSEBUTTONUP:
             for button in buttons_left + buttons_right:
                 button.is_clicked(mouse_pos, False)  # Cambio a False al levantar el dedo
@@ -110,18 +114,17 @@ while game:
             for button in buttons_left + buttons_right:
                 button.is_clicked(mouse_pos, pygame.mouse.get_pressed()[0])  # Comprobar el botón izquierdo del mouse
 
-            # Actualizar el movimiento del jugador basado en los botones presionados
-            player.movement['up'] = buttons_left[0].clicked
-            player.movement['down'] = buttons_left[1].clicked
-            player.movement['left'] = buttons_left[2].clicked
-            player.movement['right'] = buttons_left[3].clicked
+        # Actualizar el movimiento del jugador basado en los botones presionados
+        player.movement['up'] = buttons_left[0].clicked
+        player.movement['down'] = buttons_left[1].clicked
+        player.movement['left'] = buttons_left[2].clicked
+        player.movement['right'] = buttons_left[3].clicked
 
-            # Actualizar las acciones basadas en los botones de acción
-            player.action['a'] = buttons_right[0].clicked
-            player.action['b'] = buttons_right[1].clicked
-            player.action['c'] = buttons_right[2].clicked
-            player.action['d'] = buttons_right[3].clicked
-
+        # Actualizar las acciones basadas en los botones de acción
+        player.action['a'] = buttons_right[0].clicked
+        player.action['b'] = buttons_right[1].clicked
+        player.action['c'] = buttons_right[2].clicked
+        player.action['d'] = buttons_right[3].clicked
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
@@ -129,6 +132,7 @@ while game:
                 button.is_clicked(mouse_pos, True)
             if buttons_menu[0].clicked:
                 start = not start
+                buttons_menu[0].clicked=False
 
     if level == 0:
         collision_detected = False
@@ -151,21 +155,20 @@ while game:
         player.updateShoots()  # Actualiza los disparos del jugador
         player.actions()
         display.fill(blue)
-        #deep1.drawDeep(display)
-        #deep2.drawDeep(display)
+        # deep1.drawDeep(display)
+        # deep2.drawDeep(display)
         starts1.drawStarts(display)
         starts2.drawStarts(display)
         starts3.drawStarts(display)
         if level == 0:
             meteorite.draw(display)
 
+        meteorite.draw(display)
+        meteorite.check_collisions(player)
         player.drawPlayer(display)
         player.updatePick()
         player.drawPick(display)
         player.drawExplosion(display)
-
-        meteorite.draw(display)
-        meteorite.check_collisions(player)
 
         for button in buttons_left + buttons_right + buttons_menu:
             button.draw(display)
@@ -173,6 +176,7 @@ while game:
         start_menu.draw(display)
         for button in buttons_menu:
             button.draw(display)
+
 
     pygame.display.flip()
     clock.tick(60)
