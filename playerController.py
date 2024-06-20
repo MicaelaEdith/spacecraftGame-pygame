@@ -49,7 +49,7 @@ class Player():
             img.set_colorkey([1, 7, 27])
 
         self.pick_type = 0  # Tipo de imagen de recogida actual
-        self.pick_delay = 500  # Delay entre recogidas
+        self.pick_delay = 100  # Delay entre recogidas
         self.last_pick_time = pygame.time.get_ticks()  # Tiempo del último recogido
         self.pick_active = False  # Bandera para indicar si se está recogiendo algo
 
@@ -87,7 +87,7 @@ class Player():
         
         self.shoots = []
         self.shoot_type = 0
-        self.shoot_delay = 75
+        self.shoot_delay = 100
         self.last_shoot_time = pygame.time.get_ticks()
 
     def setPlayer(self, name):
@@ -100,7 +100,7 @@ class Player():
         if self.movement['up'] and self.yPosition > self.maxYPosition:
             self.keyDownCount += 1
             self.quiet = False
-            if self.yPosition >= self.slowArea:
+            if self.yPosition >= self.slowArea-2:
                 self.yPosition -= 4 * self.speed
             else:
                 self.yPosition -= 1 * self.speed
@@ -108,35 +108,43 @@ class Player():
         # Lógica para el movimiento hacia abajo
         if self.movement['down']:
             self.movement['up'] = False
-            #self.quiet = False
+            self.quiet = False
             self.keyDownCount = 0
             if self.yPosition < self.yPositionInit:
                 self.yPosition += 2
         elif not self.movement['up'] and self.yPosition < self.yPositionInit:
-            self.yPosition += return_speed  # Movimiento de retorno gradual hacia la posición inicial
             self.quiet = True
 
         # Lógica para el movimiento hacia la derecha
-        if self.movement['right'] and self.xPosition < self.maxXPosition:
+        if self.movement['right'] and self.xPosition < self.maxXPosition-2:
             self.movement['left'] = False
             self.quiet = False
             self.xPosition += 4
             if not self.movement['down']:
                 self.keyDownCount += 1
         elif not self.movement['right'] and self.xPosition > self.xPositionInit:
-            self.xPosition -= return_speed  # Movimiento de retorno gradual hacia la posición inicial
             self.quiet = True
 
         # Lógica para el movimiento hacia la izquierda
-        if self.movement['left'] and self.xPosition > self.minXPosition:
+        if self.movement['left'] and self.xPosition > self.minXPosition-1:
             self.quiet = False
             self.movement['right'] = False
             self.xPosition -= 4
             if not self.movement['down']:
                 self.keyDownCount += 1
-        elif not self.movement['left'] and self.xPosition < self.xPositionInit:
-            self.xPosition += return_speed  # Movimiento de retorno gradual hacia la posición inicial
+        elif not self.movement['left'] and self.xPosition < self.xPositionInit-1:
             self.quiet = True
+        
+        if self.quiet:      # Movimiento de retorno gradual hacia la posición inicial
+            if self.xPosition < self.xPositionInit:
+                self.xPosition += return_speed
+            elif self.xPosition > self.xPositionInit:
+                self.xPosition -= return_speed
+            if self.yPosition < self.yPositionInit:
+                self.yPosition += return_speed
+            elif self.yPosition > self.yPositionInit:
+                self.yPosition -= return_speed
+
 
         # Actualizar las posiciones de los rectángulos
         for i in range(len(self.rectList)):
@@ -145,6 +153,7 @@ class Player():
 
         for i in range(len(self.rectList)):
             self.rectList[i].topleft = (self.xPosition, self.yPosition)
+        
 
     def actions(self):
         if self.action['a'] and not self.shoot_type_a:  # Verificar si el tipo de bala A no ha sido disparado
@@ -153,25 +162,24 @@ class Player():
         if self.action['b'] and not self.shoot_type_b:  # Verificar si el tipo de bala B no ha sido disparado
             self.action['a'] = False
             self.shoot_type_b = True  # Establecer la bandera a True
-    
+
     def updateShoots(self):
         current_time = pygame.time.get_ticks()
-        if self.action['a']:
+        if self.action['a'] and not self.shoot_type_a:
             if current_time - self.last_shoot_time > self.shoot_delay:
                 shoot_rect = self.shoot_images[self.shoot_type].get_rect(midbottom=(self.xPosition + self.rect0.width // 2, self.yPosition))
                 self.shoots_fired.append({'rect': shoot_rect, 'type': self.shoot_type})
                 self.last_shoot_time = current_time
-        elif self.action['b']:
-            if not self.shoot_type_b:  # Cambiar tipo de bala solo si no se ha cambiado antes
-                self.shoot_type = (self.shoot_type + 1) % len(self.shoot_images)
-                self.shoot_type_b = True  # Marcar que se ha cambiado el tipo de bala
-        else:
-            self.shoot_type_b = False  # Restablecer para permitir cambios de tipo de bala en futuros disparos
+                self.shoot_type_a = True  # Marcar que se ha disparado
+        elif not self.action['a']:
+            self.shoot_type_a = False  # Restablecer para permitir disparos en futuros clicks
 
         for shoot in self.shoots_fired:
-            shoot['rect'].y -= 11 if self.shoot_type_a else 14  # Velocidad de los disparos
+            shoot['rect'].y -= 11 if self.shoot_type == 0 else 14  # Velocidad de los disparos
 
         self.shoots_fired = [shoot for shoot in self.shoots_fired if shoot['rect'].bottom > 0]
+
+
 
     def updatePick(self):
         current_time = pygame.time.get_ticks()
@@ -181,6 +189,8 @@ class Player():
                 self.last_pick_time = current_time
         else:
             self.pick_active = False
+
+
 
     def drawShoots(self, display):
         for shoot in self.shoots_fired:
@@ -210,8 +220,10 @@ class Player():
         # Dibujar disparos
         self.drawShoots(display)
 
+
+
     def drawPick(self, display):
-        if self.pick_active:
+        if self.action['d']:
             display.blit(self.pick_images[int(self.pick_frame)], [self.xPosition, self.yPosition -75])
             self.pick_frame -=.1
             self.pick_frame = (self.pick_frame + (self.pick_frame-int(self.pick_frame))) % len(self.pick_images)  # Alternar entre las dos imágenes

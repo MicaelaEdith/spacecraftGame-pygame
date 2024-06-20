@@ -1,5 +1,5 @@
 import pygame
-from data import Data
+#from data import Data
 class Menu():
 	def __init__(self, screenWidth, screenHeight):
 		self.init_menu = pygame.Surface((screenWidth, screenHeight))
@@ -30,9 +30,11 @@ class Button:
         self.rect = self.image.get_rect(topleft=(x, y))
         self.clicked = False
 
-    def draw(self, display):
-        display.blit(self.image, self.rect.topleft)
+    def draw(self, surface):
+        surface.blit(self.image, self.rect.topleft)
 
-    def is_clicked(self, pos, state):
+    def is_clicked(self, pos, pressed):
         if self.rect.collidepoint(pos):
-            self.clicked = state
+            self.clicked = pressed
+        return self.clicked
+

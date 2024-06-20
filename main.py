@@ -37,8 +37,6 @@ start_menu = Pause(screenWidth, screenHeight)
 xPosition = int((screenWidth / 2) - 40)
 yPosition = int(screenHeight / 100 * 80 + 40)
 player = Player(xPosition, yPosition, screenHeight, screenWidth)
-# deep1 = Deep(screenWidth, screenHeight, speed=1, line_length=screenWidth, line_spacing=4, color=(0, 4, 24))
-# deep2 = Deep(screenWidth, screenHeight, speed=1, line_length=screenWidth, line_spacing=6, color=(0, 10, 14))
 starts1 = Starts(screenWidth, screenHeight)
 starts2 = Starts(screenWidth, screenHeight)
 starts2.speed = .5
@@ -53,7 +51,6 @@ starts3.quiet = True
 meteorite = Meteorite(screenWidth, screenHeight)
 
 # Crear botones
-ignore_click_left = False
 buttons_left = [
     Button(60, screenHeight // 2 + 145, "Assets/Buttons/up_arrow.png"),
     Button(60, screenHeight // 2 + 200, "Assets/Buttons/down_arrow.png"),
@@ -70,11 +67,8 @@ buttons_right = [
 
 buttons_menu = [
     Button(screenWidth - 120, screenHeight // 21, "Assets/Buttons/actionA.png"),  # start
-    Button(screenWidth - 120, screenHeight // 21 + 80, "Assets/Buttons/actionA.png"),  # mute
+    #Button(screenWidth - 120, screenHeight // 21 + 80, "Assets/Buttons/actionA.png"),  # mute
 ]
-
-# Variables para acciones
-a, b, c, d = False, False, False, False
 
 # Bucle Menu
 while not game:
@@ -104,35 +98,57 @@ while game:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 sys.exit()
-    # Actualizar el estado de los botones al levantar el dedo
-        if event.type == pygame.MOUSEBUTTONUP:
-            for button in buttons_left + buttons_right:
-                button.is_clicked(mouse_pos, False)  # Cambio a False al levantar el dedo
-
+        # Eventos de mouse para los botones de dirección (izquierda)
         if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
-            for button in buttons_left + buttons_right:
-                button.is_clicked(mouse_pos, pygame.mouse.get_pressed()[0])  # Comprobar el botón izquierdo del mouse
-
-        # Actualizar el movimiento del jugador basado en los botones presionados
-        player.movement['up'] = buttons_left[0].clicked
-        player.movement['down'] = buttons_left[1].clicked
-        player.movement['left'] = buttons_left[2].clicked
-        player.movement['right'] = buttons_left[3].clicked
-
-        # Actualizar las acciones basadas en los botones de acción
-        player.action['a'] = buttons_right[0].clicked
-        player.action['b'] = buttons_right[1].clicked
-        player.action['c'] = buttons_right[2].clicked
-        player.action['d'] = buttons_right[3].clicked
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
+            for button in buttons_left:
+                button.is_clicked(mouse_pos, pygame.mouse.get_pressed()[0] if event.type == pygame.MOUSEBUTTONDOWN else False)
+        if event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
+            for button in buttons_left:
+                button.is_clicked(mouse_pos, pygame.mouse.get_pressed()[0])
+
+
+        # Eventos de toque para los botones de acción (derecha)
+        if event.type == pygame.FINGERDOWN or event.type == pygame.FINGERUP:
+            touch_pos = (event.x * screenWidth, event.y * screenHeight)
+            for button in buttons_right:
+                if button.is_clicked(touch_pos, True):
+                    # Actualizar el estado de las acciones al presionar
+                    if event.type == pygame.FINGERDOWN:
+                        if button == buttons_right[0]:
+                            player.action['a'] = True
+                        elif button == buttons_right[1]:
+                            player.action['b'] = True
+                        elif button == buttons_right[2]:
+                            player.action['c'] = True
+                        elif button == buttons_right[3]:
+                            player.action['d'] = True
+                    # Actualizar el estado de las acciones al soltar
+                    elif event.type == pygame.FINGERUP:
+                        #if button == buttons_right[0]:
+                        player.action['a'] = False
+                        #elif button == buttons_right[1]:
+                        player.action['b'] = False
+                        #elif button == buttons_right[2]:
+                        player.action['c'] = False
+                        #elif button == buttons_right[3]:
+                        player.action['d'] = False
+
+        # Verificar si se presiona el botón del menú
+        if event.type == pygame.FINGERDOWN:
+            touch_pos = (event.x * screenWidth, event.y * screenHeight)
             for button in buttons_menu:
-                button.is_clicked(mouse_pos, True)
-            if buttons_menu[0].clicked:
-                start = not start
-                buttons_menu[0].clicked=False
+                if button.is_clicked(touch_pos, True):
+                    if button == buttons_menu[0]:
+                        start = not start
+                        buttons_menu[0].clicked = False
+
+    # Actualizar el movimiento del jugador basado en los botones presionados
+    player.movement['up'] = buttons_left[0].clicked
+    player.movement['down'] = buttons_left[1].clicked
+    player.movement['left'] = buttons_left[2].clicked
+    player.movement['right'] = buttons_left[3].clicked
 
     if level == 0:
         collision_detected = False
@@ -155,8 +171,6 @@ while game:
         player.updateShoots()  # Actualiza los disparos del jugador
         player.actions()
         display.fill(blue)
-        # deep1.drawDeep(display)
-        # deep2.drawDeep(display)
         starts1.drawStarts(display)
         starts2.drawStarts(display)
         starts3.drawStarts(display)
@@ -169,6 +183,7 @@ while game:
         player.updatePick()
         player.drawPick(display)
         player.drawExplosion(display)
+        
 
         for button in buttons_left + buttons_right + buttons_menu:
             button.draw(display)
@@ -176,7 +191,6 @@ while game:
         start_menu.draw(display)
         for button in buttons_menu:
             button.draw(display)
-
 
     pygame.display.flip()
     clock.tick(60)
