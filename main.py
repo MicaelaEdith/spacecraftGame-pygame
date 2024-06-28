@@ -122,17 +122,17 @@ while game:
                             player.action['b'] = True
                         elif button == buttons_right[2]:
                             player.action['c'] = True
-                        elif button == buttons_right[3]:
+                        elif button ==  buttons_right[3]:
                             player.action['d'] = True
                     # Actualizar el estado de las acciones al soltar
                     elif event.type == pygame.FINGERUP:
-                        #if button == buttons_right[0]:
+                        buttons_right[0].clicked=False
+                        buttons_right[1].clicked=False
+                        buttons_right[2].clicked=False
+                        buttons_right[3].clicked=False
                         player.action['a'] = False
-                        #elif button == buttons_right[1]:
                         player.action['b'] = False
-                        #elif button == buttons_right[2]:
                         player.action['c'] = False
-                        #elif button == buttons_right[3]:
                         player.action['d'] = False
 
         # Verificar si se presiona el botón del menú
@@ -183,7 +183,7 @@ while game:
         player.updatePick()
         player.drawPick(display)
         player.drawExplosion(display)
-        
+        player.resetActions()
 
         for button in buttons_left + buttons_right + buttons_menu:
             button.draw(display)

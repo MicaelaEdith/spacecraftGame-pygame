@@ -1,5 +1,5 @@
 import pygame
-#from data import Data
+from data import Data
 class Menu():
 	def __init__(self, screenWidth, screenHeight):
 		self.init_menu = pygame.Surface((screenWidth, screenHeight))
