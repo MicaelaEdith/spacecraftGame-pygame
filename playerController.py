@@ -8,7 +8,7 @@ class Player():
         self.yPositionInit = int(yPosition)
         self.minXPosition = int(screenWidth / 6)
         self.maxXPosition = int(screenWidth / 6 * 4.5)
-        self.score = 0
+        self.score = 21
         self.speed = 1
         self.health = 5
         self.animation = []

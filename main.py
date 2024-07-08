@@ -1,9 +1,10 @@
 import pygame
 import os
 import sys
+import time 
 from playerController import Player
-from map import Deep, Starts, Meteorite
-from menu import Menu, Pause, Button
+from map import Deep, Starts, Meteorite, Status
+from menu import Menu, MainMenu, Pause, Button
 
 pygame.init()
 
@@ -17,6 +18,8 @@ blue_light = (4, 19, 40)
 alpha = 5
 level = 0
 up_level = 0
+menus=1
+status = Status(screenWidth, screenHeight)
 
 clock = pygame.time.Clock()
 start = True
@@ -31,6 +34,7 @@ pygame.display.set_caption("Tango triste en un asteroide")
 
 # Menú principal y pausa
 menu = Menu(screenWidth, screenHeight)
+main_menu = MainMenu(screenWidth,screenHeight)
 start_menu = Pause(screenWidth, screenHeight)
 
 # Inicialización del jugador y el fondo de estrellas
@@ -38,12 +42,13 @@ xPosition = int((screenWidth / 2) - 40)
 yPosition = int(screenHeight / 100 * 80 + 40)
 player = Player(xPosition, yPosition, screenHeight, screenWidth)
 starts1 = Starts(screenWidth, screenHeight)
+starts1.speed = .4
 starts2 = Starts(screenWidth, screenHeight)
-starts2.speed = .5
+starts2.speed = .2
 starts2.white = (125, 120, 168)
 starts2.quiet = True
 starts3 = Starts(screenWidth, screenHeight)
-starts3.speed = .2
+starts3.speed = .1
 starts3.white = (105, 80, 80)
 starts3.quiet = True
 
@@ -73,21 +78,26 @@ buttons_menu = [
 # Bucle Menu
 while not game:
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_pos = pygame.mouse.get_pos()
-            for button in buttons_menu:
-                button.is_clicked(mouse_pos, True)
-            if buttons_menu[0].clicked:
-                buttons_menu[0].clicked = False
-                game = True
+        result = main_menu.handle_event(event)
+        if result == 'new_game':
+            time.sleep(0.5)
+            game = True
+        elif result == 'load_game':
+            pass
+        elif result == 'options':
+            pass
 
-    menu.draw(display)
-    for button in buttons_menu:
-        button.draw(display)
-
+    display.fill(blue)
+    main_menu.draw(display)
+    starts1.drawStarts(display)
+    starts2.drawStarts(display)
+    starts3.drawStarts(display)
     pygame.display.flip()
     clock.tick(60)
 
+starts1.speed = 1
+starts2.speed = .5
+starts3.speed = .3
 # Bucle principal
 while game:
     for event in pygame.event.get():
@@ -184,6 +194,8 @@ while game:
         player.drawPick(display)
         player.drawExplosion(display)
         player.resetActions()
+        status.updateStatus( player.health ,level)
+        status.draw(display, level, player.health, player.score)
 
         for button in buttons_left + buttons_right + buttons_menu:
             button.draw(display)

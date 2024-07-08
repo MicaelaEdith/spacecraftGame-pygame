@@ -4,7 +4,7 @@ import os
 class Data:
     def __init__(self, filename):
         self.filename = filename
-        self.fieldnames = ['name', 'level', 'checkpoint', 'health', 'points', 'mejoras']
+        self.fieldnames = ['name', 'level', 'checkpoint', 'health', 'points', 'enhances']
         # Crea el archivo si no existe
         if not os.path.isfile(self.filename):
             self.create_file()

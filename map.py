@@ -145,6 +145,40 @@ class Meteorite():
         self.positionList[index] = [random.randrange(2, int(self.screenW - 95)), random.randrange(-700, -100)]
         self.rectList[index].topleft = self.positionList[index]
 
+class Status():
+    def __init__(self, screenW, screenH):
+        self.screenW = int(screenW)
+        self.screenH = int(screenH)
+        self.helth_position = 40
+        self.level_position = self.screenW - 300
+        self.font_path = 'Assets/Fonts/KodeMono-VariableFont_wght.ttf'
+        self.font = pygame.font.Font(self.font_path,20)
+        self.text_en = ['Points','Health', 'Level']
+        self.text_es = ['Puntos','Salud', 'Nivel']
+        self.lan_on = 'en'
+        self.health = 0
+        self.level = 0
+
+
+    def updateStatus(self,health, level):
+        self.health = health
+        self.level = level 
+
+    def draw(self, display, level, health, points):
+
+        if self.lan_on == 'en':
+            text_list = self.text_en
+        else:
+            text_list = self.text_es
+        
+        text_aux0 = self.font.render(" "+text_list[0] + " - " + str(points)+" ",True,(200,50,150),(0,0,0))
+        text_aux1 = self.font.render(" "+text_list[1] + " - " + str(health)+" ",True,(200,50,150),(0,0,0))
+        text_aux2 = self.font.render(" "+text_list[2] + " - " + str(level)+" ",True,(200,50,150),(0,0,0))
+        display.blit(text_aux0,(self.helth_position,25))
+        display.blit(text_aux1,(self.helth_position,50))
+        display.blit(text_aux2,(self.level_position,25))
+            
+
 """
 class PlatformSpeed():
     def __init__(self):
