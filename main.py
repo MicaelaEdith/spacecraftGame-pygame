@@ -5,6 +5,7 @@ import time
 from playerController import Player
 from map import Deep, Starts, Meteorite, Status
 from menu import Menu, MainMenu, Pause, Button
+from cinematics import Intro
 
 pygame.init()
 
@@ -36,6 +37,9 @@ pygame.display.set_caption("Tango triste en un asteroide")
 menu = Menu(screenWidth, screenHeight)
 main_menu = MainMenu(screenWidth,screenHeight)
 start_menu = Pause(screenWidth, screenHeight)
+
+# Cinemáticas
+intro = Intro(screenWidth, screenHeight)
 
 # Inicialización del jugador y el fondo de estrellas
 xPosition = int((screenWidth / 2) - 40)
