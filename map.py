@@ -146,7 +146,7 @@ class Meteorite():
         self.rectList[index].topleft = self.positionList[index]
 
 class Status():
-    def __init__(self, screenW, screenH):
+    def __init__(self, screenW, screenH, lan):
         self.screenW = int(screenW)
         self.screenH = int(screenH)
         self.helth_position = 40
@@ -155,7 +155,7 @@ class Status():
         self.font = pygame.font.Font(self.font_path,20)
         self.text_en = ['Points','Health', 'Level']
         self.text_es = ['Puntos','Salud', 'Nivel']
-        self.lan_on = 'en'
+        self.lan_on = lan
         self.health = 0
         self.level = 0
 
@@ -164,7 +164,8 @@ class Status():
         self.health = health
         self.level = level 
 
-    def draw(self, display, level, health, points):
+    def draw(self, display, level, health, points, lan):
+        self.lan_on = lan
 
         if self.lan_on == 'en':
             text_list = self.text_en
