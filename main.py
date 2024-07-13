@@ -43,6 +43,7 @@ options_open = False
 
 # Cinemáticas
 intro = Intro(screenWidth, screenHeight)
+intro_flag = False
 
 # Inicialización del jugador y el fondo de estrellas
 xPosition = int((screenWidth / 2) - 40)
@@ -82,14 +83,15 @@ buttons_menu = [
     #Button(screenWidth - 120, screenHeight // 21 + 80, "Assets/Buttons/actionA.png"),  # mute
 ]
 
+
 # Bucle Menu
-while not game:
+while not game and not intro_flag:
     for event in pygame.event.get():
         if not options_open:
             result = main_menu.handle_event(event)
             if result == 'new_game':
                 time.sleep(.8)
-                game = True
+                intro_flag = True
             elif result == 'load_game':
                 pass
             elif result == 'options':
@@ -121,10 +123,33 @@ while not game:
     pygame.display.flip()
     clock.tick(60)
 
+count_intro = 0
+while intro_flag:
+    
+    display.fill((55, 55, 55))  # Rellenar la pantalla con negro
+    intro.draw(display, language)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit()
+        result = intro.handle_event(event)
+        if result == 'continue':
+            time.sleep(0.8)
+            count_intro+=1
+
+        if count_intro == 3:
+            intro_flag = False
+            game = True
+    
+    pygame.display.flip()
+    clock.tick(60)
+                
+          
 starts1.speed = 1
 starts2.speed = .5
 starts3.speed = .3
 # Bucle principal
+
 while game:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -143,6 +168,14 @@ while game:
             mouse_pos = pygame.mouse.get_pos()
             for button in buttons_left:
                 button.is_clicked(mouse_pos, pygame.mouse.get_pressed()[0])
+                #button.clicked = False
+        if event.type == pygame.MOUSEBUTTONUP:
+            for button in buttons_left:
+                button.clicked = False
+            player.movement['left'] = False
+            player.movement['right'] = False
+            player.movement['up'] = False
+            player.movement['down'] = False
 
 
         # Eventos de toque para los botones de acción (derecha)
@@ -160,13 +193,10 @@ while game:
                             player.action['c'] = True
                         elif button ==  buttons_right[3]:
                             player.action['d'] = True
+
                     # Actualizar el estado de las acciones al soltar
                     elif event.type == pygame.FINGERUP:
-                        buttons_right[0].clicked=False
-                        buttons_right[1].clicked=False
-                        buttons_right[2].clicked=False
-                        buttons_right[3].clicked=False
-                        player.action['a'] = False
+                        player.action['a'] = False                        
                         player.action['b'] = False
                         player.action['c'] = False
                         player.action['d'] = False
@@ -225,7 +255,6 @@ while game:
         player.updatePick()
         player.drawPick(display)
         player.drawExplosion(display)
-        player.resetActions()
         status.updateStatus( player.health ,level)
         status.draw(display, level, player.health, player.score,language)
 

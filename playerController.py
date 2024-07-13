@@ -161,9 +161,10 @@ class Player():
             self.shoot_type = (self.shoot_type + 1) % len(self.shoot_images)  # Cambiar el tipo de disparo
 
     def resetActions(self):
-        self.movement['a'] = False
-        self.movement['b'] = False
-        self.movement['c'] = False
+        self.action['a'] = False
+        self.action['b'] = False
+        self.action['d'] = False
+        self.action['c'] = False
             
     def updateShoots(self):
         current_time = pygame.time.get_ticks()
