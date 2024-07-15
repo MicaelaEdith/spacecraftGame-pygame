@@ -65,17 +65,17 @@ meteorite = Meteorite(screenWidth, screenHeight)
 
 # Crear botones
 buttons_left = [
-    Button(60, screenHeight // 2 + 145, "Assets/Buttons/up_arrow.png"),
-    Button(60, screenHeight // 2 + 200, "Assets/Buttons/down_arrow.png"),
-    Button(20, screenHeight // 2 + 170, "Assets/Buttons/left_arrow.png"),
-    Button(100, screenHeight // 2 + 170, "Assets/Buttons/right_arrow.png"),
+    Button(60, screenHeight // 2 + 105, "Assets/Buttons/up_arrow.png"),
+    Button(60, screenHeight // 2 + 160, "Assets/Buttons/down_arrow.png"),
+    Button(20, screenHeight // 2 + 130, "Assets/Buttons/left_arrow.png"),
+    Button(100, screenHeight // 2 + 130, "Assets/Buttons/right_arrow.png"),
 ]
 
 buttons_right = [
-    Button(screenWidth - 220, screenHeight // 2 + 100, "Assets/Buttons/actionA.png"),
-    Button(screenWidth - 120, screenHeight // 2 + 100, "Assets/Buttons/actionB.png"),
-    Button(screenWidth - 220, screenHeight // 2 + 200, "Assets/Buttons/actionC.png"),
-    Button(screenWidth - 120, screenHeight // 2 + 200, "Assets/Buttons/actionD.png"),
+    Button(screenWidth - 245, screenHeight // 2 + 60, "Assets/Buttons/actionA.png"),
+    Button(screenWidth - 145, screenHeight // 2 + 60, "Assets/Buttons/actionB.png"),
+    Button(screenWidth - 245, screenHeight // 2 + 160, "Assets/Buttons/actionC.png"),
+    Button(screenWidth - 145, screenHeight // 2 + 160, "Assets/Buttons/actionD.png"),
 ]
 
 buttons_menu = [

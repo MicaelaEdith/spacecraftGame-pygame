@@ -27,7 +27,7 @@ class Intro():
             self.text = self.text_es
 
         text_surface = self.font.render(self.text, True, text_color)
-        text_rect = text_surface.get_rect(center=(self.width // 6 * 5, self.height // 8 * 6))
+        text_rect = text_surface.get_rect(center=(self.width // 7 * 5.5, self.height // 8 * 6.5))
         mouse_pos = pygame.mouse.get_pos()  # Obtiene la posición actual del mouse
 
         # Verificar si el mouse está sobre el botón
