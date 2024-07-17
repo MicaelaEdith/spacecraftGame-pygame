@@ -4,12 +4,15 @@ import sys
 import time 
 from playerController import Player
 from map import Deep, Starts, Meteorite, Status
-from menu import Menu, MainMenu, OptionsMenu, Pause, Button
+from menu import Menu, MainMenu, OptionsMenu, Button
 from cinematics import Intro
 
 pygame.init()
 
 # Configuración de la pantalla
+icon = pygame.image.load("Assets/Player/spacecraft0.png")
+icon.set_colorkey([1, 6, 26])
+pygame.display.set_icon(icon)
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 info = pygame.display.Info()
 screenWidth, screenHeight = info.current_w, info.current_h
@@ -21,6 +24,8 @@ level = 0
 up_level = 0
 menus=1
 language = 'en'
+music_on = True
+sound_on = True
 status = Status(screenWidth, screenHeight,language)
 
 clock = pygame.time.Clock()
@@ -36,8 +41,7 @@ pygame.display.set_caption("Tango triste en un asteroide")
 
 # Menú principal, opciones y pausa
 menu = Menu(screenWidth, screenHeight)
-main_menu = MainMenu(screenWidth,screenHeight)
-start_menu = Pause(screenWidth, screenHeight)
+main_menu = MainMenu(screenWidth,screenHeight, game)
 option_menu = OptionsMenu(screenWidth, screenHeight)
 options_open = False
 
@@ -80,7 +84,7 @@ buttons_right = [
 
 buttons_menu = [
     Button(screenWidth - 120, screenHeight // 21, "Assets/Buttons/actionA.png"),  # start
-    #Button(screenWidth - 120, screenHeight // 21 + 80, "Assets/Buttons/actionA.png"),  # mute
+    Button(screenWidth - 120, screenHeight // 21 + 80, "Assets/Buttons/actionA.png"),  # salir
 ]
 
 
@@ -92,6 +96,7 @@ while not game and not intro_flag:
             if result == 'new_game':
                 time.sleep(.8)
                 intro_flag = True
+                options_open = False
             elif result == 'load_game':
                 pass
             elif result == 'options':
@@ -106,7 +111,9 @@ while not game and not intro_flag:
                 else:
                     language = 'en'
             elif result_option == 'fx':
-                pass
+                sound_on = option_menu.sound_on
+            elif result_option == 'music':
+                music_on = option_menu.music_on
             elif result_option == 'save':
                 options_open = False
 
@@ -116,28 +123,34 @@ while not game and not intro_flag:
     starts2.drawStarts(display)
     starts3.drawStarts(display)
     if options_open:
-        option_menu.draw(display,language)
+        option_menu.draw(display,language,music_on,sound_on)
     else:
-        main_menu.draw(display, language)
+        main_menu.draw(display, language, game)
 
     pygame.display.flip()
     clock.tick(60)
 
 count_intro = 0
 while intro_flag:
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_ESCAPE:
+            pygame.quit()
+            sys.exit()
     
-    display.fill((55, 55, 55))  # Rellenar la pantalla con negro
-    intro.draw(display, language)
+    display.fill(blue)
+    starts2.drawStarts(display)
+    intro.draw(display, language, count_intro)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
         result = intro.handle_event(event)
         if result == 'continue':
-            time.sleep(0.8)
             count_intro+=1
+            intro.count = count_intro
 
-        if count_intro == 3:
+        if count_intro >= 3:
+            time.sleep(.8)
             intro_flag = False
             game = True
     
@@ -152,13 +165,7 @@ starts3.speed = .3
 
 while game:
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                sys.exit()
+
         # Eventos de mouse para los botones de dirección (izquierda)
         if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
@@ -202,18 +209,49 @@ while game:
                         player.action['d'] = False
 
         # Verificar si se presiona el botón del menú
-        if event.type == pygame.FINGERDOWN:
-            touch_pos = (event.x * screenWidth, event.y * screenHeight)
-            for button in buttons_menu:
-                if button.is_clicked(touch_pos, True):
-                    if button == buttons_menu[0]:
-                        start = not start
-                        buttons_menu[0].clicked = False
-        if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
-            mouse_pos = pygame.mouse.get_pos()
-            for button in buttons_menu:
-                if button.is_clicked(mouse_pos, pygame.mouse.get_pressed()[0]):
+        if start:
+            if event.type == pygame.FINGERDOWN:
+                touch_pos = (event.x * screenWidth, event.y * screenHeight)
+                if buttons_menu[0].is_clicked(touch_pos, True): 
                     start = not start
+                    options_open = True
+                if buttons_menu[1].is_clicked(touch_pos, True): 
+                    start = not start
+                    options_open = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
+                if buttons_menu[0].is_clicked(mouse_pos, pygame.mouse.get_pressed()[0]):
+                    options_open = True
+                    start = not start
+                if buttons_menu[1].is_clicked(mouse_pos, pygame.mouse.get_pressed()[0]):
+                    options_open = False
+                    start = not start
+        if not start:
+            if not options_open:
+                result = main_menu.handle_event(event)
+                if result == 'new_game':
+                    buttons_menu[1].clicked = False
+                    start = True
+                elif result == 'exit':
+                    options_open = False
+
+        
+            if options_open:
+                result_option = option_menu.handle_event(event)
+                if result_option == 'language':
+                    if language == 'en':
+                        language = 'es'
+                    else:
+                        language = 'en'
+                elif result_option == 'fx':
+                    sound_on = option_menu.sound_on
+                elif result_option == 'music':
+                    music_on = option_menu.music_on
+                elif result_option == 'save':
+                    options_open = False
+                    start = True
+                    buttons_menu[0].clicked = False
+                    #buttons_menu[1].clicked = False
 
 
     # Actualizar el movimiento del jugador basado en los botones presionados
@@ -259,15 +297,17 @@ while game:
         status.draw(display, level, player.health, player.score,language)
 
         for button in buttons_left + buttons_right + buttons_menu:
-            button.draw(display)
+            button.draw(display)        
+    
     else:
-        start_menu.draw(display)
-        #display.fill(blue)
-        #starts2.drawStarts(display)
-        #starts3.drawStarts(display)
-        #option_menu.draw(display, language)
-        for button in buttons_menu:
-            button.draw(display)
+        display.fill(blue)
+        starts2.drawStarts(display)
+        starts3.drawStarts(display)
+        if not options_open:
+            main_menu.draw(display, language, game)
+        else:
+            option_menu.draw(display, language, music_on, sound_on)
+ 
 
     pygame.display.flip()
     clock.tick(60)
