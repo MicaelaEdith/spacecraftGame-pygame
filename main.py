@@ -103,8 +103,8 @@ while not game and not intro_flag:
                     options_open= True
         
         if options_open:
-
             result_option = option_menu.handle_event(event)
+                
             if result_option == 'language':
                 if language == 'en':
                     language = 'es'
@@ -116,6 +116,9 @@ while not game and not intro_flag:
                 music_on = option_menu.music_on
             elif result_option == 'save':
                 options_open = False
+
+            #if event.type == pygame.MOUSEBUTTONUP and result_option != None:
+             #   option_menu.click_on = True
 
 
     display.fill(blue)
@@ -207,6 +210,7 @@ while game:
                         player.action['b'] = False
                         player.action['c'] = False
                         player.action['d'] = False
+                        button.clicked = False
 
         # Verificar si se presiona el botón del menú
         if start:
@@ -295,6 +299,7 @@ while game:
         player.drawExplosion(display)
         status.updateStatus( player.health ,level)
         status.draw(display, level, player.health, player.score,language)
+        player.resetActions()
 
         for button in buttons_left + buttons_right + buttons_menu:
             button.draw(display)        
@@ -307,7 +312,10 @@ while game:
             main_menu.draw(display, language, game)
         else:
             option_menu.draw(display, language, music_on, sound_on)
- 
+
+    #for button in buttons_right:
+        #button.clicked = False
+
 
     pygame.display.flip()
     clock.tick(60)

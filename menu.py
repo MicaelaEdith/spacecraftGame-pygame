@@ -133,6 +133,7 @@ class OptionsMenu():
         self.sound_on = sound_on
         display.blit(self.init_menu, (0, 0))
         self.buttons = []  # Reinicia la lista de botones
+        self.click_on = False
         contador = 1
         if self.lan_on == 'en':
             text_list = self.text_en
@@ -144,6 +145,7 @@ class OptionsMenu():
         for i in text_list:
             text_color = (160, 23, 208)
             text_color_off = (50, 43, 40)
+
             if (i == 'MUSIC' or i == 'MUSICA') and self.music_on == False:
                  text_aux = self.font.render(i, True, text_color_off)
             if (i == 'MUSIC' or i == 'MUSICA') and self.music_on == True:
@@ -160,7 +162,8 @@ class OptionsMenu():
             text_rect = text_aux.get_rect(topleft=(80, self.height / 4 * contador))
 
             # Verificar si el mouse está sobre el botón
-            if text_rect.collidepoint(mouse_pos):
+        
+            if text_rect.collidepoint(mouse_pos) and not self.click_on:
                 text_color = (251, 206, 60)  # Cambia el color del texto cuando el mouse está sobre él
                 text_aux = self.font.render(i, True, text_color)
 
