@@ -197,10 +197,17 @@ class OptionsMenu():
 class Button:
     def __init__(self, x, y, image_path):
         self.image = pygame.image.load(image_path).convert_alpha()
+        self.image.set_colorkey([1, 6, 26])
         self.rect = self.image.get_rect(topleft=(x, y))
         self.clicked = False
 
     def draw(self, surface):
+        if self.clicked:
+            # Ajustar opacidad cuando está presionado
+            self.image.set_alpha(100)  # Valor entre 0 (transparente) y 255 (opaco)
+            
+        else:
+            self.image.set_alpha(255)  # Opacidad normal
         surface.blit(self.image, self.rect.topleft)
 
     def is_clicked(self, pos, pressed):

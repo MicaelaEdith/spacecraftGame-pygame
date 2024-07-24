@@ -155,6 +155,7 @@ class Status():
         self.font = pygame.font.Font(self.font_path,20)
         self.text_en = ['Points','Health', 'Level']
         self.text_es = ['Puntos','Salud', 'Nivel']
+        self.color = (160, 23, 208)
         self.lan_on = lan
         self.health = 0
         self.level = 0
@@ -172,9 +173,9 @@ class Status():
         else:
             text_list = self.text_es
         
-        text_aux0 = self.font.render(" "+text_list[0] + " - " + str(points)+" ",True,(200,50,150),(0,0,0))
-        text_aux1 = self.font.render(" "+text_list[1] + " - " + str(health)+" ",True,(200,50,150),(0,0,0))
-        text_aux2 = self.font.render(" "+text_list[2] + " - " + str(level)+" ",True,(200,50,150),(0,0,0))
+        text_aux0 = self.font.render(" "+text_list[0] + " - " + str(points)+" ",True,self.color,(0,0,0))
+        text_aux1 = self.font.render(" "+text_list[1] + " - " + str(health)+" ",True,self.color,(0,0,0))
+        text_aux2 = self.font.render(" "+text_list[2] + " - " + str(level)+" ",True,self.color,(0,0,0))
         display.blit(text_aux0,(self.helth_position,25))
         display.blit(text_aux1,(self.helth_position,50))
         display.blit(text_aux2,(self.level_position,25))

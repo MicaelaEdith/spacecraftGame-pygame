@@ -6,6 +6,7 @@ from playerController import Player
 from map import Deep, Starts, Meteorite, Status
 from menu import Menu, MainMenu, OptionsMenu, Button
 from cinematics import Intro
+from audioController import MainMusic
 
 pygame.init()
 
@@ -44,6 +45,7 @@ menu = Menu(screenWidth, screenHeight)
 main_menu = MainMenu(screenWidth,screenHeight, game)
 option_menu = OptionsMenu(screenWidth, screenHeight)
 options_open = False
+pygame.mixer.music.load('Assets/Audio/main.mp3')
 
 # Cinemáticas
 intro = Intro(screenWidth, screenHeight)
@@ -69,25 +71,25 @@ meteorite = Meteorite(screenWidth, screenHeight)
 
 # Crear botones
 buttons_left = [
-    Button(60, screenHeight // 2 + 105, "Assets/Buttons/up_arrow.png"),
-    Button(60, screenHeight // 2 + 160, "Assets/Buttons/down_arrow.png"),
-    Button(20, screenHeight // 2 + 130, "Assets/Buttons/left_arrow.png"),
-    Button(100, screenHeight // 2 + 130, "Assets/Buttons/right_arrow.png"),
+    Button(60, screenHeight // 3 * 2.15 , "Assets/Buttons/up_arrow.png"),
+    Button(60, screenHeight // 3 * 2.15 + 55, "Assets/Buttons/down_arrow.png"),
+    Button(20, screenHeight // 3 * 2.15 + 25, "Assets/Buttons/left_arrow.png"),
+    Button(100, screenHeight // 3 * 2.15 + 25, "Assets/Buttons/right_arrow.png"),
 ]
 
 buttons_right = [
-    Button(screenWidth - 245, screenHeight // 2 + 60, "Assets/Buttons/actionA.png"),
-    Button(screenWidth - 145, screenHeight // 2 + 60, "Assets/Buttons/actionB.png"),
-    Button(screenWidth - 245, screenHeight // 2 + 160, "Assets/Buttons/actionC.png"),
-    Button(screenWidth - 145, screenHeight // 2 + 160, "Assets/Buttons/actionD.png"),
+    Button(screenWidth - 245, screenHeight // 3 * 2 + 10, "Assets/Buttons/actionA.png"),
+    Button(screenWidth - 165, screenHeight // 3 * 2 + 10, "Assets/Buttons/actionB.png"),
+    Button(screenWidth - 245, screenHeight // 3 * 2 + 95, "Assets/Buttons/actionC.png"),
+    Button(screenWidth - 165, screenHeight // 3 * 2 + 95, "Assets/Buttons/actionD.png"),
 ]
 
 buttons_menu = [
-    Button(screenWidth - 120, screenHeight // 21, "Assets/Buttons/actionA.png"),  # start
-    Button(screenWidth - 120, screenHeight // 21 + 80, "Assets/Buttons/actionA.png"),  # salir
+    Button(screenWidth - 120, screenHeight // 21, "Assets/Buttons/pause.png"),  # start
+    Button(screenWidth - 120, screenHeight // 21 + 30, "Assets/Buttons/exit.png"),  # salir
 ]
 
-
+music_on = option_menu.music_on
 # Bucle Menu
 while not game and not intro_flag:
     for event in pygame.event.get():
@@ -166,6 +168,8 @@ starts2.speed = .5
 starts3.speed = .3
 # Bucle principal
 
+pygame.mixer.music.play(-1)
+time.sleep(.9)
 while game:
     for event in pygame.event.get():
 
@@ -236,6 +240,8 @@ while game:
                 if result == 'new_game':
                     buttons_menu[1].clicked = False
                     start = True
+                    if music_on:
+                        pygame.mixer.music.set_volume(1)
                 elif result == 'exit':
                     options_open = False
 
@@ -250,12 +256,18 @@ while game:
                 elif result_option == 'fx':
                     sound_on = option_menu.sound_on
                 elif result_option == 'music':
+                    if music_on:
+                        pygame.mixer.music.stop()
+                    if not music_on:
+                        pygame.mixer.music.play(-1)
                     music_on = option_menu.music_on
                 elif result_option == 'save':
                     options_open = False
                     start = True
                     buttons_menu[0].clicked = False
-                    #buttons_menu[1].clicked = False
+
+                    if music_on:
+                        pygame.mixer.music.set_volume(1)
 
 
     # Actualizar el movimiento del jugador basado en los botones presionados
@@ -305,6 +317,8 @@ while game:
             button.draw(display)        
     
     else:
+        if music_on:
+            pygame.mixer.music.set_volume(.25)
         display.fill(blue)
         starts2.drawStarts(display)
         starts3.drawStarts(display)

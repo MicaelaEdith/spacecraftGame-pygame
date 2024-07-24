@@ -204,9 +204,9 @@ class Player():
             self.frame = 2
 
         if self.movement['left']:
-            self.angle = -4
+            self.angle = -8
         elif self.movement['right']:
-            self.angle = 4
+            self.angle = 8
         else:
             self.angle = 0
 
