@@ -45,7 +45,9 @@ menu = Menu(screenWidth, screenHeight)
 main_menu = MainMenu(screenWidth,screenHeight, game)
 option_menu = OptionsMenu(screenWidth, screenHeight)
 options_open = False
-pygame.mixer.music.load('Assets/Audio/main.mp3')
+pygame.mixer.music.load('Assets/Audio/intro.mp3')
+pygame.mixer.music.play(-1)
+pygame.mixer.music.set_volume(0)
 
 # Cinemáticas
 intro = Intro(screenWidth, screenHeight)
@@ -90,8 +92,12 @@ buttons_menu = [
 ]
 
 music_on = option_menu.music_on
+count_music = 0
 # Bucle Menu
 while not game and not intro_flag:
+    if count_music<1 and music_on:
+        count_music+= 0.001
+        pygame.mixer.music.set_volume(count_music)
     for event in pygame.event.get():
         if not options_open:
             result = main_menu.handle_event(event)
@@ -115,6 +121,10 @@ while not game and not intro_flag:
             elif result_option == 'fx':
                 sound_on = option_menu.sound_on
             elif result_option == 'music':
+                if music_on:
+                    pygame.mixer.music.stop()
+                if not music_on:
+                    pygame.mixer.music.play(-1)
                 music_on = option_menu.music_on
             elif result_option == 'save':
                 options_open = False
@@ -155,6 +165,9 @@ while intro_flag:
             intro.count = count_intro
 
         if count_intro >= 3:
+            if count_music<0 and music_on:
+                count_music-= 0.01
+                pygame.mixer.music.set_volume(count_music)
             time.sleep(.8)
             intro_flag = False
             game = True
@@ -167,10 +180,13 @@ starts1.speed = 1
 starts2.speed = .5
 starts3.speed = .3
 # Bucle principal
-
+pygame.mixer.music.load('Assets/Audio/main.mp3')
 pygame.mixer.music.play(-1)
 time.sleep(.9)
 while game:
+    if count_music<1 and music_on:
+        count_music+= 0.001
+        pygame.mixer.music.set_volume(count_music)
     for event in pygame.event.get():
 
         # Eventos de mouse para los botones de dirección (izquierda)
@@ -258,9 +274,11 @@ while game:
                 elif result_option == 'music':
                     if music_on:
                         pygame.mixer.music.stop()
+                        music_on = False
                     if not music_on:
                         pygame.mixer.music.play(-1)
-                    music_on = option_menu.music_on
+                        music_on = True
+                    option_menu.music_on = music_on
                 elif result_option == 'save':
                     options_open = False
                     start = True
