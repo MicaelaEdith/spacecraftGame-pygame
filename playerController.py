@@ -38,6 +38,9 @@ class Player():
         self.shoot_type_b = False  # Bandera para el tipo de bala B
         self.shoots_fired = []
         self.quiet = True
+        if screenWidth > 1920 or screenHeight > 1080:
+            self.speed = 3
+    
 
         self.pick_images = [
             pygame.image.load("Assets/Objects/picker0.png").convert(),
@@ -223,7 +226,15 @@ class Player():
 
     def drawPick(self, display):
         if self.action['d']:
-            display.blit(self.pick_images[int(self.pick_frame)], [self.xPosition, self.yPosition -75])
+            rotated_image = pygame.transform.rotate(self.pick_images[int(self.pick_frame)], self.angle)
+           #display.blit(rotated_image, [self.xPosition, self.yPosition])
+            if self.angle > 1:
+                xPosition_current = self.xPosition - 8
+            if self.angle < -1:
+                xPosition_current = self.xPosition + 8
+            if self.angle == 0:
+                xPosition_current = self.xPosition
+            display.blit(rotated_image, [xPosition_current, self.yPosition -75])
             self.pick_frame -=.1
             self.pick_frame = (self.pick_frame + (self.pick_frame-int(self.pick_frame))) % len(self.pick_images)  # Alternar entre las dos imágenes
 

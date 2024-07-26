@@ -152,14 +152,20 @@ class Status():
         self.helth_position = 40
         self.level_position = self.screenW - 300
         self.font_path = 'Assets/Fonts/KodeMono-VariableFont_wght.ttf'
-        self.font = pygame.font.Font(self.font_path,20)
+        self.font = pygame.font.Font(self.font_path,25)
         self.text_en = ['Points','Health', 'Level']
         self.text_es = ['Puntos','Salud', 'Nivel']
         self.color = (160, 23, 208)
         self.lan_on = lan
         self.health = 0
         self.level = 0
+        self.full_hd = False
 
+        if screenW > 1920 or screenH > 1080:
+            self.full_hd = True
+            self.level_position = self.screenW - 480
+            self.font = pygame.font.Font(self.font_path, 40)
+        
 
     def updateStatus(self,health, level):
         self.health = health
@@ -176,10 +182,14 @@ class Status():
         text_aux0 = self.font.render(" "+text_list[0] + " - " + str(points)+" ",True,self.color,(0,0,0))
         text_aux1 = self.font.render(" "+text_list[1] + " - " + str(health)+" ",True,self.color,(0,0,0))
         text_aux2 = self.font.render(" "+text_list[2] + " - " + str(level)+" ",True,self.color,(0,0,0))
-        display.blit(text_aux0,(self.helth_position,25))
-        display.blit(text_aux1,(self.helth_position,50))
-        display.blit(text_aux2,(self.level_position,25))
-            
+        if not self.full_hd:
+            display.blit(text_aux0,(self.helth_position,25))
+            display.blit(text_aux1,(self.helth_position,50))
+            display.blit(text_aux2,(self.level_position,25))
+        else:
+            display.blit(text_aux0,(self.helth_position,33))
+            display.blit(text_aux1,(self.helth_position,85))
+            display.blit(text_aux2,(self.level_position,33))
 
 """
 class PlatformSpeed():

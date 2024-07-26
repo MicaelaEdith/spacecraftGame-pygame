@@ -30,6 +30,14 @@ class MainMenu():
         self.height = screenHeight
         self.buttons = []
         self.game = game
+        self.full_hd = False
+        self.font = pygame.font.Font(self.font_path, 50)
+        self.margin = 80
+
+        if screenWidth > 1920 or screenHeight > 1080:
+            self.full_hd = True
+            self.font = pygame.font.Font(self.font_path, 80)
+            self.margin = 120
 
     def draw(self, display, lan, game):
         self.game = game
@@ -49,7 +57,7 @@ class MainMenu():
         for i in text_list:
             if not self.game:
                 text_aux = self.font.render(i, True, text_color)
-                text_rect = text_aux.get_rect(topleft=(80, self.height / 4 * contador))
+                text_rect = text_aux.get_rect(topleft=(self.margin, self.height / 4 * contador))
             else:
                 if i == text_list[0]:
                     if self.lan_on == 'en':
@@ -64,7 +72,7 @@ class MainMenu():
                 elif i == text_list[1] or i == text_list[2]:
                     text_aux = self.font.render(i, True, text_color_off)
 
-                text_rect = text_aux.get_rect(topleft=(80, self.height / 4 * contador))
+                text_rect = text_aux.get_rect(topleft=(self.margin, self.height / 4 * contador))
 
             # Verificar si el mouse está sobre el botón
             if text_rect.collidepoint(mouse_pos):
@@ -126,6 +134,12 @@ class OptionsMenu():
         self.buttons = []
         self.music_on = True
         self.sound_on = True
+        self.margin = 80
+
+        if screenWidth > 1920 or screenHeight > 1080:
+            self.full_hd = True
+            self.font = pygame.font.Font(self.font_path, 80)
+            self.margin = 120
 
     def draw(self, display, lan, music_on, sound_on):
         self.lan_on = lan
@@ -159,13 +173,16 @@ class OptionsMenu():
             if i != 'FX' and i != 'EFECTOS' and i != 'MUSIC' and i != 'MUSICA':
                  text_aux = self.font.render(i, True, text_color)
 
-            text_rect = text_aux.get_rect(topleft=(80, self.height / 4 * contador))
+            text_rect = text_aux.get_rect(topleft=(self.margin, self.height / 4 * contador))
 
             # Verificar si el mouse está sobre el botón
         
             if text_rect.collidepoint(mouse_pos) and not self.click_on:
-                text_color = (251, 206, 60)  # Cambia el color del texto cuando el mouse está sobre él
-                text_aux = self.font.render(i, True, text_color)
+                if ((i == 'MUSIC' or i == 'MUSICA') and not self.music_on) or ((i == 'FX' or i == 'EFECTOS') and not self.sound_on):
+                    text_color_current = text_color_off
+                else:
+                    text_color_current = (251, 206, 60)  # Cambia el color del texto cuando el mouse está sobre él
+                text_aux = self.font.render(i, True, text_color_current)
 
             display.blit(text_aux, text_rect.topleft)
             self.buttons.append((i, text_rect))
