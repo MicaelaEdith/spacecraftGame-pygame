@@ -18,6 +18,14 @@ class Intro():
         self.height = screenHeight
         self.buttons = []
         self.count = 0
+        self.animation = []
+        self.animation.append(pygame.image.load("Assets/Buttons/1980/Chad0.png").convert())
+        self.animation.append(pygame.image.load("Assets/Buttons/1980/Chad1.png").convert())
+        self.animation.append(pygame.image.load("Assets/Buttons/1980/Chad2.png").convert())
+        self.animation[0].set_colorkey([255, 224, 9])
+        self.animation[1].set_colorkey([255, 224, 9])
+        self.animation[2].set_colorkey([255, 224, 9])
+
 
     def draw(self, display, lan, count):
         self.count = count
@@ -63,7 +71,7 @@ class Intro():
             dialog_surface = self.font.render(dialog, True, text_color_dialog)
             pos_dialog=(self.width // 7 * 1.2, self.height // 8 * 3.5)
         
-
+        display.blit(self.animation[self.count], self.width // 7 * 1, self.height // 8 * 1)
         display.blit(dialog_surface, pos_dialog)
         display.blit(text_surface, text_rect.topleft)
         self.buttons.append((self.text, text_rect))
