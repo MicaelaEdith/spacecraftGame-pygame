@@ -160,6 +160,13 @@ class Status():
         self.health = 0
         self.level = 0
         self.full_hd = False
+        self.animation = []
+        self.animation.append(pygame.image.load("Assets/Buttons/1980/Chad0.png"))
+        self.animation.append(pygame.image.load("Assets/Buttons/1980/Chad1.png"))
+        self.animation.append(pygame.image.load("Assets/Buttons/1980/Chad2.png"))
+        self.animation[0].set_colorkey([255, 224, 9])
+        self.animation[1].set_colorkey([255, 224, 9])
+        self.animation[2].set_colorkey([255, 224, 9])
 
         if screenW > 1920 or screenH > 1080:
             self.full_hd = True
@@ -186,6 +193,8 @@ class Status():
             display.blit(text_aux0,(self.helth_position,25))
             display.blit(text_aux1,(self.helth_position,50))
             display.blit(text_aux2,(self.level_position,25))
+            aux_h = 20+ (text_aux1.get_height() + text_aux0.get_height())
+            display.blit(pygame.transform.scale(self.animation[0], (80,85)), (self.screenW // 22 , aux_h)) #check transform w %
         else:
             display.blit(text_aux0,(self.helth_position,33))
             display.blit(text_aux1,(self.helth_position,85))
