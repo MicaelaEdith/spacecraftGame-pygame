@@ -12,12 +12,12 @@ class Player():
         self.speed = 1
         self.health = 5
         self.animation = []
-        self.animation.append(pygame.image.load("Assets/Player/spacecraft0.png").convert())
-        self.animation.append(pygame.image.load("Assets/Player/spacecraft1.png").convert())
-        self.animation.append(pygame.image.load("Assets/Player/spacecraft2.png").convert())
-        self.animation[0].set_colorkey([1, 6, 26])
-        self.animation[1].set_colorkey([1, 7, 27])
-        self.animation[2].set_colorkey([1, 7, 27])
+        self.animation.append(pygame.image.load("Assets/Player/0.png").convert())
+        self.animation.append(pygame.image.load("Assets/Player/1.png").convert())
+        self.animation.append(pygame.image.load("Assets/Player/2.png").convert())
+        self.animation[0].set_colorkey([0, 1, 20])
+        self.animation[1].set_colorkey([0, 1, 20])
+        self.animation[2].set_colorkey([0, 1, 20])
         self.original_images = self.animation.copy()
         self.rect0 = self.animation[0].get_rect()
         self.rect1 = self.animation[1].get_rect()
