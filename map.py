@@ -4,7 +4,7 @@ class Deep:
     def __init__(self, width, height, speed, line_length, line_spacing, color):
         self.width = width
         self.height = height
-        self.color = color + (128,)  # Agrega transparencia al color (valor alfa de 128)
+        self.color = color + (128,)
         self.speed = speed
         self.line_length = line_length
         self.line_spacing = line_spacing
@@ -13,12 +13,12 @@ class Deep:
 
     def generate_lines(self):
         self.lines.clear()
-        x = 0  # Comienza desde el borde izquierdo de la pantalla
+        x = 0
         y = 0
         while y < self.height:
             self.lines.append((x, y, self.line_length))
             y += self.line_spacing
-            x -= 3  # Desplazamiento hacia la izquierda de 3 píxeles por línea
+            x -= 3
 
     def move_lines(self):
         for i in range(len(self.lines)):
@@ -76,7 +76,7 @@ class Meteorite():
         self.image.set_colorkey(self.chromaKey)
         self.positionList = []
         self.rectList = []
-        self.hit_count = [0] * 4  # Para contar los golpes a cada meteorito
+        self.hit_count = [0] * 4
         self.explosion_images = []
 
         for i in range(4):
@@ -194,7 +194,7 @@ class Status():
             display.blit(text_aux1,(self.helth_position,50))
             display.blit(text_aux2,(self.level_position,25))
             aux_h = 20+ (text_aux1.get_height() + text_aux0.get_height())
-            display.blit(pygame.transform.scale(self.animation[0], (80,85)), (self.screenW // 22 , aux_h)) #check transform w %
+            display.blit(pygame.transform.scale(self.animation[0], (80,85)), (self.screenW // 22 , aux_h))
         else:
             display.blit(text_aux0,(self.helth_position,33))
             display.blit(text_aux1,(self.helth_position,85))

@@ -31,7 +31,7 @@ class Intro():
         self.count = count
         self.lan_on = lan
         display.blit(self.init_menu, (0, 0))
-        self.buttons = []  # Reinicia la lista de botones
+        self.buttons = []
         text_color = (160, 23, 208)
         text_color_dialog = (160, 23, 208)
         dialog = ''
@@ -43,11 +43,11 @@ class Intro():
 
         text_surface = self.font.render(self.text, True, text_color)
         text_rect = text_surface.get_rect(center=(self.width // 7 * 6, self.height // 8 * 6.8))
-        mouse_pos = pygame.mouse.get_pos()  # Obtiene la posición actual del mouse
+        mouse_pos = pygame.mouse.get_pos()
 
-        # Verificar si el mouse está sobre el botón
+
         if text_rect.collidepoint(mouse_pos):
-            text_color = (251, 206, 60)  # Cambia el color del texto cuando el mouse está sobre él
+            text_color = (251, 206, 60)
             text_surface = self.font.render(self.text, True, text_color)
         else:
             text_surface = self.font.render(self.text, True, text_color)
@@ -71,7 +71,6 @@ class Intro():
             dialog_surface = self.font.render(dialog, True, text_color_dialog)
             pos_dialog=(self.width // 7 * 1.2, self.height // 8 * 3.5)
         
-        #display.blit(self.animation[self.count], (self.width // 7, self.height // 8))
         display.blit(dialog_surface, pos_dialog)
         display.blit(text_surface, text_rect.topleft)
         self.buttons.append((self.text, text_rect))

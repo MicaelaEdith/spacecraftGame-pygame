@@ -6,11 +6,9 @@ from playerController import Player
 from map import Deep, Starts, Meteorite, Status
 from menu import Menu, MainMenu, OptionsMenu, Button
 from cinematics import Intro
-#from audioController import MainMusic
 
 pygame.init()
 
-# Configuración de la pantalla
 icon = pygame.image.load("Assets/Player/spacecraft0.png")
 icon.set_colorkey([1, 6, 26])
 pygame.display.set_icon(icon)
@@ -44,7 +42,6 @@ if screenWidth > 1920 or screenHeight > 1080:
 display = pygame.display.set_mode((screenWidth, screenHeight), pygame.SRCALPHA)
 pygame.display.set_caption("Tango triste en un asteroide")
 
-# Menú principal, opciones y pausa
 menu = Menu(screenWidth, screenHeight)
 main_menu = MainMenu(screenWidth,screenHeight, game)
 option_menu = OptionsMenu(screenWidth, screenHeight)
@@ -53,11 +50,11 @@ pygame.mixer.music.load('Assets/Audio/intro.mp3')
 pygame.mixer.music.play(-1)
 pygame.mixer.music.set_volume(0)
 
-# Cinemáticas
+
 intro = Intro(screenWidth, screenHeight)
 intro_flag = False
 
-# Inicialización del jugador y el fondo de estrellas
+
 xPosition = int((screenWidth / 2) - 40)
 yPosition = int(screenHeight / 100 * 80 + 40)
 player = Player(xPosition, yPosition, screenHeight, screenWidth)
@@ -72,11 +69,9 @@ starts3.speed = .1
 starts3.white = (105, 80, 80)
 starts3.quiet = True
 
-# Elementos de interacción
 meteorite = Meteorite(screenWidth, screenHeight)
 
 
-# Crear botones
 if not full_hd:
     buttons_left = [
         Button(60, screenHeight // 3 * 2.15 , img_button + "up_arrow.png"),
@@ -86,16 +81,15 @@ if not full_hd:
     ]
 
     buttons_right = [
-        #Button(screenWidth - 550, screenHeight // 3 * 2, img_button + "actionA.png"),
-        Button((screenWidth - 245), screenHeight // 3 * 2, img_button + "actionA.png"),
-        Button((screenWidth - 165), screenHeight // 3 * 2, img_button + "actionB.png"),
+        Button((screenWidth - 245), screenHeight // 3 * 2, img_button + "actionAa.png"),
+        Button((screenWidth - 165), screenHeight // 3 * 2, img_button + "actionBa.png"),
         Button((screenWidth - 245), screenHeight // 3 * 2 + 75, img_button + "actionC.png"),
         Button((screenWidth - 165), screenHeight // 3 * 2 + 75, img_button + "actionD.png"),
     ]
 
     buttons_menu = [
-        Button(screenWidth - 120, screenHeight // 20, img_button + "pause.png"),  # start
-        Button(screenWidth - 120, screenHeight // 20 + 30, img_button + "exit.png"),  # salir
+        Button(screenWidth - 120, screenHeight // 20, img_button + "pause.png"),
+        Button(screenWidth - 120, screenHeight // 20 + 30, img_button + "exit.png"),
     ]
 else:
     buttons_left = [
@@ -112,16 +106,15 @@ else:
         Button(screenWidth - 370, screenHeight // 3 * 2 + 160, img_button + "actionD.png"),
     ]
 
-
     buttons_menu = [
         Button(screenWidth - 380, screenHeight // 11.5, img_button + "pause.png"),  # start
         Button(screenWidth - 380, screenHeight // 11.5 + 70, img_button + "exit.png"),  # salir
     ]
-    
-
 
 music_on = option_menu.music_on
 count_music = 0
+
+
 # Bucle Menu
 while not game and not intro_flag:
     if count_music<1 and music_on:
@@ -159,9 +152,6 @@ while not game and not intro_flag:
                 music_on = option_menu.music_on
             elif result_option == 'save':
                 options_open = False
-
-            #if event.type == pygame.MOUSEBUTTONUP and result_option != None:
-             #   option_menu.click_on = True
 
 
     display.fill(blue)
@@ -210,6 +200,7 @@ while intro_flag:
 starts1.speed = 1
 starts2.speed = .5
 starts3.speed = .3
+
 # Bucle principal
 pygame.mixer.music.load('Assets/Audio/main.mp3')
 if music_on:
@@ -224,7 +215,6 @@ while game:
 
     for event in pygame.event.get():
 
-        # Eventos de mouse para los botones de dirección (izquierda)
         if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
             mouse_pos = pygame.mouse.get_pos()
             for button in buttons_left:
@@ -243,7 +233,6 @@ while game:
             player.movement['down'] = False
 
 
-        # Eventos de toque para los botones de acción (derecha)
         if event.type == pygame.FINGERDOWN or event.type == pygame.FINGERUP:
             if full_hd:
                 touch_pos = (event.x * screenWidth - 110, event.y * screenHeight)
@@ -251,7 +240,6 @@ while game:
                 touch_pos = (event.x * screenWidth, event.y * screenHeight)
             for button in buttons_right:
                 if button.is_clicked(touch_pos, True):
-                    # Actualizar el estado de las acciones al presionar
                     if event.type == pygame.FINGERDOWN:
                         if button == buttons_right[0]:
                             player.action['a'] = True
@@ -262,7 +250,6 @@ while game:
                         elif button ==  buttons_right[3]:
                             player.action['d'] = True
 
-                    # Actualizar el estado de las acciones al soltar
                     elif event.type == pygame.FINGERUP:
                         player.action['a'] = False                        
                         player.action['b'] = False
@@ -270,7 +257,6 @@ while game:
                         player.action['d'] = False
                         button.clicked = False
 
-        # Verificar si se presiona el botón del menú
         if start:
             if event.type == pygame.FINGERDOWN:
                 touch_pos = (event.x * screenWidth, event.y * screenHeight)
@@ -326,7 +312,6 @@ while game:
                         pygame.mixer.music.set_volume(1)
 
 
-    # Actualizar el movimiento del jugador basado en los botones presionados
     player.movement['up'] = buttons_left[0].clicked
     player.movement['down'] = buttons_left[1].clicked
     player.movement['left'] = buttons_left[2].clicked
@@ -350,7 +335,7 @@ while game:
 
     if start:
         player.movePlayer()
-        player.updateShoots()  # Actualiza los disparos del jugador
+        player.updateShoots()
         player.actions()
         display.fill(blue)
         starts1.drawStarts(display)
@@ -382,14 +367,6 @@ while game:
             main_menu.draw(display, language, game)
         else:
             option_menu.draw(display, language, music_on, sound_on)
-
-    """
-    for button in buttons_right:
-            pygame.draw.rect(display, (255, 0, 0), button.rect, 2)  # Dibujar un rectángulo rojo alrededor de cada botón
-            button.draw(display)  # Dibujar el botón
-    """
-    #for button in buttons_right:
-        #button.clicked = False
 
 
     pygame.display.flip()

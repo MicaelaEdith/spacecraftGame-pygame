@@ -43,14 +43,14 @@ class MainMenu():
         self.game = game
         self.lan_on = lan
         display.blit(self.init_menu, (0, 0))
-        self.buttons = []  # Reinicia la lista de botones
+        self.buttons = []
         contador = 1
         if self.lan_on == 'en':
             text_list = self.text_en
         else:
             text_list = self.text_es
 
-        mouse_pos = pygame.mouse.get_pos()  # Obtiene la posición actual del mouse
+        mouse_pos = pygame.mouse.get_pos()
 
         text_color = (160, 23, 208)
         text_color_off = (50, 43, 40)
@@ -74,9 +74,8 @@ class MainMenu():
 
                 text_rect = text_aux.get_rect(topleft=(self.margin, self.height / 4 * contador))
 
-            # Verificar si el mouse está sobre el botón
             if text_rect.collidepoint(mouse_pos):
-                text_color_hover = (251, 206, 60)  # Cambia el color del texto cuando el mouse está sobre él
+                text_color_hover = (251, 206, 60)
                 if self.game:
                     if i == text_list[0]:
                         if self.lan_on == 'en':
@@ -146,7 +145,7 @@ class OptionsMenu():
         self.music_on = music_on
         self.sound_on = sound_on
         display.blit(self.init_menu, (0, 0))
-        self.buttons = []  # Reinicia la lista de botones
+        self.buttons = []
         self.click_on = False
         contador = 1
         if self.lan_on == 'en':
@@ -154,7 +153,7 @@ class OptionsMenu():
         else:
             text_list = self.text_es
 
-        mouse_pos = pygame.mouse.get_pos()  # Obtiene la posición actual del mouse
+        mouse_pos = pygame.mouse.get_pos()
 
         for i in text_list:
             text_color = (160, 23, 208)
@@ -175,13 +174,12 @@ class OptionsMenu():
 
             text_rect = text_aux.get_rect(topleft=(self.margin, self.height / 4 * contador))
 
-            # Verificar si el mouse está sobre el botón
         
             if text_rect.collidepoint(mouse_pos) and not self.click_on:
                 if ((i == 'MUSIC' or i == 'MUSICA') and not self.music_on) or ((i == 'FX' or i == 'EFECTOS') and not self.sound_on):
                     text_color_current = text_color_off
                 else:
-                    text_color_current = (251, 206, 60)  # Cambia el color del texto cuando el mouse está sobre él
+                    text_color_current = (251, 206, 60)
                 text_aux = self.font.render(i, True, text_color_current)
 
             display.blit(text_aux, text_rect.topleft)
@@ -220,11 +218,10 @@ class Button:
 
     def draw(self, surface):
         if self.clicked:
-            # Ajustar opacidad cuando está presionado
-            self.image.set_alpha(100)  # Valor entre 0 (transparente) y 255 (opaco)
+            self.image.set_alpha(100)
             
         else:
-            self.image.set_alpha(255)  # Opacidad normal
+            self.image.set_alpha(255)
         surface.blit(self.image, self.rect.topleft)
 
     def is_clicked(self, pos, pressed):
