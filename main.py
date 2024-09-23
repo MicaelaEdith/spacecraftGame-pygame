@@ -16,14 +16,14 @@ os.environ['SDL_VIDEO_CENTERED'] = '1'
 info = pygame.display.Info()
 screenWidth, screenHeight = info.current_w, info.current_h
 white = (255, 255, 255)
-blue = (1, 6, 26)
+blue = (10, 8, 31)
 blue_light = (4, 19, 40)
 alpha = 5
 level = 0
 up_level = 0
 menus=1
 language = 'en'
-music_on = True
+music_on = False
 sound_on = True
 status = Status(screenWidth, screenHeight,language)
 full_hd = False
@@ -74,17 +74,17 @@ meteorite = Meteorite(screenWidth, screenHeight)
 
 if not full_hd:
     buttons_left = [
-        Button(60, screenHeight // 3 * 2.15 , img_button + "up_arrow.png"),
-        Button(60, screenHeight // 3 * 2.15 + 55, img_button + "down_arrow.png"),
-        Button(20, screenHeight // 3 * 2.15 + 25, img_button + "left_arrow.png"),
-        Button(100, screenHeight // 3 * 2.15 + 25, img_button + "right_arrow.png"),
+        Button(60, screenHeight // 3 * 2.15 , img_button + "up_arrow_.png"),
+        Button(60, screenHeight // 3 * 2.15 + 55, img_button + "down_arrow_.png"),
+        Button(20, screenHeight // 3 * 2.15 + 25, img_button + "left_arrow_.png"),
+        Button(100, screenHeight // 3 * 2.15 + 25, img_button + "right_arrow_.png"),
     ]
 
     buttons_right = [
-        Button((screenWidth - 245), screenHeight // 3 * 2, img_button + "actionAa.png"),
-        Button((screenWidth - 165), screenHeight // 3 * 2, img_button + "actionBa.png"),
+        Button((screenWidth - 245), screenHeight // 3 * 2, img_button + "actionA.png"),
+        Button((screenWidth - 165), screenHeight // 3 * 2, img_button + "actionB.png"),
         Button((screenWidth - 245), screenHeight // 3 * 2 + 75, img_button + "actionC.png"),
-        Button((screenWidth - 165), screenHeight // 3 * 2 + 75, img_button + "actionD.png"),
+        Button((screenWidth - 165), screenHeight // 3 * 2 + 75, img_button + "actionDa.png"),
     ]
 
     buttons_menu = [
