@@ -161,9 +161,9 @@ class Status():
         self.level = 0
         self.full_hd = False
         self.animation = []
-        self.animation.append(pygame.image.load("Assets/Buttons/1980/Chad0.png"))
-        self.animation.append(pygame.image.load("Assets/Buttons/1980/Chad1.png"))
-        self.animation.append(pygame.image.load("Assets/Buttons/1980/Chad2.png"))
+        self.animation.append(pygame.image.load("Assets/Buttons/Chad0.png"))
+        self.animation.append(pygame.image.load("Assets/Buttons/Chad1.png"))
+        self.animation.append(pygame.image.load("Assets/Buttons/Chad2.png"))
         self.animation[0].set_colorkey([255, 224, 9])
         self.animation[1].set_colorkey([255, 224, 9])
         self.animation[2].set_colorkey([255, 224, 9])

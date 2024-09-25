@@ -36,7 +36,10 @@ game = False
 
 if screenWidth > 1920 or screenHeight > 1080:
     full_hd = True
-    img_button = 'Assets/Buttons/1980/'
+    scale_factor = 2
+else:
+    scale_factor = 1.3
+
     
 
 display = pygame.display.set_mode((screenWidth, screenHeight), pygame.SRCALPHA)
@@ -71,20 +74,19 @@ starts3.quiet = True
 
 meteorite = Meteorite(screenWidth, screenHeight)
 
-
 if not full_hd:
     buttons_left = [
-        Button(60, screenHeight // 3 * 2.15 , img_button + "up_arrow_.png"),
-        Button(60, screenHeight // 3 * 2.15 + 55, img_button + "down_arrow_.png"),
-        Button(20, screenHeight // 3 * 2.15 + 25, img_button + "left_arrow_.png"),
-        Button(100, screenHeight // 3 * 2.15 + 25, img_button + "right_arrow_.png"),
+        Button(75, screenHeight // 3 * 2.15 - 10, img_button + "up_arrow.png"),
+        Button(75, screenHeight // 3 * 2.15 + 65, img_button + "down_arrow.png"),
+        Button(20, screenHeight // 3 * 2.15 + 25, img_button + "left_arrow.png"),
+        Button(120, screenHeight // 3 * 2.15 + 25, img_button + "right_arrow.png"),
     ]
 
     buttons_right = [
         Button((screenWidth - 245), screenHeight // 3 * 2, img_button + "actionA.png"),
         Button((screenWidth - 165), screenHeight // 3 * 2, img_button + "actionB.png"),
         Button((screenWidth - 245), screenHeight // 3 * 2 + 75, img_button + "actionC.png"),
-        Button((screenWidth - 165), screenHeight // 3 * 2 + 75, img_button + "actionDa.png"),
+        Button((screenWidth - 165), screenHeight // 3 * 2 + 75, img_button + "actionD.png"),
     ]
 
     buttons_menu = [
