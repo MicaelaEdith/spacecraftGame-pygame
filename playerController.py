@@ -11,6 +11,10 @@ class Player():
         self.score = 21
         self.speed = 1
         self.health = 5
+        self.hd = False
+
+        if screenWidth >= 1900 :
+            self.hd = True
 
         self.animation = []
 
@@ -19,9 +23,9 @@ class Player():
         else:
             scale_factor = 1.3
 
-        img0 = pygame.image.load("Assets/Player/0a.png").convert()
-        img1 = pygame.image.load("Assets/Player/1a.png").convert()
-        img2 = pygame.image.load("Assets/Player/2a.png").convert()
+        img0 = pygame.image.load("Assets/Player/0.png").convert()
+        img1 = pygame.image.load("Assets/Player/1.png").convert()
+        img2 = pygame.image.load("Assets/Player/2.png").convert()
 
         original_size0 = img0.get_size()
         original_size1 = img1.get_size()
@@ -235,23 +239,35 @@ class Player():
         rotated_image = pygame.transform.rotate(self.original_images[self.frame], self.angle)
         display.blit(rotated_image, [self.xPosition, self.yPosition])
     
-        # Dibujar disparos
         self.drawShoots(display)
 
 
 
     def drawPick(self, display):
+        # Calcular el offset para centrar la imagen
+        sprite_width = self.animation[0].get_width()
+        rotated_image = pygame.transform.rotate(self.pick_images[int(self.pick_frame)], self.angle)
+        rotated_image_width = rotated_image.get_width()
+
+        offset = sprite_width / 2 - rotated_image_width / 2
+
+        if not self.hd:
+            offset = 8
+
+        # Lógica de posición basada en el ángulo
         if self.action['d']:
-            rotated_image = pygame.transform.rotate(self.pick_images[int(self.pick_frame)], self.angle)
             if self.angle > 1:
                 xPosition_current = self.xPosition - 8
-            if self.angle < -1:
-                xPosition_current = self.xPosition + 8
-            if self.angle == 0:
+            elif self.angle == 0:
                 xPosition_current = self.xPosition
-            display.blit(rotated_image, [xPosition_current, self.yPosition -75])
-            self.pick_frame -=.1
-            self.pick_frame = (self.pick_frame + (self.pick_frame-int(self.pick_frame))) % len(self.pick_images)
+
+            # Dibujar la imagen rotada alineada al centro del sprite
+            display.blit(rotated_image, [xPosition_current + offset, self.yPosition - 75])
+
+            # Actualizar el frame de la animación
+            self.pick_frame -= 0.1
+            self.pick_frame = (self.pick_frame + (self.pick_frame - int(self.pick_frame))) % len(self.pick_images)
+
 
 
     def drawExplosion(self, display):        

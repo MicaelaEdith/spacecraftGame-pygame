@@ -210,22 +210,44 @@ class OptionsMenu():
 
 
 class Button:
-    def __init__(self, x, y, image_path):
+    def __init__(self, screenW, x, y, image_path):
         self.image = pygame.image.load(image_path).convert_alpha()
+
+        if screenW > 1920:
+            scale_factor = 2
+        elif screenW > 1200:
+            scale_factor = 1.2
+        else:
+            scale_factor = 1
+
+        original_size = self.image.get_size()
+        new_size = (int(original_size[0] * scale_factor), int(original_size[1] * scale_factor))
+        self.image = pygame.transform.scale(self.image, new_size)
+
         self.image.set_colorkey([1, 6, 26])
+
         self.rect = self.image.get_rect(topleft=(x, y))
+
         self.clicked = False
+
+        self.nav_bar_offset_x = 0
+
+        if 'action' in image_path:
+            self.nav_bar_offset_x = 52
+            print('Imagen con offset de colisión: ', image_path)
 
     def draw(self, surface):
         if self.clicked:
             self.image.set_alpha(100)
-            
         else:
             self.image.set_alpha(255)
         surface.blit(self.image, self.rect.topleft)
 
     def is_clicked(self, pos, pressed):
-        if self.rect.collidepoint(pos):
-            self.clicked = pressed
-        return self.clicked
+        collision_rect = self.rect.copy()
+        collision_rect.x += self.nav_bar_offset_x
 
+        if collision_rect.collidepoint(pos):
+            self.clicked = pressed
+
+        return self.clicked

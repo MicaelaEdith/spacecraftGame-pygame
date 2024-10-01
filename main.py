@@ -9,7 +9,7 @@ from cinematics import Intro
 
 pygame.init()
 
-icon = pygame.image.load("Assets/Player/spacecraft0.png")
+icon = pygame.image.load("Assets/Player/0.png")
 icon.set_colorkey([1, 6, 26])
 pygame.display.set_icon(icon)
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -40,9 +40,8 @@ if screenWidth > 1920 or screenHeight > 1080:
 else:
     scale_factor = 1.3
 
-    
 
-display = pygame.display.set_mode((screenWidth, screenHeight), pygame.SRCALPHA)
+display = pygame.display.set_mode((screenWidth, screenHeight), pygame.FULLSCREEN | pygame.SRCALPHA)
 pygame.display.set_caption("Tango triste en un asteroide")
 
 menu = Menu(screenWidth, screenHeight)
@@ -74,43 +73,44 @@ starts3.quiet = True
 
 meteorite = Meteorite(screenWidth, screenHeight)
 
+
 if not full_hd:
     buttons_left = [
-        Button(75, screenHeight // 3 * 2.15 - 10, img_button + "up_arrow.png"),
-        Button(75, screenHeight // 3 * 2.15 + 65, img_button + "down_arrow.png"),
-        Button(20, screenHeight // 3 * 2.15 + 25, img_button + "left_arrow.png"),
-        Button(120, screenHeight // 3 * 2.15 + 25, img_button + "right_arrow.png"),
+        Button(screenWidth, 75, screenHeight // 3 * 2.15 - 10, img_button + "up_arrow.png"),
+        Button(screenWidth, 75, screenHeight // 3 * 2.15 + 65, img_button + "down_arrow.png"),
+        Button(screenWidth, 20, screenHeight // 3 * 2.15 + 25, img_button + "left_arrow.png"),
+        Button(screenWidth, 120, screenHeight // 3 * 2.15 + 25, img_button + "right_arrow.png"),
     ]
 
     buttons_right = [
-        Button((screenWidth - 245), screenHeight // 3 * 2, img_button + "actionA.png"),
-        Button((screenWidth - 165), screenHeight // 3 * 2, img_button + "actionB.png"),
-        Button((screenWidth - 245), screenHeight // 3 * 2 + 75, img_button + "actionC.png"),
-        Button((screenWidth - 165), screenHeight // 3 * 2 + 75, img_button + "actionD.png"),
+        Button(screenWidth, (screenWidth - 245), screenHeight // 3 * 2, img_button + "action_A.png"),
+        Button(screenWidth, (screenWidth - 165), screenHeight // 3 * 2, img_button + "action_B.png"),
+        Button(screenWidth, (screenWidth - 245), screenHeight // 3 * 2 + 75, img_button + "action_C.png"),
+        Button(screenWidth, (screenWidth - 165), screenHeight // 3 * 2 + 75, img_button + "action_D.png"),
     ]
 
     buttons_menu = [
-        Button(screenWidth - 120, screenHeight // 20, img_button + "pause.png"),
-        Button(screenWidth - 120, screenHeight // 20 + 30, img_button + "exit.png"),
+        Button(screenWidth, screenWidth - 120, screenHeight // 20, img_button + "pause.png"),
+        Button(screenWidth, screenWidth - 120, screenHeight // 20 + 30, img_button + "exit.png"),
     ]
 else:
     buttons_left = [
-        Button(110, screenHeight // 3 * 2.15 , img_button + "up_arrow.png"),
-        Button(110, screenHeight // 3 * 2.15 + 110, img_button + "down_arrow.png"),
-        Button(50, screenHeight // 3 * 2.15 + 60, img_button + "left_arrow.png"),
-        Button(160, screenHeight // 3 * 2.15 + 60, img_button + "right_arrow.png"),
+        Button(screenWidth, 140, screenHeight // 3 * 2.15 , img_button + "up_arrow.png"),
+        Button(screenWidth, 140, screenHeight // 3 * 2.15 + 110, img_button + "down_arrow.png"),
+        Button(screenWidth, 50, screenHeight // 3 * 2.15 + 60, img_button + "left_arrow.png"),
+        Button(screenWidth, 210, screenHeight // 3 * 2.15 + 60, img_button + "right_arrow.png"),
     ]
 
     buttons_right = [
-        Button(screenWidth - 555, screenHeight // 3 * 2, img_button + "actionA.png"),
-        Button(screenWidth - 370, screenHeight // 3 * 2, img_button + "actionB.png"),
-        Button(screenWidth - 550, screenHeight // 3 * 2 + 160, img_button + "actionC.png"),
-        Button(screenWidth - 370, screenHeight // 3 * 2 + 160, img_button + "actionD.png"),
+        Button(screenWidth, screenWidth - 550, screenHeight // 3 * 2, img_button + "action_A.png"),
+        Button(screenWidth, screenWidth - 370, screenHeight // 3 * 2, img_button + "action_B.png"),
+        Button(screenWidth, screenWidth - 550, screenHeight // 3 * 2 + 160, img_button + "action_C.png"),
+        Button(screenWidth, screenWidth - 370, screenHeight // 3 * 2 + 160, img_button + "action_D.png"),
     ]
 
     buttons_menu = [
-        Button(screenWidth - 380, screenHeight // 11.5, img_button + "pause.png"),  # start
-        Button(screenWidth - 380, screenHeight // 11.5 + 70, img_button + "exit.png"),  # salir
+        Button(screenWidth, screenWidth - 380, screenHeight // 11.5, img_button + "pause.png"),  # start
+        Button(screenWidth, screenWidth - 380, screenHeight // 11.5 + 70, img_button + "exit.png"),  # salir
     ]
 
 music_on = option_menu.music_on
