@@ -244,7 +244,6 @@ class Player():
 
 
     def drawPick(self, display):
-        # Calcular el offset para centrar la imagen
         sprite_width = self.animation[0].get_width()
         rotated_image = pygame.transform.rotate(self.pick_images[int(self.pick_frame)], self.angle)
         rotated_image_width = rotated_image.get_width()
@@ -254,20 +253,16 @@ class Player():
         if not self.hd:
             offset = 8
 
-        # Lógica de posición basada en el ángulo
         if self.action['d']:
             if self.angle > 1:
                 xPosition_current = self.xPosition - 8
             elif self.angle == 0:
                 xPosition_current = self.xPosition
 
-            # Dibujar la imagen rotada alineada al centro del sprite
             display.blit(rotated_image, [xPosition_current + offset, self.yPosition - 75])
 
-            # Actualizar el frame de la animación
             self.pick_frame -= 0.1
             self.pick_frame = (self.pick_frame + (self.pick_frame - int(self.pick_frame))) % len(self.pick_images)
-
 
 
     def drawExplosion(self, display):        

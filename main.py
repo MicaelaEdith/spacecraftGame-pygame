@@ -22,7 +22,7 @@ alpha = 5
 level = 0
 up_level = 0
 menus=1
-language = 'en'
+language = 'es'
 music_on = False
 sound_on = True
 status = Status(screenWidth, screenHeight,language)
@@ -225,7 +225,6 @@ while game:
             mouse_pos = pygame.mouse.get_pos()
             for button in buttons_left:
                 button.is_clicked(mouse_pos, pygame.mouse.get_pressed()[0])
-                #button.clicked = False
         if event.type == pygame.MOUSEBUTTONUP:
             for button in buttons_left:
                 button.clicked = False

@@ -1,9 +1,9 @@
-intro_script_en = ['EN Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in sagittis arcu. Morbi et neque ut justo auctor suscipit. Pellentesque pretium augue et urna vehicula finibus. ',
-         'EN Maecenas nec varius mauris. Vestibulum hendrerit consectetur interdum.',
-         'EN Cras nec aliquet nisi. Sed consequat justo lacinia purus dapibus posuere. Cras dictum tortor id justo sodales pharetra. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.'
+intro_script_en = ['Guapo, a space adventurer, was tuning up his ship for a new mission. Always careful, he made sure to feed his loyal companion, Poesita, before taking off for a test flight. ',
+         'But during the test flight, a mysterious portal appeared out of nowhere. With no time to react, Guapo was pulled through it, transported to a distant corner of the universe.',
+         'Now, lost in an unknown place, Guapo must find his way back home. Poesita is waiting... and her food will run out soon.'
          ]
 
-intro_script_es = ['ES Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in sagittis arcu. Morbi et neque ut justo auctor suscipit. Pellentesque pretium augue et urna vehicula finibus. ',
-         'ES Maecenas nec varius mauris. Vestibulum hendrerit consectetur interdum.',
-         'ES Cras nec aliquet nisi. Sed consequat justo lacinia purus dapibus posuere. Cras dictum tortor id justo sodales pharetra. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.'
+intro_script_es = ['Guapo, un aventurero espacial, estaba ajustando su nave para una nueva misión. Siempre cuidadoso, alimentó a su fiel compañera, Poesita, antes de salir a probar los arreglos. ',
+         'Pero durante el vuelo de prueba, un misterioso portal apareció de la nada. Sin tiempo para reaccionar, Guapo fue arrastrado hacia él, siendo transportado a un rincón lejano del universo.',
+         'Ahora, perdido en un lugar desconocido, Guapo debe encontrar el camino de regreso. Poesita está en casa... y su comida se acabará pronto.'
          ]
