@@ -25,6 +25,10 @@ class Intro():
         self.animation[0].set_colorkey([255, 224, 9])
         self.animation[1].set_colorkey([255, 224, 9])
         self.animation[2].set_colorkey([255, 224, 9])
+        self.full_hd = False
+
+        if screenWidth >= 1920:
+            self.full_hd = True
 
     def draw(self, display, lan, count):
         self.count = count
@@ -50,6 +54,7 @@ class Intro():
             text_color = (251, 206, 60)
             text_surface = self.font.render(self.text, True, text_color)
         else:
+            text_color = (160, 23, 208)
             text_surface = self.font.render(self.text, True, text_color)
 
         dialog = aux_dialog[self.count]
@@ -93,7 +98,7 @@ class Intro():
         
         scaled_image = pygame.transform.scale(image, (new_width, new_height))
         
-        x_centered = (display_width - new_width) // 2
+        x_centered = ((display_width - new_width) // 2) + 29
         y_centered = (display_height - new_height) // 3
         
         display.blit(scaled_image, (x_centered, y_centered))

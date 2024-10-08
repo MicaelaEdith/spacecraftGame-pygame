@@ -102,7 +102,6 @@ class Player():
             'd': False
         }
 
-        # Disparo
         self.shoot_images = [
             pygame.image.load("Assets/Objects/shoot0.png").convert(),
             pygame.image.load("Assets/Objects/shoot1.png").convert(),
@@ -256,6 +255,8 @@ class Player():
         if self.action['d']:
             if self.angle > 1:
                 xPosition_current = self.xPosition - 8
+            if self.angle < 1:
+                xPosition_current = self.xPosition + 8
             elif self.angle == 0:
                 xPosition_current = self.xPosition
 
