@@ -195,6 +195,7 @@ while intro_flag:
             intro_flag = False
             game = True
     
+    
     pygame.display.flip()
     clock.tick(60)
                 
@@ -372,3 +373,4 @@ while game:
 
     pygame.display.flip()
     clock.tick(60)
+    

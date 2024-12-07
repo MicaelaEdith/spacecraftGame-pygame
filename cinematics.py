@@ -19,13 +19,15 @@ class Intro():
         self.buttons = []
         self.count = 0
         self.animation = []
-        self.animation.append(pygame.image.load("Assets/imgs/prueba.png").convert())
-        self.animation.append(pygame.image.load("Assets/imgs/prueba.png").convert())
-        self.animation.append(pygame.image.load("Assets/imgs/prueba.png").convert())
-        self.animation[0].set_colorkey([255, 224, 9])
-        self.animation[1].set_colorkey([255, 224, 9])
-        self.animation[2].set_colorkey([255, 224, 9])
+        self.animation.append(pygame.image.load("Assets/imgs/cinematica1-1.png").convert())
+        self.animation.append(pygame.image.load("Assets/imgs/cinematica1-2.png").convert())
+        self.animation.append(pygame.image.load("Assets/imgs/cinematica1-3.png").convert())
+        self.animation[0].set_colorkey([255, 18, 35])
+        self.animation[1].set_colorkey([255, 18, 35])
+        self.animation[2].set_colorkey([255, 18, 35])
         self.full_hd = False
+        self.screenWidth = screenWidth
+        self.screenHeight = screenWidth
 
         if screenWidth >= 1920:
             self.full_hd = True
@@ -48,6 +50,7 @@ class Intro():
 
         text_surface = self.font.render(self.text, True, text_color)
         text_rect = text_surface.get_rect(center=(self.width // 7 * 6, self.height // 8 * 6.8))
+
         mouse_pos = pygame.mouse.get_pos()
 
         if text_rect.collidepoint(mouse_pos):
@@ -56,7 +59,7 @@ class Intro():
         else:
             text_color = (160, 23, 208)
             text_surface = self.font.render(self.text, True, text_color)
-
+        
         dialog = aux_dialog[self.count]
         
         self.draw_centered_image(display, self.animation[self.count])
@@ -74,6 +77,7 @@ class Intro():
 
         display.blit(text_surface, text_rect.topleft)
         self.buttons.append((self.text, text_rect))
+
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:

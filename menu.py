@@ -234,7 +234,6 @@ class Button:
 
         if 'action' in image_path:
             self.nav_bar_offset_x = 52
-            print('Imagen con offset de colisión: ', image_path)
 
     def draw(self, surface):
         if self.clicked:

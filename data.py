@@ -5,7 +5,6 @@ class Data:
     def __init__(self, filename):
         self.filename = filename
         self.fieldnames = ['name', 'level', 'checkpoint', 'health', 'points', 'enhances']
-        # Crea el archivo si no existe
         if not os.path.isfile(self.filename):
             self.create_file()
 
@@ -24,7 +23,6 @@ class Data:
             return [row for row in reader]
 
     def write_data(self, data):
-        # 'data' es una lista de diccionarios, cada diccionario representa una fila
         with open(self.filename, mode='a', newline='') as file:
             writer = csv.DictWriter(file, fieldnames=self.fieldnames)
             writer.writerows(data)
@@ -42,21 +40,17 @@ class Data:
             writer.writeheader()
             writer.writerows(rows)
 
-# Ejemplo de uso
 if __name__ == "__main__":
     data_manager = Data('game_data.csv')
     
-    # Escribir datos
     data_manager.write_data([
         {'name': 'Player1', 'level': 1, 'checkpoint': 1, 'health': 100, 'points': 10, 'mejoras': 'A1'},
         {'name': 'Player2', 'level': 2, 'checkpoint': 3, 'health': 80, 'points': 20, 'mejoras': 'B2'}
     ])
     
-    # Leer datos
     all_data = data_manager.read_data()
     print(all_data)
     
-    # Actualizar datos
     data_manager.update_data('Player1', health=90, points=15)
     
     updated_data = data_manager.read_data()

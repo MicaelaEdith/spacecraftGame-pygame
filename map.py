@@ -112,7 +112,6 @@ class Meteorite():
         for rect in self.rectList:
             display.blit(self.image, rect.topleft)
         
-        # Dibujar explosiones
         for i, active in enumerate(self.explosion_active):
             if active:
                 self.draw_explosion(display, i)

@@ -21,7 +21,7 @@ class Player():
         if screenWidth > 1920:
             scale_factor = 2
         else:
-            scale_factor = 1.3
+            scale_factor = 1.5
 
         img0 = pygame.image.load("Assets/Player/0.png").convert()
         img1 = pygame.image.load("Assets/Player/1.png").convert()
@@ -37,9 +37,9 @@ class Player():
         self.animation.append(scaled_img0)
         self.animation.append(scaled_img1)
         self.animation.append(scaled_img2)
-        self.animation[0].set_colorkey([15, 0, 210])
-        self.animation[1].set_colorkey([15, 0, 210])
-        self.animation[2].set_colorkey([15, 0, 210])
+        self.animation[0].set_colorkey([250, 105, 130])
+        self.animation[1].set_colorkey([250, 105, 130])
+        self.animation[2].set_colorkey([250, 105, 130])
 
 
         self.original_images = self.animation.copy()
@@ -239,8 +239,7 @@ class Player():
         display.blit(rotated_image, [self.xPosition, self.yPosition])
     
         self.drawShoots(display)
-
-
+        
 
     def drawPick(self, display):
         sprite_width = self.animation[0].get_width()
@@ -254,9 +253,9 @@ class Player():
 
         if self.action['d']:
             if self.angle > 1:
-                xPosition_current = self.xPosition - 8
+                xPosition_current = self.xPosition - 1
             if self.angle < 1:
-                xPosition_current = self.xPosition + 8
+                xPosition_current = self.xPosition + 1
             elif self.angle == 0:
                 xPosition_current = self.xPosition
 
