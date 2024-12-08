@@ -39,19 +39,3 @@ class Data:
             writer = csv.DictWriter(file, fieldnames=self.fieldnames)
             writer.writeheader()
             writer.writerows(rows)
-
-if __name__ == "__main__":
-    data_manager = Data('game_data.csv')
-    
-    data_manager.write_data([
-        {'name': 'Player1', 'level': 1, 'checkpoint': 1, 'health': 100, 'points': 10, 'mejoras': 'A1'},
-        {'name': 'Player2', 'level': 2, 'checkpoint': 3, 'health': 80, 'points': 20, 'mejoras': 'B2'}
-    ])
-    
-    all_data = data_manager.read_data()
-    print(all_data)
-    
-    data_manager.update_data('Player1', health=90, points=15)
-    
-    updated_data = data_manager.read_data()
-    print(updated_data)

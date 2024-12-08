@@ -22,9 +22,9 @@ class Intro():
         self.animation.append(pygame.image.load("Assets/imgs/cinematica1-1.png").convert())
         self.animation.append(pygame.image.load("Assets/imgs/cinematica1-2.png").convert())
         self.animation.append(pygame.image.load("Assets/imgs/cinematica1-3.png").convert())
-        self.animation[0].set_colorkey([255, 18, 35])
-        self.animation[1].set_colorkey([255, 18, 35])
-        self.animation[2].set_colorkey([255, 18, 35])
+        self.animation[0].set_colorkey([0, 114, 178])
+        self.animation[1].set_colorkey([0, 114, 178])
+        self.animation[2].set_colorkey([0, 114, 178])
         self.full_hd = False
         self.screenWidth = screenWidth
         self.screenHeight = screenWidth
@@ -124,3 +124,29 @@ class Intro():
             lines.append(current_line)
 
         return lines
+
+
+class LevelUp():
+    def __init__(self, screenH):
+        self.current_level = None
+        self.image = pygame.image.load("Assets/imgs/cinematica2-LevelUp.png").convert_alpha()
+        self.x = 0
+        self.y = screenH + 300
+        self.speed = -5
+
+    def level_up_animation(self, display):
+        self.y += self.speed
+        display.blit(self.image, (int(self.x), int(self.y)))
+        
+        if self.y + self.image.get_height() < 0:        #########################################################CHECKTHIS!!!!!
+            print("true animation level")
+            return True  
+        print("false animation level")
+        return False
+
+
+
+
+
+
+    

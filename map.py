@@ -33,6 +33,7 @@ class Deep:
             pygame.draw.line(display, self.color, (line[0], line[1]), (line[0] + line[2], line[1]), 3)
 
         self.move_lines()
+
 class Starts():
     def __init__(self, screenW, screenH):
         self.screenW = int(screenW)
@@ -71,25 +72,34 @@ class Meteorite():
         self.screenW = int(screenW)
         self.screenH = int(screenH)
         self.speed = 2
-        self.chromaKey = [1, 7, 27]
-        self.image = pygame.image.load("Assets/Objects/meteorite.png")
+        self.chromaKey = [250, 105, 130]
+        self.image = pygame.image.load("Assets/Objects/meteorite_.png")
         self.image.set_colorkey(self.chromaKey)
         self.positionList = []
         self.rectList = []
         self.hit_count = [0] * 4
         self.explosion_images = []
+        self.scaled_images = []
+        self.metorites_count = 0
 
-        for i in range(4):
+        for i in range(7):
             self.xPosition = random.randrange(2, int(self.screenW - 95))
             self.yPosition = random.randrange(-1000, -100)
             self.meteoriteRect = self.image.get_rect(topleft=(self.xPosition, self.yPosition))
             self.positionList.append([self.xPosition, self.yPosition])
             self.rectList.append(self.meteoriteRect)
 
-        for i in range(1, 5):
+            scale_factor = random.uniform(1.5, 2)
+            new_size = (int(self.image.get_width() * scale_factor), int(self.image.get_height() * scale_factor))
+            scaled_image = pygame.transform.scale(self.image, new_size)
+
+            scaled_image.set_colorkey(self.chromaKey)
+            self.scaled_images.append(scaled_image)
+
+        for i in range(1,5):
             image = pygame.image.load(f"Assets/Objects/Demage ({i}).png")
             self.explosion_images.append(image)
-            self.explosion_images[i-1].set_colorkey([0,1,21])
+            self.explosion_images[i-1].set_colorkey([0, 1, 21])
 
         self.explosion_frame = 0
         self.explosion_active = [False] * 4
@@ -103,15 +113,16 @@ class Meteorite():
             if yP < self.screenH + 5:
                 yP += self.speed
             else:
+                self.metorites_count += 1
                 yP = random.randrange(-700, -100)
                 xP = random.randrange(2, int(self.screenW - 95))
 
             self.positionList[i] = [xP, yP]
             meteorite_rect.topleft = (xP, yP)
 
-        for rect in self.rectList:
-            display.blit(self.image, rect.topleft)
-        
+        for i, rect in enumerate(self.rectList):
+            display.blit(self.scaled_images[i], rect.topleft)
+
         for i, active in enumerate(self.explosion_active):
             if active:
                 self.draw_explosion(display, i)

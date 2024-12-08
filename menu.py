@@ -32,12 +32,12 @@ class MainMenu():
         self.game = game
         self.full_hd = False
         self.font = pygame.font.Font(self.font_path, 50)
-        self.margin = 80
+        self.margin = 100
 
         if screenWidth > 1920 or screenHeight > 1080:
             self.full_hd = True
             self.font = pygame.font.Font(self.font_path, 80)
-            self.margin = 120
+            self.margin = 140
 
     def draw(self, display, lan, game):
         self.game = game
@@ -133,12 +133,12 @@ class OptionsMenu():
         self.buttons = []
         self.music_on = True
         self.sound_on = True
-        self.margin = 80
+        self.margin = 100
 
         if screenWidth > 1920 or screenHeight > 1080:
             self.full_hd = True
             self.font = pygame.font.Font(self.font_path, 80)
-            self.margin = 120
+            self.margin = 140
 
     def draw(self, display, lan, music_on, sound_on):
         self.lan_on = lan
@@ -224,7 +224,7 @@ class Button:
         new_size = (int(original_size[0] * scale_factor), int(original_size[1] * scale_factor))
         self.image = pygame.transform.scale(self.image, new_size)
 
-        self.image.set_colorkey([1, 6, 26])
+        self.image.set_colorkey([250, 105, 130])
 
         self.rect = self.image.get_rect(topleft=(x, y))
 

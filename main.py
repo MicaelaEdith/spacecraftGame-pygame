@@ -1,11 +1,12 @@
 import pygame
+import random
 import os
 import sys
 import time 
 from playerController import Player
 from map import Deep, Starts, Meteorite, Status
 from menu import Menu, MainMenu, OptionsMenu, Button
-from cinematics import Intro
+from cinematics import Intro, LevelUp
 
 pygame.init()
 
@@ -28,6 +29,8 @@ sound_on = True
 status = Status(screenWidth, screenHeight,language)
 full_hd = False
 img_button = 'Assets/Buttons/'
+transition = False
+
 
 
 clock = pygame.time.Clock()
@@ -55,6 +58,7 @@ pygame.mixer.music.set_volume(0)
 
 intro = Intro(screenWidth, screenHeight)
 intro_flag = False
+level_up = LevelUp (screenHeight)
 
 
 xPosition = int((screenWidth / 2) - 40)
@@ -76,17 +80,17 @@ meteorite = Meteorite(screenWidth, screenHeight)
 
 if not full_hd:
     buttons_left = [
-        Button(screenWidth, 75, screenHeight // 3 * 2.15 - 10, img_button + "up_arrow.png"),
-        Button(screenWidth, 75, screenHeight // 3 * 2.15 + 65, img_button + "down_arrow.png"),
-        Button(screenWidth, 20, screenHeight // 3 * 2.15 + 25, img_button + "left_arrow.png"),
-        Button(screenWidth, 120, screenHeight // 3 * 2.15 + 25, img_button + "right_arrow.png"),
+        Button(screenWidth, 75, screenHeight // 3 * 2.15 - 52, img_button + "up_arrow.png"),
+        Button(screenWidth, 75, screenHeight // 3 * 2.15 + 52, img_button + "down_arrow.png"),
+        Button(screenWidth, 20, screenHeight // 3 * 2.15, img_button + "left_arrow.png"),
+        Button(screenWidth, 130, screenHeight // 3 * 2.15, img_button + "right_arrow.png"),
     ]
 
     buttons_right = [
-        Button(screenWidth, (screenWidth - 245), screenHeight // 3 * 2, img_button + "action_A.png"),
-        Button(screenWidth, (screenWidth - 165), screenHeight // 3 * 2, img_button + "action_B.png"),
-        Button(screenWidth, (screenWidth - 245), screenHeight // 3 * 2 + 75, img_button + "action_C.png"),
-        Button(screenWidth, (screenWidth - 165), screenHeight // 3 * 2 + 75, img_button + "action_D.png"),
+        Button(screenWidth, (screenWidth - 255), screenHeight // 3 * 2, img_button + "action_A.png"),
+        Button(screenWidth, (screenWidth - 160), screenHeight // 3 * 2, img_button + "action_B.png"),
+        Button(screenWidth, (screenWidth - 255), screenHeight // 3 * 2 + 85, img_button + "action_C.png"),
+        Button(screenWidth, (screenWidth - 160), screenHeight // 3 * 2 + 85, img_button + "action_D.png"),
     ]
 
     buttons_menu = [
@@ -95,10 +99,10 @@ if not full_hd:
     ]
 else:
     buttons_left = [
-        Button(screenWidth, 140, screenHeight // 3 * 2.15 , img_button + "up_arrow.png"),
-        Button(screenWidth, 140, screenHeight // 3 * 2.15 + 110, img_button + "down_arrow.png"),
-        Button(screenWidth, 50, screenHeight // 3 * 2.15 + 60, img_button + "left_arrow.png"),
-        Button(screenWidth, 210, screenHeight // 3 * 2.15 + 60, img_button + "right_arrow.png"),
+        Button(screenWidth, 160, screenHeight // 3 * 2.25 - 90 , img_button + "up_arrow.png"),
+        Button(screenWidth, 160, screenHeight // 3 * 2.25 + 90, img_button + "down_arrow.png"),
+        Button(screenWidth, 66, screenHeight // 3 * 2.25, img_button + "left_arrow.png"),
+        Button(screenWidth, 250, screenHeight // 3 * 2.25, img_button + "right_arrow.png"),
     ]
 
     buttons_right = [
@@ -117,7 +121,7 @@ music_on = option_menu.music_on
 count_music = 0
 
 
-# Bucle Menu
+################################################################################# Bucle Menu
 while not game and not intro_flag:
     if count_music<1 and music_on:
         count_music+= 0.001
@@ -204,7 +208,7 @@ starts1.speed = 1
 starts2.speed = .5
 starts3.speed = .3
 
-# Bucle principal
+#################################################################################### Bucle principal
 pygame.mixer.music.load('Assets/Audio/main.mp3')
 if music_on:
     pygame.mixer.music.play(-1)
@@ -319,6 +323,10 @@ while game:
     player.movement['left'] = buttons_left[2].clicked
     player.movement['right'] = buttons_left[3].clicked
 
+
+######################################################################## LEVEL 0 ###############################################
+
+
     if level == 0:
         collision_detected = False
         for player_rect in player.rectList:
@@ -327,13 +335,22 @@ while game:
                     collision_detected = True
                     player.explosion_active = True
                     player.explosion_timer = 0
+                    player.xPosition += random.randrange(-4,4)
                     break
 
         if collision_detected:
             up_level += 1
 
+        if meteorite.metorites_count > 7 :
+            level = 1
+            transition = True
+
     if level == 1:
-        player.movePlayer()
+        #player.movePlayer()
+        pass
+
+
+############################################################################# update
 
     if start:
         player.movePlayer()
@@ -343,11 +360,23 @@ while game:
         starts1.drawStarts(display)
         starts2.drawStarts(display)
         starts3.drawStarts(display)
+
         if level == 0:
             meteorite.draw(display)
+            meteorite.check_collisions(player)
 
-        meteorite.draw(display)
-        meteorite.check_collisions(player)
+        if level == 2:
+            pass
+
+        if level == 3:
+            pass
+
+        if level == 4:
+            pass
+
+        if level == 5:
+            pass
+
         player.drawPlayer(display)
         player.updatePick()
         player.drawPick(display)
@@ -355,6 +384,9 @@ while game:
         status.updateStatus( player.health ,level)
         status.draw(display, level, player.health, player.score,language)
         player.resetActions()
+        if transition:  ###########################CHECK THIS!!!!!!!
+            level_up.level_up_animation(display)
+            transition = False
 
         for button in buttons_left + buttons_right + buttons_menu:
             button.draw(display)        
