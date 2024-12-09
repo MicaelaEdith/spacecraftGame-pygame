@@ -19,7 +19,7 @@ class Player():
         self.animation = []
 
         if screenWidth > 1920:
-            scale_factor = 2
+            scale_factor = 2.3
         else:
             scale_factor = 1.5
 

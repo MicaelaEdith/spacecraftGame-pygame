@@ -32,7 +32,6 @@ img_button = 'Assets/Buttons/'
 transition = False
 
 
-
 clock = pygame.time.Clock()
 start = True
 game = False
@@ -58,10 +57,10 @@ pygame.mixer.music.set_volume(0)
 
 intro = Intro(screenWidth, screenHeight)
 intro_flag = False
-level_up = LevelUp (screenHeight)
+level_up = LevelUp (screenHeight, screenWidth)
 
 
-xPosition = int((screenWidth / 2) - 40)
+xPosition = int((screenWidth / 2) - 60)
 yPosition = int(screenHeight / 100 * 80 + 40)
 player = Player(xPosition, yPosition, screenHeight, screenWidth)
 starts1 = Starts(screenWidth, screenHeight)
@@ -195,7 +194,7 @@ while intro_flag:
             if count_music<0 and music_on:
                 count_music-= 0.01
                 pygame.mixer.music.set_volume(count_music)
-            time.sleep(.8)
+            time.sleep(.5)
             intro_flag = False
             game = True
     
@@ -325,8 +324,6 @@ while game:
 
 
 ######################################################################## LEVEL 0 ###############################################
-
-
     if level == 0:
         collision_detected = False
         for player_rect in player.rectList:
@@ -341,8 +338,8 @@ while game:
         if collision_detected:
             up_level += 1
 
-        if meteorite.metorites_count > 7 :
-            level = 1
+        if meteorite.metorites_count > 2 :
+            start = False
             transition = True
 
     if level == 1:
@@ -351,7 +348,6 @@ while game:
 
 
 ############################################################################# update
-
     if start:
         player.movePlayer()
         player.updateShoots()
@@ -364,6 +360,9 @@ while game:
         if level == 0:
             meteorite.draw(display)
             meteorite.check_collisions(player)
+
+        if level == 1:
+            pass
 
         if level == 2:
             pass
@@ -384,9 +383,7 @@ while game:
         status.updateStatus( player.health ,level)
         status.draw(display, level, player.health, player.score,language)
         player.resetActions()
-        if transition:  ###########################CHECK THIS!!!!!!!
-            level_up.level_up_animation(display)
-            transition = False
+
 
         for button in buttons_left + buttons_right + buttons_menu:
             button.draw(display)        
@@ -397,10 +394,25 @@ while game:
         display.fill(blue)
         starts2.drawStarts(display)
         starts3.drawStarts(display)
-        if not options_open:
-            main_menu.draw(display, language, game)
-        else:
-            option_menu.draw(display, language, music_on, sound_on)
+
+        if not transition:
+            if not options_open:
+                main_menu.draw(display, language, game)
+            else:
+                option_menu.draw(display, language, music_on, sound_on)
+
+        if transition:
+            if level == 0:
+                meteorite.off = True
+            start = level_up.level_up_animation(display)
+            transition = not start
+            if not transition:
+                level += 1
+            player.drawPlayer(display)
+            status.draw(display, level, player.health, player.score,language)
+
+            for button in buttons_left + buttons_right + buttons_menu:
+                button.draw(display)   
 
 
     pygame.display.flip()

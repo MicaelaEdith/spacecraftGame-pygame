@@ -69,6 +69,7 @@ class Starts():
 
 class Meteorite():
     def __init__(self, screenW, screenH):
+        self.off = False
         self.screenW = int(screenW)
         self.screenH = int(screenH)
         self.speed = 2
@@ -96,10 +97,10 @@ class Meteorite():
             scaled_image.set_colorkey(self.chromaKey)
             self.scaled_images.append(scaled_image)
 
-        for i in range(1,5):
+        for i in range(1, 5):
             image = pygame.image.load(f"Assets/Objects/Demage ({i}).png")
             self.explosion_images.append(image)
-            self.explosion_images[i-1].set_colorkey([0, 1, 21])
+            self.explosion_images[i - 1].set_colorkey([0, 1, 21])
 
         self.explosion_frame = 0
         self.explosion_active = [False] * 4
@@ -112,7 +113,7 @@ class Meteorite():
 
             if yP < self.screenH + 5:
                 yP += self.speed
-            else:
+            elif not self.off:
                 self.metorites_count += 1
                 yP = random.randrange(-700, -100)
                 xP = random.randrange(2, int(self.screenW - 95))
@@ -121,13 +122,17 @@ class Meteorite():
             meteorite_rect.topleft = (xP, yP)
 
         for i, rect in enumerate(self.rectList):
-            display.blit(self.scaled_images[i], rect.topleft)
+            if self.positionList[i][1] < self.screenH + 5:
+                display.blit(self.scaled_images[i], rect.topleft)
 
         for i, active in enumerate(self.explosion_active):
             if active:
                 self.draw_explosion(display, i)
 
     def check_collisions(self, player):
+        if self.off:
+            return
+
         for i, rect in enumerate(self.rectList):
             for shoot in player.shoots:
                 if rect.colliderect(shoot):
@@ -152,8 +157,10 @@ class Meteorite():
             self.explosion_timer[index] += 1
 
     def reset_meteorite(self, index):
-        self.positionList[index] = [random.randrange(2, int(self.screenW - 95)), random.randrange(-700, -100)]
-        self.rectList[index].topleft = self.positionList[index]
+        if not self.off:
+            self.positionList[index] = [random.randrange(2, int(self.screenW - 95)), random.randrange(-700, -100)]
+            self.rectList[index].topleft = self.positionList[index]
+
 
 class Status():
     def __init__(self, screenW, screenH, lan):
@@ -174,9 +181,9 @@ class Status():
         self.animation.append(pygame.image.load("Assets/Buttons/Chad0.png"))
         self.animation.append(pygame.image.load("Assets/Buttons/Chad1.png"))
         self.animation.append(pygame.image.load("Assets/Buttons/Chad2.png"))
-        self.animation[0].set_colorkey([255, 224, 9])
-        self.animation[1].set_colorkey([255, 224, 9])
-        self.animation[2].set_colorkey([255, 224, 9])
+        self.animation[0].set_colorkey([71, 60, 120])
+        self.animation[1].set_colorkey([71, 60, 120])
+        self.animation[2].set_colorkey([71, 60, 120])
 
         if screenW > 1920 or screenH > 1080:
             self.full_hd = True
@@ -204,7 +211,7 @@ class Status():
             display.blit(text_aux1,(self.helth_position,50))
             display.blit(text_aux2,(self.level_position,25))
             aux_h = 20+ (text_aux1.get_height() + text_aux0.get_height())
-            display.blit(pygame.transform.scale(self.animation[0], (80,85)), (self.screenW // 22 , aux_h))
+            display.blit(pygame.transform.scale(self.animation[0], (80,85)), (self.screenW // 24 , aux_h))
         else:
             display.blit(text_aux0,(self.helth_position,33))
             display.blit(text_aux1,(self.helth_position,85))

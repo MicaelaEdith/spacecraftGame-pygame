@@ -126,22 +126,25 @@ class Intro():
         return lines
 
 
-class LevelUp():
-    def __init__(self, screenH):
+class LevelUp:
+    def __init__(self, screenH, screenW):
         self.current_level = None
-        self.image = pygame.image.load("Assets/imgs/cinematica2-LevelUp.png").convert_alpha()
-        self.x = 0
+        original_image = pygame.image.load("Assets/imgs/cinematica2-LevelUp.png").convert_alpha()
+        new_width = int(screenW * 0.7)
+        aspect_ratio = original_image.get_height() / original_image.get_width()
+        new_height = int(new_width * aspect_ratio)
+        self.image = pygame.transform.scale(original_image, (new_width, new_height))
+        
+        self.x = (screenW - new_width) // 2
         self.y = screenH + 300
-        self.speed = -5
+        self.speed = -10
 
     def level_up_animation(self, display):
         self.y += self.speed
         display.blit(self.image, (int(self.x), int(self.y)))
-        
-        if self.y + self.image.get_height() < 0:        #########################################################CHECKTHIS!!!!!
-            print("true animation level")
-            return True  
-        print("false animation level")
+
+        if self.y + self.image.get_height() < 0:
+            return True
         return False
 
 
