@@ -12,6 +12,7 @@ class Player():
         self.speed = 1
         self.health = 5
         self.hd = False
+        self.transition = False
 
         if screenWidth >= 1900 :
             self.hd = True
@@ -65,15 +66,11 @@ class Player():
         if screenWidth > 1920 or screenHeight > 1080:
             self.speed = 3
     
+        self.pick_image = pygame.image.load("Assets/Objects/picker0_1.png").convert()
+        self.pick_image = pygame.transform.scale_by(self.pick_image, 2)
 
-        self.pick_images = [
-            pygame.image.load("Assets/Objects/picker0.png").convert(),
-            pygame.image.load("Assets/Objects/picker1.png").convert()
-        ]
-        self.pick_frame = 0
 
-        for img in self.pick_images:
-            img.set_colorkey([1, 7, 27])
+        self.pick_image.set_colorkey([250, 105, 130])
 
         self.pick_type = 0 
         self.pick_delay = 100 
@@ -121,59 +118,59 @@ class Player():
 
     def movePlayer(self):
         return_speed = 1
-
-        if self.movement['up'] and self.yPosition > self.maxYPosition:
-            self.keyDownCount += 1
-            self.quiet = False
-            if self.yPosition >= self.slowArea-2:
-                self.yPosition -= 4 * self.speed
-            else:
-                self.yPosition -= 1 * self.speed
-
-        if self.movement['down']:
-            self.movement['up'] = False
-            self.quiet = False
-            self.keyDownCount = 0
-            if self.yPosition < self.yPositionInit:
-                self.yPosition += 2
-        elif not self.movement['up'] and self.yPosition < self.yPositionInit:
-            self.quiet = True
-
-        if self.movement['right'] and self.xPosition < self.maxXPosition-2:
-            self.movement['left'] = False
-            self.quiet = False
-            self.xPosition += 4
-            if not self.movement['down']:
+        if not self.transition:
+            if self.movement['up'] and self.yPosition > self.maxYPosition:
                 self.keyDownCount += 1
-        elif not self.movement['right'] and self.xPosition > self.xPositionInit:
-            self.quiet = True
+                self.quiet = False
+                if self.yPosition >= self.slowArea-2:
+                    self.yPosition -= 4 * self.speed
+                else:
+                    self.yPosition -= 1 * self.speed
 
-        if self.movement['left'] and self.xPosition > self.minXPosition-1:
-            self.quiet = False
-            self.movement['right'] = False
-            self.xPosition -= 4
-            if not self.movement['down']:
-                self.keyDownCount += 1
-        elif not self.movement['left'] and self.xPosition < self.xPositionInit-1:
-            self.quiet = True
-        
-        if self.quiet:
-            if self.xPosition < self.xPositionInit:
-                self.xPosition += return_speed
-            elif self.xPosition > self.xPositionInit:
-                self.xPosition -= return_speed
-            if self.yPosition < self.yPositionInit:
-                self.yPosition += return_speed
-            elif self.yPosition > self.yPositionInit:
-                self.yPosition -= return_speed
+            if self.movement['down']:
+                self.movement['up'] = False
+                self.quiet = False
+                self.keyDownCount = 0
+                if self.yPosition < self.yPositionInit:
+                    self.yPosition += 2
+            elif not self.movement['up'] and self.yPosition < self.yPositionInit:
+                self.quiet = True
+
+            if self.movement['right'] and self.xPosition < self.maxXPosition-2:
+                self.movement['left'] = False
+                self.quiet = False
+                self.xPosition += 4
+                if not self.movement['down']:
+                    self.keyDownCount += 1
+            elif not self.movement['right'] and self.xPosition > self.xPositionInit:
+                self.quiet = True
+
+            if self.movement['left'] and self.xPosition > self.minXPosition-1:
+                self.quiet = False
+                self.movement['right'] = False
+                self.xPosition -= 4
+                if not self.movement['down']:
+                    self.keyDownCount += 1
+            elif not self.movement['left'] and self.xPosition < self.xPositionInit-1:
+                self.quiet = True
+            
+            if self.quiet:
+                if self.xPosition < self.xPositionInit:
+                    self.xPosition += return_speed
+                elif self.xPosition > self.xPositionInit:
+                    self.xPosition -= return_speed
+                if self.yPosition < self.yPositionInit:
+                    self.yPosition += return_speed
+                elif self.yPosition > self.yPositionInit:
+                    self.yPosition -= return_speed
 
 
-        for i in range(len(self.rectList)):
-            self.rectList[i].x = self.xPosition
-            self.rectList[i].y = self.yPosition
+            for i in range(len(self.rectList)):
+                self.rectList[i].x = self.xPosition
+                self.rectList[i].y = self.yPosition
 
-        for i in range(len(self.rectList)):
-            self.rectList[i].topleft = (self.xPosition, self.yPosition)
+            for i in range(len(self.rectList)):
+                self.rectList[i].topleft = (self.xPosition, self.yPosition)
 
     def actions(self):
         if self.action['a'] and not self.shoot_type_a:
@@ -185,7 +182,6 @@ class Player():
     def resetActions(self):
         self.action['a'] = False
         self.action['b'] = False
-        self.action['d'] = False
         self.action['c'] = False
             
     def updateShoots(self):
@@ -225,12 +221,13 @@ class Player():
         else:
             self.frame = 2
 
-        if self.movement['left']:
-            self.angle = -8
-        elif self.movement['right']:
-            self.angle = 8
-        else:
-            self.angle = 0
+        if not self.transition:
+            if self.movement['left']:
+                self.angle = -8
+            elif self.movement['right']:
+                self.angle = 8
+            else:
+                self.angle = 0
 
         if self.quiet and not self.movement['up']:
             self.frame = 0
@@ -242,27 +239,35 @@ class Player():
         
 
     def drawPick(self, display):
-        sprite_width = self.animation[0].get_width()
-        rotated_image = pygame.transform.rotate(self.pick_images[int(self.pick_frame)], self.angle)
-        rotated_image_width = rotated_image.get_width()
+        if not self.transition:
+            sprite_width = self.animation[0].get_width()
+            sprite_height = self.animation[0].get_height()
+            yPicker_position = self.yPosition - sprite_height
+            rotated_image = pygame.transform.rotate(self.pick_image, self.angle)
 
-        offset = sprite_width / 2 - rotated_image_width / 2
+            rotated_image_width = rotated_image.get_width()
 
-        if not self.hd:
-            offset = 8
+            
+            offset_l = -(sprite_width / 2)
+            offset_r = sprite_width / 2 - rotated_image_width / 2
+            offset_center = sprite_width
 
-        if self.action['d']:
-            if self.angle > 1:
-                xPosition_current = self.xPosition - 1
-            if self.angle < 1:
-                xPosition_current = self.xPosition + 1
-            elif self.angle == 0:
-                xPosition_current = self.xPosition
+            if not self.hd:
+                offset = 8
 
-            display.blit(rotated_image, [xPosition_current + offset, self.yPosition - 75])
+            if self.action['d']:
+                if self.angle > 1:
+                    xPosition_current = self.xPosition - 1
+                    offset_ok = offset_r
+                if self.angle < 1:
+                    xPosition_current = self.xPosition + 1
+                    offset_ok = offset_l
+                elif self.angle == 0:
+                    offset_ok = offset_center
+                    xPosition_current = self.xPosition
 
-            self.pick_frame -= 0.1
-            self.pick_frame = (self.pick_frame + (self.pick_frame - int(self.pick_frame))) % len(self.pick_images)
+
+                display.blit(rotated_image, [xPosition_current + offset_ok, yPicker_position])
 
 
     def drawExplosion(self, display):        

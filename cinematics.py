@@ -137,7 +137,7 @@ class LevelUp:
         
         self.x = (screenW - new_width) // 2
         self.y = screenH + 300
-        self.speed = -10
+        self.speed = -7
 
     def level_up_animation(self, display):
         self.y += self.speed

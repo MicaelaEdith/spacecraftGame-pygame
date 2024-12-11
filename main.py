@@ -220,101 +220,101 @@ while game:
         pygame.mixer.music.set_volume(count_music)
 
     for event in pygame.event.get():
-
-        if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
-            mouse_pos = pygame.mouse.get_pos()
-            for button in buttons_left:
-                button.is_clicked(mouse_pos, pygame.mouse.get_pressed()[0] if event.type == pygame.MOUSEBUTTONDOWN else False)
-        if event.type == pygame.MOUSEBUTTONUP:
-            mouse_pos = pygame.mouse.get_pos()
-            for button in buttons_left:
-                button.is_clicked(mouse_pos, pygame.mouse.get_pressed()[0])
-        if event.type == pygame.MOUSEBUTTONUP:
-            for button in buttons_left:
-                button.clicked = False
-            player.movement['left'] = False
-            player.movement['right'] = False
-            player.movement['up'] = False
-            player.movement['down'] = False
-
-
-        if event.type == pygame.FINGERDOWN or event.type == pygame.FINGERUP:
-            if full_hd:
-                touch_pos = (event.x * screenWidth - 110, event.y * screenHeight)
-            else:
-                touch_pos = (event.x * screenWidth, event.y * screenHeight)
-            for button in buttons_right:
-                if button.is_clicked(touch_pos, True):
-                    if event.type == pygame.FINGERDOWN:
-                        if button == buttons_right[0]:
-                            player.action['a'] = True
-                        elif button == buttons_right[1]:
-                            player.action['b'] = True
-                        elif button == buttons_right[2]:
-                            player.action['c'] = True
-                        elif button ==  buttons_right[3]:
-                            player.action['d'] = True
-
-                    elif event.type == pygame.FINGERUP:
-                        player.action['a'] = False                        
-                        player.action['b'] = False
-                        player.action['c'] = False
-                        player.action['d'] = False
-                        button.clicked = False
-
-        if start:
-            if event.type == pygame.FINGERDOWN:
-                touch_pos = (event.x * screenWidth, event.y * screenHeight)
-                if buttons_menu[0].is_clicked(touch_pos, True): 
-                    start = not start
-                    options_open = True
-                if buttons_menu[1].is_clicked(touch_pos, True): 
-                    start = not start
-                    options_open = False
-
+        if not transition:
             if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
-                if buttons_menu[0].is_clicked(mouse_pos, pygame.mouse.get_pressed()[0]):
-                    options_open = True
-                    start = not start
-                if buttons_menu[1].is_clicked(mouse_pos, pygame.mouse.get_pressed()[0]):
-                    options_open = False
-                    start = not start
-        if not start:
-            if not options_open:
-                result = main_menu.handle_event(event)
-                if result == 'new_game':
-                    buttons_menu[1].clicked = False
-                    start = True
-                    if music_on:
-                        pygame.mixer.music.set_volume(1)
-                elif result == 'exit':
-                    options_open = False
+                mouse_pos = pygame.mouse.get_pos()
+                for button in buttons_left:
+                    button.is_clicked(mouse_pos, pygame.mouse.get_pressed()[0] if event.type == pygame.MOUSEBUTTONDOWN else False)
+            if event.type == pygame.MOUSEBUTTONUP:
+                mouse_pos = pygame.mouse.get_pos()
+                for button in buttons_left:
+                    button.is_clicked(mouse_pos, pygame.mouse.get_pressed()[0])
+            if event.type == pygame.MOUSEBUTTONUP:
+                for button in buttons_left:
+                    button.clicked = False
+                player.movement['left'] = False
+                player.movement['right'] = False
+                player.movement['up'] = False
+                player.movement['down'] = False
 
-        
-            if options_open:
-                result_option = option_menu.handle_event(event)
-                if result_option == 'language':
-                    if language == 'en':
-                        language = 'es'
-                    else:
-                        language = 'en'
-                elif result_option == 'fx':
-                    sound_on = option_menu.sound_on
-                elif result_option == 'music':
-                    if music_on:
-                        pygame.mixer.music.stop()
-                        music_on = False
-                    elif not music_on:
-                        pygame.mixer.music.play(-1)
-                        music_on = True
-                    music_on = option_menu.music_on
-                elif result_option == 'save':
-                    options_open = False
-                    start = True
-                    buttons_menu[0].clicked = False
 
-                    if music_on:
-                        pygame.mixer.music.set_volume(1)
+            if event.type == pygame.FINGERDOWN or event.type == pygame.FINGERUP:
+                if full_hd:
+                    touch_pos = (event.x * screenWidth - 110, event.y * screenHeight)
+                else:
+                    touch_pos = (event.x * screenWidth, event.y * screenHeight)
+                for button in buttons_right:
+                    if button.is_clicked(touch_pos, True):
+                        if event.type == pygame.FINGERDOWN:
+                            if button == buttons_right[0]:
+                                player.action['a'] = True
+                            elif button == buttons_right[1]:
+                                player.action['b'] = True
+                            elif button == buttons_right[2]:
+                                player.action['c'] = True
+                            elif button ==  buttons_right[3]:
+                                player.action['d'] = True
+
+                        elif event.type == pygame.FINGERUP:
+                            player.action['a'] = False                        
+                            player.action['b'] = False
+                            player.action['c'] = False
+                            player.action['d'] = False
+                            button.clicked = False
+
+            if start:
+                if event.type == pygame.FINGERDOWN:
+                    touch_pos = (event.x * screenWidth, event.y * screenHeight)
+                    if buttons_menu[0].is_clicked(touch_pos, True): 
+                        start = not start
+                        options_open = True
+                    if buttons_menu[1].is_clicked(touch_pos, True): 
+                        start = not start
+                        options_open = False
+
+                if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
+                    if buttons_menu[0].is_clicked(mouse_pos, pygame.mouse.get_pressed()[0]):
+                        options_open = True
+                        start = not start
+                    if buttons_menu[1].is_clicked(mouse_pos, pygame.mouse.get_pressed()[0]):
+                        options_open = False
+                        start = not start
+            if not start:
+                if not options_open:
+                    result = main_menu.handle_event(event)
+                    if result == 'new_game':
+                        buttons_menu[1].clicked = False
+                        start = True
+                        if music_on:
+                            pygame.mixer.music.set_volume(1)
+                    elif result == 'exit':
+                        options_open = False
+
+            
+                if options_open:
+                    result_option = option_menu.handle_event(event)
+                    if result_option == 'language':
+                        if language == 'en':
+                            language = 'es'
+                        else:
+                            language = 'en'
+                    elif result_option == 'fx':
+                        sound_on = option_menu.sound_on
+                    elif result_option == 'music':
+                        if music_on:
+                            pygame.mixer.music.stop()
+                            music_on = False
+                        elif not music_on:
+                            pygame.mixer.music.play(-1)
+                            music_on = True
+                        music_on = option_menu.music_on
+                    elif result_option == 'save':
+                        options_open = False
+                        start = True
+                        buttons_menu[0].clicked = False
+
+                        if music_on:
+                            pygame.mixer.music.set_volume(1)
 
 
     player.movement['up'] = buttons_left[0].clicked
@@ -338,9 +338,11 @@ while game:
         if collision_detected:
             up_level += 1
 
-        if meteorite.metorites_count > 2 :
+        if meteorite.metorites_count > 1 :
             start = False
             transition = True
+            player.transition = True
+            meteorite.fade_out = True
 
     if level == 1:
         #player.movePlayer()
@@ -376,9 +378,9 @@ while game:
         if level == 5:
             pass
 
-        player.drawPlayer(display)
         player.updatePick()
         player.drawPick(display)
+        player.drawPlayer(display)
         player.drawExplosion(display)
         status.updateStatus( player.health ,level)
         status.draw(display, level, player.health, player.score,language)
@@ -402,13 +404,16 @@ while game:
                 option_menu.draw(display, language, music_on, sound_on)
 
         if transition:
+            player.drawPlayer(display)
             if level == 0:
                 meteorite.off = True
+                meteorite.draw(display)
             start = level_up.level_up_animation(display)
             transition = not start
             if not transition:
                 level += 1
-            player.drawPlayer(display)
+                player.transition = False
+
             status.draw(display, level, player.health, player.score,language)
 
             for button in buttons_left + buttons_right + buttons_menu:

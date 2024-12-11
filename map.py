@@ -82,8 +82,10 @@ class Meteorite():
         self.explosion_images = []
         self.scaled_images = []
         self.metorites_count = 0
+        self.fade_out = False
+        self.fade_count = 0
 
-        for i in range(7):
+        for i in range(10):
             self.xPosition = random.randrange(2, int(self.screenW - 95))
             self.yPosition = random.randrange(-1000, -100)
             self.meteoriteRect = self.image.get_rect(topleft=(self.xPosition, self.yPosition))
@@ -111,7 +113,7 @@ class Meteorite():
             xP, yP = position
             meteorite_rect = self.rectList[i]
 
-            if yP < self.screenH + 5:
+            if yP < self.screenH + 5 and not self.fade_out:
                 yP += self.speed
             elif not self.off:
                 self.metorites_count += 1
@@ -121,6 +123,10 @@ class Meteorite():
             self.positionList[i] = [xP, yP]
             meteorite_rect.topleft = (xP, yP)
 
+            if self.fade_out:
+                self.scaled_images[i].set_alpha(255 - self.fade_count)
+                self.fade_count += 0.8
+
         for i, rect in enumerate(self.rectList):
             if self.positionList[i][1] < self.screenH + 5:
                 display.blit(self.scaled_images[i], rect.topleft)
@@ -128,6 +134,7 @@ class Meteorite():
         for i, active in enumerate(self.explosion_active):
             if active:
                 self.draw_explosion(display, i)
+
 
     def check_collisions(self, player):
         if self.off:
