@@ -130,14 +130,14 @@ class LevelUp:
     def __init__(self, screenH, screenW):
         self.current_level = None
         original_image = pygame.image.load("Assets/imgs/cinematica2-LevelUp.png").convert_alpha()
-        new_width = int(screenW * 0.7)
+        new_width = int(screenW * 0.8)
         aspect_ratio = original_image.get_height() / original_image.get_width()
         new_height = int(new_width * aspect_ratio)
         self.image = pygame.transform.scale(original_image, (new_width, new_height))
         
         self.x = (screenW - new_width) // 2
         self.y = screenH + 300
-        self.speed = -7
+        self.speed = -20
 
     def level_up_animation(self, display):
         self.y += self.speed

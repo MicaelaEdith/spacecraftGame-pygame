@@ -9,7 +9,7 @@ class Player():
         self.minXPosition = int(screenWidth / 6)
         self.maxXPosition = int(screenWidth / 6 * 4.5)
         self.score = 21
-        self.speed = 1
+        self.speed = 4
         self.health = 5
         self.hd = False
         self.transition = False
@@ -64,10 +64,10 @@ class Player():
         self.shoots_fired = []
         self.quiet = True
         if screenWidth > 1920 or screenHeight > 1080:
-            self.speed = 3
+            self.speed = 6
     
         self.pick_image = pygame.image.load("Assets/Objects/picker0_1.png").convert()
-        self.pick_image = pygame.transform.scale_by(self.pick_image, 2)
+        self.pick_image = pygame.transform.scale_by(self.pick_image, 1.3)
 
 
         self.pick_image.set_colorkey([250, 105, 130])
@@ -132,7 +132,7 @@ class Player():
                 self.quiet = False
                 self.keyDownCount = 0
                 if self.yPosition < self.yPositionInit:
-                    self.yPosition += 2
+                    self.yPosition += 3
             elif not self.movement['up'] and self.yPosition < self.yPositionInit:
                 self.quiet = True
 
@@ -242,27 +242,29 @@ class Player():
         if not self.transition:
             sprite_width = self.animation[0].get_width()
             sprite_height = self.animation[0].get_height()
-            yPicker_position = self.yPosition - sprite_height
+            yPicker_position = (self.yPosition - sprite_height/1.5)
             rotated_image = pygame.transform.rotate(self.pick_image, self.angle)
 
             rotated_image_width = rotated_image.get_width()
 
             
-            offset_l = -(sprite_width / 2)
-            offset_r = sprite_width / 2 - rotated_image_width / 2
-            offset_center = sprite_width
+            offset_r= -int(sprite_width / 15)
+            offset_l = int(sprite_width / 7)
+#            offset_center = int(sprite_width / 10)
+            offset_center_px = int(sprite_width - rotated_image_width)
+            offset_center = sprite_width - offset_center_px
 
             if not self.hd:
                 offset = 8
 
             if self.action['d']:
-                if self.angle > 1:
+                if self.angle > 1:#right
                     xPosition_current = self.xPosition - 1
                     offset_ok = offset_r
-                if self.angle < 1:
+                if self.angle < 1: #left
                     xPosition_current = self.xPosition + 1
                     offset_ok = offset_l
-                elif self.angle == 0:
+                if self.angle == 0:
                     offset_ok = offset_center
                     xPosition_current = self.xPosition
 

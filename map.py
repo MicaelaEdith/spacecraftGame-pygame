@@ -72,7 +72,7 @@ class Meteorite():
         self.off = False
         self.screenW = int(screenW)
         self.screenH = int(screenH)
-        self.speed = 2
+        self.speed = 5
         self.chromaKey = [250, 105, 130]
         self.image = pygame.image.load("Assets/Objects/meteorite_.png")
         self.image.set_colorkey(self.chromaKey)

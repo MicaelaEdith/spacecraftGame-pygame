@@ -169,7 +169,7 @@ while not game and not intro_flag:
         main_menu.draw(display, language, game)
 
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(30)
 
 count_intro = 0
 while intro_flag:
@@ -200,7 +200,7 @@ while intro_flag:
     
     
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(30)
                 
           
 starts1.speed = 1
@@ -421,5 +421,5 @@ while game:
 
 
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(30)
     
