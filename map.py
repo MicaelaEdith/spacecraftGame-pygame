@@ -168,6 +168,76 @@ class Meteorite():
             self.positionList[index] = [random.randrange(2, int(self.screenW - 95)), random.randrange(-700, -100)]
             self.rectList[index].topleft = self.positionList[index]
 
+class Garbage():
+    def __init__(self, screenW, screenH):
+        self.off = False
+        self.screenW = int(screenW)
+        self.screenH = int(screenH)
+        self.speed = 3
+        self.chromaKey = [250, 105, 130]
+        self.image = pygame.image.load("Assets/Objects/spacial_garbage.png")
+        self.image.set_colorkey(self.chromaKey)
+        self.positionList = []
+        self.rectList = []
+        self.hit_count = [0] * 4
+        self.explosion_images = []
+        self.garbage_count = 0
+        self.fade_out = False
+        self.fade_count = 0
+
+        for i in range(3):
+            self.xPosition = random.randrange(2, int(self.screenW - 95))
+            self.yPosition = random.randrange(-500, -100)
+            self.meteoriteRect = self.image.get_rect(topleft=(self.xPosition, self.yPosition))
+            self.positionList.append([self.xPosition, self.yPosition])
+            self.rectList.append(self.meteoriteRect)
+
+    def draw(self, display):
+        for i, position in enumerate(self.positionList):
+            xP, yP = position
+            meteorite_rect = self.rectList[i]
+
+            if yP < self.screenH + 5 and not self.fade_out:
+                yP += self.speed
+            elif not self.off:
+                self.garbage_count += 1
+                yP = random.randrange(-700, -100)
+                xP = random.randrange(2, int(self.screenW - 95))
+
+            self.positionList[i] = [xP, yP]
+            meteorite_rect.topleft = (xP, yP)
+
+            if self.fade_out:
+                self.scaled_images[i].set_alpha(255 - self.fade_count)
+                self.fade_count += 0.8
+
+        for i, rect in enumerate(self.rectList):
+            if self.positionList[i][1] < self.screenH + 5:
+                display.blit(self.image, rect.topleft)
+
+
+    def check_collisions(self, player):
+        if self.off:
+            return
+
+        for i, rect in enumerate(self.rectList):
+            for shoot in player.shoots:
+                if rect.colliderect(shoot):
+                    player.shoots.remove(shoot)
+                    self.hit_count[i] += 1
+                    if self.hit_count[i] >= 2:
+                        self.explosion_active[i] = True
+                        self.explosion_timer[i] = 0
+                        self.hit_count[i] = 0
+                        self.reset_meteorite(i)
+
+    def reset_meteorite(self, index):
+        if not self.off:
+            self.positionList[index] = [random.randrange(2, int(self.screenW - 95)), random.randrange(-700, -100)]
+            self.rectList[index].topleft = self.positionList[index]
+
+
+
 
 class Status():
     def __init__(self, screenW, screenH, lan):
@@ -211,7 +281,7 @@ class Status():
             text_list = self.text_es
         
         text_aux0 = self.font.render(" "+text_list[0] + " - " + str(points)+" ",True,self.color,(0,0,0))
-        text_aux1 = self.font.render(" "+text_list[1] + " - " + str(health)+" ",True,self.color,(0,0,0))
+        text_aux1 = self.font.render(" "+text_list[1] + " - " + str(health + 1)+" ",True,self.color,(0,0,0))
         text_aux2 = self.font.render(" "+text_list[2] + " - " + str(level)+" ",True,self.color,(0,0,0))
         if not self.full_hd:
             display.blit(text_aux0,(self.helth_position,25))

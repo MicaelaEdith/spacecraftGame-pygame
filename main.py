@@ -4,7 +4,7 @@ import os
 import sys
 import time 
 from playerController import Player
-from map import Deep, Starts, Meteorite, Status
+from map import Deep, Starts, Meteorite, Status, Garbage
 from menu import Menu, MainMenu, OptionsMenu, Button
 from cinematics import Intro, LevelUp
 
@@ -21,7 +21,6 @@ blue = (10, 8, 31)
 blue_light = (4, 19, 40)
 alpha = 5
 level = 0
-up_level = 0
 menus=1
 language = 'es'
 music_on = False
@@ -75,6 +74,7 @@ starts3.white = (105, 80, 80)
 starts3.quiet = True
 
 meteorite = Meteorite(screenWidth, screenHeight)
+garbage = Garbage(screenWidth, screenHeight)
 
 
 if not full_hd:
@@ -329,14 +329,13 @@ while game:
         for player_rect in player.rectList:
             for meteorite_rect in meteorite.rectList:
                 if player_rect.colliderect(meteorite_rect):
+                    player.hits += 1
                     collision_detected = True
                     player.explosion_active = True
                     player.explosion_timer = 0
                     player.xPosition += random.randrange(-4,4)
                     break
 
-        if collision_detected:
-            up_level += 1
 
         if meteorite.metorites_count > 1 :
             start = False
@@ -347,7 +346,6 @@ while game:
     if level == 1:
         #player.movePlayer()
         pass
-
 
 ############################################################################# update
     if start:
@@ -364,7 +362,7 @@ while game:
             meteorite.check_collisions(player)
 
         if level == 1:
-            pass
+            garbage.draw(display)
 
         if level == 2:
             pass

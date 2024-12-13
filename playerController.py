@@ -9,15 +9,17 @@ class Player():
         self.minXPosition = int(screenWidth / 6)
         self.maxXPosition = int(screenWidth / 6 * 4.5)
         self.score = 21
-        self.speed = 4
-        self.health = 5
+        self.speed = 1
+        self.health = 4
         self.hd = False
         self.transition = False
+        self.hits = 0
 
         if screenWidth >= 1900 :
             self.hd = True
 
         self.animation = []
+        self.animation_d = []
 
         if screenWidth > 1920:
             scale_factor = 2.3
@@ -28,19 +30,32 @@ class Player():
         img1 = pygame.image.load("Assets/Player/1.png").convert()
         img2 = pygame.image.load("Assets/Player/2.png").convert()
 
+        img0_d1 = pygame.image.load("Assets/Player/0_d1.png").convert()
+        img0_d2 = pygame.image.load("Assets/Player/0_d2.png").convert()
+        img0_d3 = pygame.image.load("Assets/Player/0_d3.png").convert()
+
         original_size0 = img0.get_size()
         original_size1 = img1.get_size()
         original_size2 = img2.get_size()
         scaled_img0 = pygame.transform.scale(img0, (int(original_size0[0] * scale_factor), int(original_size0[1] * scale_factor)))
         scaled_img1 = pygame.transform.scale(img1, (int(original_size1[0] * scale_factor), int(original_size1[1] * scale_factor)))
         scaled_img2 = pygame.transform.scale(img2, (int(original_size2[0] * scale_factor), int(original_size2[1] * scale_factor)))
+        scaled_img0_d1 = pygame.transform.scale(img0_d1, (int(original_size0[0] * scale_factor), int(original_size0[1] * scale_factor)))
+        scaled_img0_d2 = pygame.transform.scale(img0_d2, (int(original_size1[0] * scale_factor), int(original_size1[1] * scale_factor)))
+        scaled_img0_d3 = pygame.transform.scale(img0_d3, (int(original_size2[0] * scale_factor), int(original_size2[1] * scale_factor)))
 
         self.animation.append(scaled_img0)
         self.animation.append(scaled_img1)
         self.animation.append(scaled_img2)
+        self.animation_d.append(scaled_img0_d1)
+        self.animation_d.append(scaled_img0_d2)
+        self.animation_d.append(scaled_img0_d3)
         self.animation[0].set_colorkey([250, 105, 130])
         self.animation[1].set_colorkey([250, 105, 130])
         self.animation[2].set_colorkey([250, 105, 130])
+        self.animation_d[0].set_colorkey([250, 105, 130])
+        self.animation_d[1].set_colorkey([250, 105, 130])
+        self.animation_d[2].set_colorkey([250, 105, 130])
 
 
         self.original_images = self.animation.copy()
@@ -64,7 +79,7 @@ class Player():
         self.shoots_fired = []
         self.quiet = True
         if screenWidth > 1920 or screenHeight > 1080:
-            self.speed = 6
+            self.speed = 2
     
         self.pick_image = pygame.image.load("Assets/Objects/picker0_1.png").convert()
         self.pick_image = pygame.transform.scale_by(self.pick_image, 1.3)
@@ -117,15 +132,16 @@ class Player():
         self.name = name
 
     def movePlayer(self):
+        speed = self.speed * self.health
         return_speed = 1
         if not self.transition:
             if self.movement['up'] and self.yPosition > self.maxYPosition:
                 self.keyDownCount += 1
                 self.quiet = False
                 if self.yPosition >= self.slowArea-2:
-                    self.yPosition -= 4 * self.speed
+                    self.yPosition -= 3 * (speed + 1)
                 else:
-                    self.yPosition -= 1 * self.speed
+                    self.yPosition -= 1 * (speed + 1)
 
             if self.movement['down']:
                 self.movement['up'] = False
@@ -183,6 +199,18 @@ class Player():
         self.action['a'] = False
         self.action['b'] = False
         self.action['c'] = False
+
+        if self.health > 0 :
+            if self.hits >= 120:
+                self.health -= 1
+            elif self.hits >= 340:
+                self.health -= 1
+            elif self.hits >= 480:
+                self.health -= 1
+
+    def resetHealth(self):
+        self.health = 4
+        self.hits = 0
             
     def updateShoots(self):
         current_time = pygame.time.get_ticks()
@@ -236,7 +264,21 @@ class Player():
         display.blit(rotated_image, [self.xPosition, self.yPosition])
     
         self.drawShoots(display)
+        if self.health < 4:
+            self.drawDemage(display)
+
+    def drawDemage(self, display):
+        image = self.animation_d[0]
+        if self.health < 3 and self.health < 2 :
+            image = self.animation_d[1]
+        elif self.health > 2 :
+            image = self.animation_d[2]
+
         
+        rotated_image = pygame.transform.rotate(image, self.angle)
+        display.blit(rotated_image, [self.xPosition, self.yPosition])
+
+
 
     def drawPick(self, display):
         if not self.transition:
@@ -245,15 +287,10 @@ class Player():
             yPicker_position = (self.yPosition - sprite_height/1.5)
             rotated_image = pygame.transform.rotate(self.pick_image, self.angle)
 
-            rotated_image_width = rotated_image.get_width()
-
             
-            offset_r= -int(sprite_width / 15)
-            offset_l = int(sprite_width / 7)
-#            offset_center = int(sprite_width / 10)
-            offset_center_px = int(sprite_width - rotated_image_width)
-            offset_center = sprite_width - offset_center_px
-
+            offset_r= 15
+            offset_l = 55
+            offset_center = 33
             if not self.hd:
                 offset = 8
 
@@ -268,8 +305,10 @@ class Player():
                     offset_ok = offset_center
                     xPosition_current = self.xPosition
 
-
-                display.blit(rotated_image, [xPosition_current + offset_ok, yPicker_position])
+                if self.hd:
+                    display.blit(rotated_image, [xPosition_current + offset_ok, yPicker_position])
+                else:
+                    display.blit(rotated_image, [xPosition_current + offset, yPicker_position])
 
 
     def drawExplosion(self, display):        
