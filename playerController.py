@@ -14,6 +14,7 @@ class Player():
         self.hd = False
         self.transition = False
         self.hits = 0
+        self.img_picker = None
 
         if screenWidth >= 1900 :
             self.hd = True
@@ -78,6 +79,7 @@ class Player():
         self.shoot_type_b = False
         self.shoots_fired = []
         self.quiet = True
+
         if screenWidth > 1920 or screenHeight > 1080:
             self.speed = 2
     
@@ -157,7 +159,7 @@ class Player():
                 self.quiet = False
                 self.xPosition += 4
                 if not self.movement['down']:
-                    self.keyDownCount += 1
+                    self.keyDownCount += 2
             elif not self.movement['right'] and self.xPosition > self.xPositionInit:
                 self.quiet = True
 
@@ -166,7 +168,7 @@ class Player():
                 self.movement['right'] = False
                 self.xPosition -= 4
                 if not self.movement['down']:
-                    self.keyDownCount += 1
+                    self.keyDownCount += 2
             elif not self.movement['left'] and self.xPosition < self.xPositionInit-1:
                 self.quiet = True
             
@@ -194,19 +196,22 @@ class Player():
         if self.action['b']:
             self.shoot_changed = True
             self.shoot_type = (self.shoot_type + 1) % len(self.shoot_images)
+        if self.action['c']:
+            self.resetHealth()
 
     def resetActions(self):
         self.action['a'] = False
         self.action['b'] = False
         self.action['c'] = False
 
-        if self.health > 0 :
-            if self.hits >= 120:
+        if self.health > 0  and self.hits < 500:
+            if self.hits > 120 and self.health > 3:
                 self.health -= 1
-            elif self.hits >= 340:
+            elif self.hits > 340 and self.health > 2:
                 self.health -= 1
-            elif self.hits >= 480:
+            elif self.hits >= 480 and self.health > 1:
                 self.health -= 1
+        
 
     def resetHealth(self):
         self.health = 4
@@ -267,11 +272,13 @@ class Player():
         if self.health < 4:
             self.drawDemage(display)
 
+
     def drawDemage(self, display):
-        image = self.animation_d[0]
-        if self.health < 3 and self.health < 2 :
+        if self.health == 3:
+            image = self.animation_d[0]
+        elif self.health < 3 and self.health > 1 :
             image = self.animation_d[1]
-        elif self.health > 2 :
+        elif self.health == 1:
             image = self.animation_d[2]
 
         
@@ -282,12 +289,11 @@ class Player():
 
     def drawPick(self, display):
         if not self.transition:
-            sprite_width = self.animation[0].get_width()
             sprite_height = self.animation[0].get_height()
             yPicker_position = (self.yPosition - sprite_height/1.5)
             rotated_image = pygame.transform.rotate(self.pick_image, self.angle)
+            self.img_picker = rotated_image
 
-            
             offset_r= 15
             offset_l = 55
             offset_center = 33

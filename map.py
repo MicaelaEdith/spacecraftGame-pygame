@@ -1,4 +1,5 @@
 import pygame, random
+from playerController import Player
     
 class Deep:
     def __init__(self, width, height, speed, line_length, line_spacing, color):
@@ -151,6 +152,7 @@ class Meteorite():
                         self.hit_count[i] = 0
                         self.reset_meteorite(i)
 
+
     def draw_explosion(self, display, index):
         if self.explosion_active[index]:
             timer = self.explosion_timer[index]
@@ -168,6 +170,7 @@ class Meteorite():
             self.positionList[index] = [random.randrange(2, int(self.screenW - 95)), random.randrange(-700, -100)]
             self.rectList[index].topleft = self.positionList[index]
 
+
 class Garbage():
     def __init__(self, screenW, screenH):
         self.off = False
@@ -179,64 +182,108 @@ class Garbage():
         self.image.set_colorkey(self.chromaKey)
         self.positionList = []
         self.rectList = []
-        self.hit_count = [0] * 4
-        self.explosion_images = []
+        self.hit_count = 0
         self.garbage_count = 0
         self.fade_out = False
         self.fade_count = 0
-
+        self.active_states = []
+        
+        # Se crean 3 objetos de basura
         for i in range(3):
             self.xPosition = random.randrange(2, int(self.screenW - 95))
             self.yPosition = random.randrange(-500, -100)
-            self.meteoriteRect = self.image.get_rect(topleft=(self.xPosition, self.yPosition))
-            self.positionList.append([self.xPosition, self.yPosition])
-            self.rectList.append(self.meteoriteRect)
+            # Asignar x_mov aleatorio por objeto
+            x_mov = random.randrange(-1, 2)  # Genera -1, 0 o 1
+            self.garbageRect = self.image.get_rect(topleft=(self.xPosition, self.yPosition))
+            self.positionList.append([self.xPosition, self.yPosition, x_mov])  # Guardar x_mov junto con la posición
+            self.rectList.append(self.garbageRect)
+            self.active_states.append(True)
+
+        # Ajustar el tamaño de la imagen según el ancho de la pantalla
+        if screenW > 1920:
+            scale_factor = 2.2
+        else:
+            scale_factor = 1.5
+
+        new_size = (int(self.image.get_width() * scale_factor), int(self.image.get_height() * scale_factor))
+        self.scaled_image = pygame.transform.scale(self.image, new_size)
+        self.scaled_image.set_colorkey(self.chromaKey)
 
     def draw(self, display):
+        # Dibuja cada objeto de basura
         for i, position in enumerate(self.positionList):
-            xP, yP = position
-            meteorite_rect = self.rectList[i]
+            xP, yP, x_mov = position  # Obtén también el x_mov de cada objeto
+            garbage_rect = self.rectList[i]
 
-            if yP < self.screenH + 5 and not self.fade_out:
-                yP += self.speed
-            elif not self.off:
-                self.garbage_count += 1
-                yP = random.randrange(-700, -100)
-                xP = random.randrange(2, int(self.screenW - 95))
+            if self.active_states[i]:
+                if yP < self.screenH + 5:
+                    yP += self.speed
+                    xP += x_mov  # Usa x_mov individual para cada objeto
+                else:
+                    xP = random.randrange(100, int(self.screenW - 250))
+                    yP = random.randrange(-500, -100)
+                    x_mov = random.randrange(-1, 2)  # Nuevamente, asigna un nuevo valor aleatorio para x_mov
 
-            self.positionList[i] = [xP, yP]
-            meteorite_rect.topleft = (xP, yP)
+            self.positionList[i] = [xP, yP, x_mov]  # Guarda la nueva posición y el movimiento horizontal
+            garbage_rect.topleft = (xP, yP)
 
-            if self.fade_out:
-                self.scaled_images[i].set_alpha(255 - self.fade_count)
-                self.fade_count += 0.8
-
+        # Dibuja las imágenes de los objetos de basura
         for i, rect in enumerate(self.rectList):
-            if self.positionList[i][1] < self.screenH + 5:
-                display.blit(self.image, rect.topleft)
+            if self.active_states[i]:
+                display.blit(self.scaled_image, rect.topleft)
+
 
 
     def check_collisions(self, player):
-        if self.off:
-            return
+        playerHeight = player.animation[0].get_height()
+        player_rect = player.img_picker.get_rect(topleft=(player.xPosition, player.yPosition - (playerHeight * 0.8)))
 
-        for i, rect in enumerate(self.rectList):
-            for shoot in player.shoots:
-                if rect.colliderect(shoot):
-                    player.shoots.remove(shoot)
-                    self.hit_count[i] += 1
-                    if self.hit_count[i] >= 2:
-                        self.explosion_active[i] = True
-                        self.explosion_timer[i] = 0
-                        self.hit_count[i] = 0
-                        self.reset_meteorite(i)
+        for i, r in enumerate(self.rectList):
+            if self.active_states[i] and r.colliderect(player_rect) and player.action['d']:
+                self.hit_count += 1
+                self.active_states[i] = False
+            elif self.active_states[i] and r.colliderect(player_rect):
+                player.xPosition += random.randrange(-4,4)
 
-    def reset_meteorite(self, index):
+
+    def reset_garbage(self, index):
+        
         if not self.off:
-            self.positionList[index] = [random.randrange(2, int(self.screenW - 95)), random.randrange(-700, -100)]
+            self.positionList[index] = [random.randrange(2, int(self.screenW - 95)), random.randrange(-600, -100)]
             self.rectList[index].topleft = self.positionList[index]
+            self.active_states[index] = True
+
+    def reset_all_garbage(self):
+        for i in range(len(self.positionList)):
+            self.reset_garbage(i)
 
 
+    def update_statebar(self, display):
+        
+        if self.screenW < 1920:
+            margin = 50
+            bar_width = 8
+            bar_height = 90
+        else:
+            margin = 280
+            bar_width = 20
+            bar_height = 250
+            
+        bar_x = self.screenW - margin - bar_width
+        bar_y = self.screenH // 2 - bar_height // 2
+
+        fill_height = int(bar_height * (self.hit_count / 3))
+
+        pygame.draw.rect(display, (160, 23, 208), (bar_x, bar_y, bar_width, bar_height))
+
+        pygame.draw.rect(
+            display,
+            (233, 227, 132),
+            (bar_x, bar_y + bar_height - fill_height, bar_width, fill_height)
+        )  
+
+        return self.hit_count >= 3
+    
 
 
 class Status():

@@ -29,6 +29,7 @@ status = Status(screenWidth, screenHeight,language)
 full_hd = False
 img_button = 'Assets/Buttons/'
 transition = False
+fixer_on = False
 
 
 clock = pygame.time.Clock()
@@ -89,6 +90,7 @@ if not full_hd:
         Button(screenWidth, (screenWidth - 255), screenHeight // 3 * 2, img_button + "action_A.png"),
         Button(screenWidth, (screenWidth - 160), screenHeight // 3 * 2, img_button + "action_B.png"),
         Button(screenWidth, (screenWidth - 255), screenHeight // 3 * 2 + 85, img_button + "action_C.png"),
+        Button(screenWidth, (screenWidth - 255), screenHeight // 3 * 2 + 85, img_button + "action_C_off.png"),
         Button(screenWidth, (screenWidth - 160), screenHeight // 3 * 2 + 85, img_button + "action_D.png"),
     ]
 
@@ -98,16 +100,17 @@ if not full_hd:
     ]
 else:
     buttons_left = [
-        Button(screenWidth, 160, screenHeight // 3 * 2.25 - 90 , img_button + "up_arrow.png"),
-        Button(screenWidth, 160, screenHeight // 3 * 2.25 + 90, img_button + "down_arrow.png"),
-        Button(screenWidth, 66, screenHeight // 3 * 2.25, img_button + "left_arrow.png"),
-        Button(screenWidth, 250, screenHeight // 3 * 2.25, img_button + "right_arrow.png"),
+        Button(screenWidth, 160, screenHeight // 3 * 2.1 - 90 , img_button + "up_arrow.png"),
+        Button(screenWidth, 160, screenHeight // 3 * 2.1 + 90, img_button + "down_arrow.png"),
+        Button(screenWidth, 66, screenHeight // 3 * 2.1, img_button + "left_arrow.png"),
+        Button(screenWidth, 250, screenHeight // 3 * 2.1, img_button + "right_arrow.png"),
     ]
 
     buttons_right = [
         Button(screenWidth, screenWidth - 550, screenHeight // 3 * 2, img_button + "action_A.png"),
         Button(screenWidth, screenWidth - 370, screenHeight // 3 * 2, img_button + "action_B.png"),
         Button(screenWidth, screenWidth - 550, screenHeight // 3 * 2 + 160, img_button + "action_C.png"),
+        Button(screenWidth, screenWidth - 550, screenHeight // 3 * 2 + 160, img_button + "action_C_off.png"),
         Button(screenWidth, screenWidth - 370, screenHeight // 3 * 2 + 160, img_button + "action_D.png"),
     ]
 
@@ -248,11 +251,16 @@ while game:
                         if event.type == pygame.FINGERDOWN:
                             if button == buttons_right[0]:
                                 player.action['a'] = True
+
                             elif button == buttons_right[1]:
                                 player.action['b'] = True
-                            elif button == buttons_right[2]:
+
+                            elif button == buttons_right[2] and fixer_on:
                                 player.action['c'] = True
-                            elif button ==  buttons_right[3]:
+                                fixer_on = False
+                                garbage.hit_count = 0
+
+                            elif button ==  buttons_right[4]:
                                 player.action['d'] = True
 
                         elif event.type == pygame.FINGERUP:
@@ -336,15 +344,13 @@ while game:
                     player.xPosition += random.randrange(-4,4)
                     break
 
-
-        if meteorite.metorites_count > 1 :
+        if meteorite.metorites_count > 2 :
             start = False
             transition = True
             player.transition = True
             meteorite.fade_out = True
 
     if level == 1:
-        #player.movePlayer()
         pass
 
 ############################################################################# update
@@ -357,12 +363,16 @@ while game:
         starts2.drawStarts(display)
         starts3.drawStarts(display)
 
+        player.updatePick()
+        player.drawPick(display)
+
         if level == 0:
             meteorite.draw(display)
             meteorite.check_collisions(player)
 
         if level == 1:
             garbage.draw(display)
+            garbage.check_collisions(player)
 
         if level == 2:
             pass
@@ -376,17 +386,23 @@ while game:
         if level == 5:
             pass
 
-        player.updatePick()
-        player.drawPick(display)
+
         player.drawPlayer(display)
         player.drawExplosion(display)
         status.updateStatus( player.health ,level)
         status.draw(display, level, player.health, player.score,language)
         player.resetActions()
 
+        if garbage.update_statebar(display): fixer_on = True
 
         for button in buttons_left + buttons_right + buttons_menu:
             button.draw(display)        
+
+        if fixer_on:
+            buttons_right[2].draw(display)
+        else:
+            buttons_right[3].draw(display)
+
     
     else:
         if music_on:
