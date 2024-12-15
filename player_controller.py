@@ -15,6 +15,7 @@ class Player():
         self.transition = False
         self.hits = 0
         self.img_picker = None
+        self.bullets = []
 
         if screenWidth >= 1900 :
             self.hd = True
@@ -232,6 +233,10 @@ class Player():
             shoot['rect'].y -= 11 if shoot['type'] == 0 else 14
 
         self.shoots_fired = [shoot for shoot in self.shoots_fired if shoot['rect'].bottom > 0]
+        
+    def drawShoots(self, display):
+        for shoot in self.shoots_fired:
+            display.blit(self.shoot_images[shoot['type']], shoot['rect'].topleft)
 
     def updatePick(self):
         current_time = pygame.time.get_ticks()
@@ -242,9 +247,6 @@ class Player():
         else:
             self.pick_active = False
 
-    def drawShoots(self, display):
-        for shoot in self.shoots_fired:
-            display.blit(self.shoot_images[shoot['type']], shoot['rect'].topleft)
 
     def drawPlayer(self, display):
         if self.keyDownCount == 0:

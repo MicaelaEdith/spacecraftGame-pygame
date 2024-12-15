@@ -1,5 +1,5 @@
 import pygame, random
-from playerController import Player
+from player_controller import Player
     
 class Deep:
     def __init__(self, width, height, speed, line_length, line_spacing, color):
@@ -172,10 +172,11 @@ class Meteorite():
 
 
 class Garbage():
-    def __init__(self, screenW, screenH):
+    def __init__(self, screenW, screenH, amount):
         self.off = False
         self.screenW = int(screenW)
         self.screenH = int(screenH)
+        self.amount = amount
         self.speed = 3
         self.chromaKey = [250, 105, 130]
         self.image = pygame.image.load("Assets/Objects/spacial_garbage.png")
@@ -188,18 +189,17 @@ class Garbage():
         self.fade_count = 0
         self.active_states = []
         
-        # Se crean 3 objetos de basura
-        for i in range(3):
+
+        for i in range(amount):
             self.xPosition = random.randrange(2, int(self.screenW - 95))
             self.yPosition = random.randrange(-500, -100)
-            # Asignar x_mov aleatorio por objeto
-            x_mov = random.randrange(-1, 2)  # Genera -1, 0 o 1
+
+            x_mov = random.randrange(-1, 2)
             self.garbageRect = self.image.get_rect(topleft=(self.xPosition, self.yPosition))
-            self.positionList.append([self.xPosition, self.yPosition, x_mov])  # Guardar x_mov junto con la posición
+            self.positionList.append([self.xPosition, self.yPosition, x_mov])
             self.rectList.append(self.garbageRect)
             self.active_states.append(True)
 
-        # Ajustar el tamaño de la imagen según el ancho de la pantalla
         if screenW > 1920:
             scale_factor = 2.2
         else:
@@ -210,28 +210,25 @@ class Garbage():
         self.scaled_image.set_colorkey(self.chromaKey)
 
     def draw(self, display):
-        # Dibuja cada objeto de basura
         for i, position in enumerate(self.positionList):
-            xP, yP, x_mov = position  # Obtén también el x_mov de cada objeto
+            xP, yP, x_mov = position
             garbage_rect = self.rectList[i]
 
             if self.active_states[i]:
                 if yP < self.screenH + 5:
                     yP += self.speed
-                    xP += x_mov  # Usa x_mov individual para cada objeto
+                    xP += x_mov
                 else:
                     xP = random.randrange(100, int(self.screenW - 250))
                     yP = random.randrange(-500, -100)
-                    x_mov = random.randrange(-1, 2)  # Nuevamente, asigna un nuevo valor aleatorio para x_mov
+                    x_mov = random.randrange(-1, 2)
 
-            self.positionList[i] = [xP, yP, x_mov]  # Guarda la nueva posición y el movimiento horizontal
+            self.positionList[i] = [xP, yP, x_mov]
             garbage_rect.topleft = (xP, yP)
 
-        # Dibuja las imágenes de los objetos de basura
         for i, rect in enumerate(self.rectList):
             if self.active_states[i]:
                 display.blit(self.scaled_image, rect.topleft)
-
 
 
     def check_collisions(self, player):
@@ -244,7 +241,6 @@ class Garbage():
                 self.active_states[i] = False
             elif self.active_states[i] and r.colliderect(player_rect):
                 player.xPosition += random.randrange(-4,4)
-
 
     def reset_garbage(self, index):
         

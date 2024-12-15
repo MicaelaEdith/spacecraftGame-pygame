@@ -3,10 +3,11 @@ import random
 import os
 import sys
 import time 
-from playerController import Player
+from player_controller import Player
 from map import Deep, Starts, Meteorite, Status, Garbage
 from menu import Menu, MainMenu, OptionsMenu, Button
 from cinematics import Intro, LevelUp
+from first_enemy_controller import Enemy
 
 pygame.init()
 
@@ -75,7 +76,8 @@ starts3.white = (105, 80, 80)
 starts3.quiet = True
 
 meteorite = Meteorite(screenWidth, screenHeight)
-garbage = Garbage(screenWidth, screenHeight)
+garbage = Garbage(screenWidth, screenHeight, 4)
+enemy_1 = Enemy(display, 12)
 
 
 if not full_hd:
@@ -257,6 +259,7 @@ while game:
 
                             elif button == buttons_right[2] and fixer_on:
                                 player.action['c'] = True
+                                time.sleep(0.4)
                                 fixer_on = False
                                 garbage.hit_count = 0
 
@@ -350,8 +353,58 @@ while game:
             player.transition = True
             meteorite.fade_out = True
 
+######################################################################## LEVEL 1 ###############################################
+
     if level == 1:
         pass
+
+
+
+######################################################################## LEVEL 2 ###############################################
+
+
+    if level == 2 or level == 0:
+        for player_rect in player.rectList:
+            for bullet in enemy_1.bullets:
+                bullet_rect = pygame.Rect(bullet["x"], bullet["y"], enemy_1.shoot_radius * 2, enemy_1.shoot_radius * 2)
+                if player_rect.colliderect(bullet_rect):
+                    player.hits += 1
+                    collision_detected = True
+                    player.explosion_active = True
+                    player.explosion_timer = 0
+                    player.xPosition += random.randrange(-4,4)
+                    enemy_1.bullets.remove(bullet)
+                    break
+
+        for player_rect in player.rectList:
+            for enemy_rect in enemy_1.rect_list:
+                if player_rect.colliderect(enemy_rect):
+                    player.hits += 1
+                    collision_detected = True
+                    player.explosion_active = True
+                    player.explosion_timer = 0
+                    player.xPosition += random.randrange(-4,4)
+                    break
+
+        for bullet in player.shoots_fired[:]:
+            bullet_rect = bullet['rect'] 
+
+            for enemy_rect in enemy_1.rect_list[:]:
+                if bullet_rect.colliderect(enemy_rect):
+                    
+                    if bullet['type'] == "type_a" and random.randint(1, 3) == 1:
+                        enemy_1.destroy_enemy(enemy_rect)
+                        player.shoots_fired.remove(bullet)
+                        break
+                    elif bullet['type'] == "type_b" and random.randint(1, 2) == 1:
+                        enemy_1.destroy_enemy(enemy_rect)
+                        player.shoots_fired.remove(bullet)
+                        break
+                    elif bullet['type'] == "type_c":
+                        enemy_1.destroy_enemy(enemy_rect)
+                        player.shoots_fired.remove(bullet)
+                        break
+
 
 ############################################################################# update
     if start:
@@ -367,23 +420,28 @@ while game:
         player.drawPick(display)
 
         if level == 0:
-            meteorite.draw(display)
-            meteorite.check_collisions(player)
+            #meteorite.draw(display)
+            #meteorite.check_collisions(player)
+            enemy_1.draw()
 
         if level == 1:
             garbage.draw(display)
             garbage.check_collisions(player)
 
         if level == 2:
+            #enemy_1.draw()
             pass
 
         if level == 3:
+            # meteorites & garbage
             pass
 
         if level == 4:
+            #2nd enemy
             pass
 
         if level == 5:
+            #meteorites, garbage and enemy
             pass
 
 
