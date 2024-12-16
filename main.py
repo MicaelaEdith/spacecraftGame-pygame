@@ -417,11 +417,13 @@ while game:
                         enemy_1.destroy_enemy(enemy_rect)
                         break
 
-        if enemy_1.rect_list < 1:
+        if len(enemy_1.rect_list) < 1:
             start = False
             transition = True
             player.transition = True
             chad_text = ''
+            #player.shoots_fired.clear()
+            #player.action['a'] = False    #check
 
 
 ############################################################################# UPDATE
