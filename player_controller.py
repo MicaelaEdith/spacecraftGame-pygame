@@ -78,6 +78,7 @@ class Player():
         self.explosion_images = []
         self.shoot_type_a = False
         self.shoot_type_b = False
+        self.shoot_type_c = False
         self.shoots_fired = []
         self.quiet = True
 
@@ -205,24 +206,28 @@ class Player():
         self.action['b'] = False
         self.action['c'] = False
 
-        if self.health > 0  and self.hits < 500:
+        if self.health > 0  and self.hits < 700:
             if self.hits > 120 and self.health > 3:
                 self.health -= 1
             elif self.hits > 340 and self.health > 2:
                 self.health -= 1
             elif self.hits >= 480 and self.health > 1:
                 self.health -= 1
-        
+            elif self.hits >480:
+                self.health -= 1     
 
     def resetHealth(self):
         self.health = 4
         self.hits = 0
-            
+                
     def updateShoots(self):
         current_time = pygame.time.get_ticks()
+
         if self.action['a'] and not self.shoot_type_a:
             if current_time - self.last_shoot_time > self.shoot_delay:
-                shoot_rect = self.shoot_images[self.shoot_type].get_rect(midbottom=(self.xPosition + self.rect0.width // 2, self.yPosition))
+                shoot_rect = self.shoot_images[self.shoot_type].get_rect(
+                    midbottom=(self.xPosition + self.rect0.width // 2, self.yPosition)
+                )
                 self.shoots_fired.append({'rect': shoot_rect, 'type': self.shoot_type})
                 self.last_shoot_time = current_time
                 self.shoot_type_a = True
@@ -230,10 +235,15 @@ class Player():
             self.shoot_type_a = False
 
         for shoot in self.shoots_fired:
-            shoot['rect'].y -= 11 if shoot['type'] == 0 else 14
+            if shoot['type'] == 0:
+                shoot['rect'].y -= 11
+            elif shoot['type'] == 1:
+                shoot['rect'].y -= 14
+            elif shoot['type'] == 2:
+                shoot['rect'].y -= 8
 
         self.shoots_fired = [shoot for shoot in self.shoots_fired if shoot['rect'].bottom > 0]
-        
+
     def drawShoots(self, display):
         for shoot in self.shoots_fired:
             display.blit(self.shoot_images[shoot['type']], shoot['rect'].topleft)
@@ -328,3 +338,7 @@ class Player():
                     self.explosion_frame = 0
             if int(self.explosion_frame) < len(self.explosion_images) and (self.explosion_frame-int(self.explosion_frame)==0):
                 display.blit(self.explosion_images[int(self.explosion_frame)], (self.xPosition-30, self.yPosition-25))
+
+
+    def gameOver(self):
+        pass

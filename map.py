@@ -253,32 +253,6 @@ class Garbage():
         for i in range(len(self.positionList)):
             self.reset_garbage(i)
 
-
-    def update_statebar(self, display):
-        
-        if self.screenW < 1920:
-            margin = 50
-            bar_width = 8
-            bar_height = 90
-        else:
-            margin = 280
-            bar_width = 20
-            bar_height = 250
-            
-        bar_x = self.screenW - margin - bar_width
-        bar_y = self.screenH // 2 - bar_height // 2
-
-        fill_height = int(bar_height * (self.hit_count / 3))
-
-        pygame.draw.rect(display, (160, 23, 208), (bar_x, bar_y, bar_width, bar_height))
-
-        pygame.draw.rect(
-            display,
-            (233, 227, 132),
-            (bar_x, bar_y + bar_height - fill_height, bar_width, fill_height)
-        )  
-
-        return self.hit_count >= 3
     
 
 

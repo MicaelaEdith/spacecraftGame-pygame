@@ -8,6 +8,7 @@ from map import Deep, Starts, Meteorite, Status, Garbage
 from menu import Menu, MainMenu, OptionsMenu, Button
 from cinematics import Intro, LevelUp
 from first_enemy_controller import Enemy
+from helper import explosion, update_statebar
 
 pygame.init()
 
@@ -31,6 +32,8 @@ full_hd = False
 img_button = 'Assets/Buttons/'
 transition = False
 fixer_on = False
+explosion_on = False
+bar_count = 0
 
 
 clock = pygame.time.Clock()
@@ -75,9 +78,12 @@ starts3.speed = .1
 starts3.white = (105, 80, 80)
 starts3.quiet = True
 
+
 meteorite = Meteorite(screenWidth, screenHeight)
 garbage = Garbage(screenWidth, screenHeight, 4)
+garbage_plus = Garbage(screenWidth, screenHeight, 1)
 enemy_1 = Enemy(display, 12)
+enemy_r = None
 
 
 if not full_hd:
@@ -335,7 +341,7 @@ while game:
 
 
 ######################################################################## LEVEL 0 ###############################################
-    if level == 0:
+    if level == 0 :
         collision_detected = False
         for player_rect in player.rectList:
             for meteorite_rect in meteorite.rectList:
@@ -347,7 +353,7 @@ while game:
                     player.xPosition += random.randrange(-4,4)
                     break
 
-        if meteorite.metorites_count > 2 :
+        if meteorite.metorites_count > 6 :
             start = False
             transition = True
             player.transition = True
@@ -355,15 +361,13 @@ while game:
 
 ######################################################################## LEVEL 1 ###############################################
 
-    if level == 1:
-        pass
-
-
-
+    if level == 1 :
+        if fixer_on :
+            level += 1
+        bar_count = garbage.hit_count
+        
 ######################################################################## LEVEL 2 ###############################################
-
-
-    if level == 2 or level == 0:
+    if level == 2 :
         for player_rect in player.rectList:
             for bullet in enemy_1.bullets:
                 bullet_rect = pygame.Rect(bullet["x"], bullet["y"], enemy_1.shoot_radius * 2, enemy_1.shoot_radius * 2)
@@ -391,19 +395,20 @@ while game:
 
             for enemy_rect in enemy_1.rect_list[:]:
                 if bullet_rect.colliderect(enemy_rect):
-                    
-                    if bullet['type'] == "type_a" and random.randint(1, 3) == 1:
-                        enemy_1.destroy_enemy(enemy_rect)
+                    if bullet:
                         player.shoots_fired.remove(bullet)
-                        break
-                    elif bullet['type'] == "type_b" and random.randint(1, 2) == 1:
+                        explosion_on = True
+                        enemy_r = enemy_rect
+                    if player.shoot_type_a and random.randint(0, 1) == 0:
                         enemy_1.destroy_enemy(enemy_rect)
-                        player.shoots_fired.remove(bullet)
                         break
-                    elif bullet['type'] == "type_c":
+                    elif player.shoot_type_b and random.randint(0, 2) <= 1:
                         enemy_1.destroy_enemy(enemy_rect)
-                        player.shoots_fired.remove(bullet)
                         break
+                    elif player.shoot_type_c:
+                        enemy_1.destroy_enemy(enemy_rect)
+                        break
+
 
 
 ############################################################################# update
@@ -420,17 +425,18 @@ while game:
         player.drawPick(display)
 
         if level == 0:
-            #meteorite.draw(display)
-            #meteorite.check_collisions(player)
-            enemy_1.draw()
+            meteorite.draw(display)
+            meteorite.check_collisions(player)
 
         if level == 1:
             garbage.draw(display)
             garbage.check_collisions(player)
 
         if level == 2:
-            #enemy_1.draw()
-            pass
+            enemy_1.draw()
+            if explosion_on:
+                explosion(display, enemy_r)
+                explosion_on = False
 
         if level == 3:
             # meteorites & garbage
@@ -451,7 +457,7 @@ while game:
         status.draw(display, level, player.health, player.score,language)
         player.resetActions()
 
-        if garbage.update_statebar(display): fixer_on = True
+        if update_statebar(display, bar_count, screenWidth, screenHeight): fixer_on = True
 
         for button in buttons_left + buttons_right + buttons_menu:
             button.draw(display)        
