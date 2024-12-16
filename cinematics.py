@@ -128,6 +128,7 @@ class Intro():
 
 class LevelUp:
     def __init__(self, screenH, screenW):
+        self.screenH = screenH
         self.current_level = None
         original_image = pygame.image.load("Assets/imgs/cinematica2-LevelUp.png").convert_alpha()
         new_width = int(screenW * 0.8)
@@ -144,6 +145,7 @@ class LevelUp:
         display.blit(self.image, (int(self.x), int(self.y)))
 
         if self.y + self.image.get_height() < 0:
+            self.y = self.screenH + 300
             return True
         return False
 

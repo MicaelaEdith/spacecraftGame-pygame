@@ -4,7 +4,7 @@ import os
 import sys
 import time 
 from player_controller import Player
-from map import Deep, Starts, Meteorite, Status, Garbage
+from map import Starts, Meteorite, Garbage, Status, Chad
 from menu import Menu, MainMenu, OptionsMenu, Button
 from cinematics import Intro, LevelUp
 from first_enemy_controller import Enemy
@@ -34,6 +34,7 @@ transition = False
 fixer_on = False
 explosion_on = False
 bar_count = 0
+chad_text = ''
 
 
 clock = pygame.time.Clock()
@@ -67,6 +68,7 @@ level_up = LevelUp (screenHeight, screenWidth)
 xPosition = int((screenWidth / 2) - 60)
 yPosition = int(screenHeight / 100 * 80 + 40)
 player = Player(xPosition, yPosition, screenHeight, screenWidth)
+chad = Chad(screenWidth, screenHeight, language)
 starts1 = Starts(screenWidth, screenHeight)
 starts1.speed = .4
 starts2 = Starts(screenWidth, screenHeight)
@@ -82,7 +84,8 @@ starts3.quiet = True
 meteorite = Meteorite(screenWidth, screenHeight)
 garbage = Garbage(screenWidth, screenHeight, 4)
 garbage_plus = Garbage(screenWidth, screenHeight, 1)
-enemy_1 = Enemy(display, 12)
+garbage_plus_2 = Garbage(screenWidth, screenHeight, 2)
+enemy_1 = Enemy(display, 15)
 enemy_r = None
 
 
@@ -267,7 +270,7 @@ while game:
                                 player.action['c'] = True
                                 time.sleep(0.4)
                                 fixer_on = False
-                                garbage.hit_count = 0
+                                bar_count = 0
 
                             elif button ==  buttons_right[4]:
                                 player.action['d'] = True
@@ -353,7 +356,7 @@ while game:
                     player.xPosition += random.randrange(-4,4)
                     break
 
-        if meteorite.metorites_count > 6 :
+        if meteorite.metorites_count > 1 :
             start = False
             transition = True
             player.transition = True
@@ -362,8 +365,13 @@ while game:
 ######################################################################## LEVEL 1 ###############################################
 
     if level == 1 :
-        if fixer_on :
-            level += 1
+        if player.action['c']:
+            start = False
+            transition = True
+            player.transition = True
+            chad_text = ''
+            garbage.hit_count = 0
+
         bar_count = garbage.hit_count
         
 ######################################################################## LEVEL 2 ###############################################
@@ -409,9 +417,14 @@ while game:
                         enemy_1.destroy_enemy(enemy_rect)
                         break
 
+        if enemy_1.rect_list < 1:
+            start = False
+            transition = True
+            player.transition = True
+            chad_text = ''
 
 
-############################################################################# update
+############################################################################# UPDATE
     if start:
         player.movePlayer()
         player.updateShoots()
@@ -427,16 +440,22 @@ while game:
         if level == 0:
             meteorite.draw(display)
             meteorite.check_collisions(player)
+            
 
         if level == 1:
+            chad_text = 'Hey Guapo! Podemos usar esa basura espacial para arreglar la nave!'
             garbage.draw(display)
             garbage.check_collisions(player)
+            bar_count = garbage.hit_count
+            if ( bar_count > 2):
+                chad_text = 'Ya tenemos suficiente chatarra espacial, ahora usa la llave de tuercas.'
 
         if level == 2:
             enemy_1.draw()
             if explosion_on:
                 explosion(display, enemy_r)
                 explosion_on = False
+
 
         if level == 3:
             # meteorites & garbage
@@ -454,8 +473,20 @@ while game:
         player.drawPlayer(display)
         player.drawExplosion(display)
         status.updateStatus( player.health ,level)
+        chad.draw(display, chad_text)
         status.draw(display, level, player.health, player.score,language)
         player.resetActions()
+
+        if player.health < 3 and level > 1 and not fixer_on:
+            if bar_count < 1:            
+                bar_count = garbage_plus.hit_count
+                garbage_plus.draw(display)
+                garbage_plus.check_collisions(player)
+            else:
+                bar_count = garbage_plus_2.hit_count
+                garbage_plus_2.draw(display)
+                garbage_plus_2.check_collisions(player)
+
 
         if update_statebar(display, bar_count, screenWidth, screenHeight): fixer_on = True
 
@@ -493,6 +524,8 @@ while game:
                 player.transition = False
 
             status.draw(display, level, player.health, player.score,language)
+            update_statebar(display, bar_count, screenWidth, screenHeight)
+            chad.draw(display, '')
 
             for button in buttons_left + buttons_right + buttons_menu:
                 button.draw(display)   

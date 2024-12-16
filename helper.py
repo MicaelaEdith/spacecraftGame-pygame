@@ -23,7 +23,10 @@ def explosion(display, rect):
             explosion_frame = 0
 
     if int(explosion_frame) < len(explosion_images) and (explosion_frame - int(explosion_frame) == 0):
-        display.blit(explosion_images[int(explosion_frame)], (xPosition - 30, yPosition - 25))
+        try:
+            display.blit(explosion_images[int(explosion_frame)], (xPosition - 30, yPosition - 25))
+        except:
+            pass
 
 
 def update_statebar(display, hit_count, screenWidth, screenHeight):

@@ -1,39 +1,4 @@
-import pygame, random
-from player_controller import Player
-    
-class Deep:
-    def __init__(self, width, height, speed, line_length, line_spacing, color):
-        self.width = width
-        self.height = height
-        self.color = color + (128,)
-        self.speed = speed
-        self.line_length = line_length
-        self.line_spacing = line_spacing
-        self.lines = []
-        self.generate_lines()
-
-    def generate_lines(self):
-        self.lines.clear()
-        x = 0
-        y = 0
-        while y < self.height:
-            self.lines.append((x, y, self.line_length))
-            y += self.line_spacing
-            x -= 3
-
-    def move_lines(self):
-        for i in range(len(self.lines)):
-            line = list(self.lines[i])
-            line[0] += self.speed
-            if line[0] > self.width:
-                line[0] -= self.width + self.line_length - random.randrange(-500, 500)
-            self.lines[i] = tuple(line)
-
-    def drawDeep(self, display):
-        for line in self.lines:
-            pygame.draw.line(display, self.color, (line[0], line[1]), (line[0] + line[2], line[1]), 3)
-
-        self.move_lines()
+import pygame, random    
 
 class Starts():
     def __init__(self, screenW, screenH):
@@ -253,8 +218,6 @@ class Garbage():
         for i in range(len(self.positionList)):
             self.reset_garbage(i)
 
-    
-
 
 class Status():
     def __init__(self, screenW, screenH, lan):
@@ -271,13 +234,6 @@ class Status():
         self.health = 0
         self.level = 0
         self.full_hd = False
-        self.animation = []
-        self.animation.append(pygame.image.load("Assets/Buttons/Chad0.png"))
-        self.animation.append(pygame.image.load("Assets/Buttons/Chad1.png"))
-        self.animation.append(pygame.image.load("Assets/Buttons/Chad2.png"))
-        self.animation[0].set_colorkey([71, 60, 120])
-        self.animation[1].set_colorkey([71, 60, 120])
-        self.animation[2].set_colorkey([71, 60, 120])
 
         if screenW > 1920 or screenH > 1080:
             self.full_hd = True
@@ -304,12 +260,99 @@ class Status():
             display.blit(text_aux0,(self.helth_position,25))
             display.blit(text_aux1,(self.helth_position,50))
             display.blit(text_aux2,(self.level_position,25))
-            aux_h = 20+ (text_aux1.get_height() + text_aux0.get_height())
-            display.blit(pygame.transform.scale(self.animation[0], (80,85)), (self.screenW // 24 , aux_h))
         else:
             display.blit(text_aux0,(self.helth_position,33))
             display.blit(text_aux1,(self.helth_position,85))
             display.blit(text_aux2,(self.level_position,33))
+
+
+class Chad():
+    def __init__(self, screenW, screenH, lan):
+        self.screenW = int(screenW)
+        self.screenH = int(screenH)
+        self.text = ''
+        self.font_path = 'Assets/Fonts/KodeMono-VariableFont_wght.ttf'
+        self.font = pygame.font.Font(self.font_path,25)
+        self.color = (160, 23, 208)
+        self.lan_on = lan
+        self.full_hd = False
+        self.animation = []
+        self.animation.append(pygame.image.load("Assets/Buttons/Chad0.png"))
+        self.animation.append(pygame.image.load("Assets/Buttons/Chad1.png"))
+        self.animation.append(pygame.image.load("Assets/Buttons/Chad2.png"))
+        self.animation[0].set_colorkey([71, 60, 120])
+        self.animation[1].set_colorkey([71, 60, 120])
+        self.animation[2].set_colorkey([71, 60, 120])
+        self.text_timer = 0
+        self.animation_index = 0
+        self.animation_timer = 0
+        self.animation_speed = 200 
+
+        if screenW > 1920 or screenH > 1080:
+            self.full_hd = True
+            self.level_position = self.screenW - 480
+            self.font = pygame.font.Font(self.font_path, 40)
+        
+
+    def draw(self, display, text):
+        current_time = pygame.time.get_ticks()
+
+        if current_time > self.animation_timer:
+            self.animation_index = (self.animation_index + 1) % len(self.animation)
+            self.animation_timer = current_time + self.animation_speed
+
+        current_animation = pygame.transform.scale(
+            self.animation[self.animation_index],
+            (80, 85) if not self.full_hd else (90, 95)
+        )
+
+        if text != self.text:
+            self.text = text
+            self.text_timer = current_time + 5000
+
+        if text != '' and current_time < self.text_timer:
+            max_width = self.screenW * 0.5
+
+            words = text.split(' ')
+            lines = []
+            current_line = ''
+
+            for word in words:
+                test_line = current_line + ' ' + word if current_line else word
+                test_text = self.font.render(test_line, True, (255, 255, 255))
+                if test_text.get_width() <= max_width:
+                    current_line = test_line
+                else:
+                    if current_line:
+                        lines.append(current_line)
+                    current_line = word
+
+            if current_line:
+                lines.append(current_line)
+
+            rect_width = self.screenW
+            rect_height = self.screenH * 0.17
+            rect_surface = pygame.Surface((rect_width, rect_height))
+            rect_surface.set_alpha(100)
+            rect_surface.fill((0, 0, 0))
+            display.blit(rect_surface, (0, 0))
+
+            y_offset = rect_height // 2 - len(lines) * self.font.get_height() // 2 + 20
+            for line in lines:
+                text_aux0 = self.font.render(line, True, (255, 255, 255))
+                text_rect = text_aux0.get_rect(center=(self.screenW // 2, y_offset))
+                display.blit(text_aux0, text_rect)
+                y_offset += self.font.get_height() 
+
+            display.blit(current_animation, (self.screenW // 24, self.screenH // 8))
+
+        if text == '' or current_time > self.text_timer:
+            if not self.full_hd:
+                display.blit(pygame.transform.scale(self.animation[2], (80, 85)), (self.screenW // 24, self.screenH // 8))
+            else:
+                display.blit(pygame.transform.scale(self.animation[2], (90, 95)), (self.screenW // 24, self.screenH // 8))
+
+
 
 """
 class PlatformSpeed():

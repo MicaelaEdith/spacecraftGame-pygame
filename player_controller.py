@@ -16,6 +16,7 @@ class Player():
         self.hits = 0
         self.img_picker = None
         self.bullets = []
+        self.chroma = [250, 105, 130]
 
         if screenWidth >= 1900 :
             self.hd = True
@@ -52,12 +53,12 @@ class Player():
         self.animation_d.append(scaled_img0_d1)
         self.animation_d.append(scaled_img0_d2)
         self.animation_d.append(scaled_img0_d3)
-        self.animation[0].set_colorkey([250, 105, 130])
-        self.animation[1].set_colorkey([250, 105, 130])
-        self.animation[2].set_colorkey([250, 105, 130])
-        self.animation_d[0].set_colorkey([250, 105, 130])
-        self.animation_d[1].set_colorkey([250, 105, 130])
-        self.animation_d[2].set_colorkey([250, 105, 130])
+        self.animation[0].set_colorkey(self.chroma)
+        self.animation[1].set_colorkey(self.chroma)
+        self.animation[2].set_colorkey(self.chroma)
+        self.animation_d[0].set_colorkey(self.chroma)
+        self.animation_d[1].set_colorkey(self.chroma)
+        self.animation_d[2].set_colorkey(self.chroma)
 
 
         self.original_images = self.animation.copy()
@@ -89,7 +90,7 @@ class Player():
         self.pick_image = pygame.transform.scale_by(self.pick_image, 1.3)
 
 
-        self.pick_image.set_colorkey([250, 105, 130])
+        self.pick_image.set_colorkey(self.chroma)
 
         self.pick_type = 0 
         self.pick_delay = 100 
@@ -213,8 +214,10 @@ class Player():
                 self.health -= 1
             elif self.hits >= 480 and self.health > 1:
                 self.health -= 1
-            elif self.hits >480:
-                self.health -= 1     
+            elif self.hits > 480:
+                self.health -= 1
+            elif self.hits > 680:
+                self.gameOver()
 
     def resetHealth(self):
         self.health = 4
@@ -290,14 +293,11 @@ class Player():
             image = self.animation_d[0]
         elif self.health < 3 and self.health > 1 :
             image = self.animation_d[1]
-        elif self.health == 1:
+        elif self.health <= 1:
             image = self.animation_d[2]
 
-        
         rotated_image = pygame.transform.rotate(image, self.angle)
         display.blit(rotated_image, [self.xPosition, self.yPosition])
-
-
 
     def drawPick(self, display):
         if not self.transition:
@@ -328,16 +328,18 @@ class Player():
                 else:
                     display.blit(rotated_image, [xPosition_current + offset, yPicker_position])
 
-
     def drawExplosion(self, display):        
-        if self.explosion_active:
-            if self.explosion_timer == 0 or self.explosion_timer % 10 == 0:
-                self.explosion_frame += .2
-                if self.explosion_frame >= len(self.explosion_images):
-                    self.explosion_active = False
-                    self.explosion_frame = 0
-            if int(self.explosion_frame) < len(self.explosion_images) and (self.explosion_frame-int(self.explosion_frame)==0):
-                display.blit(self.explosion_images[int(self.explosion_frame)], (self.xPosition-30, self.yPosition-25))
+        try:
+            if self.explosion_active:
+                if self.explosion_timer == 0 or self.explosion_timer % 10 == 0:
+                    self.explosion_frame += .2
+                    if self.explosion_frame >= len(self.explosion_images):
+                        self.explosion_active = False
+                        self.explosion_frame = 0
+                if int(self.explosion_frame) < len(self.explosion_images) and (self.explosion_frame-int(self.explosion_frame)==0):
+                    display.blit(self.explosion_images[int(self.explosion_frame)], (self.xPosition-30, self.yPosition-25))
+        except:
+            pass
 
 
     def gameOver(self):
