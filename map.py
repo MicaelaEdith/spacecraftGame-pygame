@@ -277,12 +277,13 @@ class Chad():
         self.lan_on = lan
         self.full_hd = False
         self.animation = []
-        self.animation.append(pygame.image.load("Assets/Buttons/Chad0.png"))
-        self.animation.append(pygame.image.load("Assets/Buttons/Chad1.png"))
-        self.animation.append(pygame.image.load("Assets/Buttons/Chad2.png"))
-        self.animation[0].set_colorkey([71, 60, 120])
-        self.animation[1].set_colorkey([71, 60, 120])
-        self.animation[2].set_colorkey([71, 60, 120])
+        self.chroma = [250, 105, 130]
+        self.animation.append(pygame.image.load("Assets/Objects/Chad0.png").convert())
+        self.animation.append(pygame.image.load("Assets/Objects/Chad1.png").convert())
+        self.animation.append(pygame.image.load("Assets/Objects/Chad2.png").convert())
+        self.animation[0].set_colorkey(self.chroma)
+        self.animation[1].set_colorkey(self.chroma)
+        self.animation[2].set_colorkey(self.chroma)
         self.text_timer = 0
         self.animation_index = 0
         self.animation_timer = 0

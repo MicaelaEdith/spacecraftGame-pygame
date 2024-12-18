@@ -196,9 +196,15 @@ class Player():
     def actions(self):
         if self.action['a'] and not self.shoot_type_a:
             self.shoot_type_a = True
+            
         if self.action['b']:
             self.shoot_changed = True
             self.shoot_type = (self.shoot_type + 1) % len(self.shoot_images)
+
+            self.shoot_type_a = self.shoot_type == 0
+            self.shoot_type_b = self.shoot_type == 1
+            self.shoot_type_c = self.shoot_type == 2
+
         if self.action['c']:
             self.resetHealth()
 
@@ -226,24 +232,21 @@ class Player():
     def updateShoots(self):
         current_time = pygame.time.get_ticks()
 
-        if self.action['a'] and not self.shoot_type_a:
+        if self.action['a']:
             if current_time - self.last_shoot_time > self.shoot_delay:
                 shoot_rect = self.shoot_images[self.shoot_type].get_rect(
                     midbottom=(self.xPosition + self.rect0.width // 2, self.yPosition)
                 )
                 self.shoots_fired.append({'rect': shoot_rect, 'type': self.shoot_type})
                 self.last_shoot_time = current_time
-                self.shoot_type_a = True
-        elif not self.action['a']:
-            self.shoot_type_a = False
 
         for shoot in self.shoots_fired:
             if shoot['type'] == 0:
-                shoot['rect'].y -= 11
+                shoot['rect'].y -= 15
             elif shoot['type'] == 1:
-                shoot['rect'].y -= 14
+                shoot['rect'].y -= 18
             elif shoot['type'] == 2:
-                shoot['rect'].y -= 8
+                shoot['rect'].y -= 21
 
         self.shoots_fired = [shoot for shoot in self.shoots_fired if shoot['rect'].bottom > 0]
 

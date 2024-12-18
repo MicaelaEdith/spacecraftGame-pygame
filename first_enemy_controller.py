@@ -53,25 +53,26 @@ class Enemy:
 
     def draw(self):
         for i, rect in enumerate(self.rect_list):
-            rect.y += self.speed
+            if not hasattr(self, 'animating_destroy') or not self.animating_destroy or self.animating_enemy_index != i:
+                rect.y += self.speed
+                self.angles[i] += self.rotation_speed
+                rotated_image = pygame.transform.rotate(self.enemies[i], self.angles[i])
+                rotated_image.set_colorkey([250, 105, 130])
+                rotated_rect = rotated_image.get_rect(center=rect.center)
+                self.display.blit(rotated_image, rotated_rect.topleft)
 
-            self.angles[i] += self.rotation_speed
-            rotated_image = pygame.transform.rotate(self.enemies[i], self.angles[i])
-            rotated_image.set_colorkey([250, 105, 130])
-            rotated_rect = rotated_image.get_rect(center=rect.center)
+                self.distance_travelled[i] += self.speed
+                if self.distance_travelled[i] >= self.shoot_intervals[i]:
+                    self.shoot(rect.center, self.angles[i])
+                    self.distance_travelled[i] = 0
 
-            self.display.blit(rotated_image, rotated_rect.topleft)
-
-            self.distance_travelled[i] += self.speed
-            if self.distance_travelled[i] >= self.shoot_intervals[i]:
-                self.shoot(rect.center, self.angles[i])
-                self.distance_travelled[i] = 0
-
-            if rect.y > self.screenH:
-                rect.y = random.randint(-500, -50)
-                rect.x = random.randint(0, self.screenW - rect.width)
+                if rect.y > self.screenH:
+                    rect.y = random.randint(-500, -50)
+                    rect.x = random.randint(0, self.screenW - rect.width)
 
         self.update_bullets()
+        self.update_animation() 
+
 
     def shoot(self, position, angle):
         radians = math.radians(angle)
@@ -100,11 +101,40 @@ class Enemy:
 
 
     def destroy_enemy(self, enemy_rect):
-        for i, rect in enumerate(self.rect_list[:]):
+        for i, rect in enumerate(self.rect_list):
             if rect == enemy_rect:
-                del self.rect_list[i]
-                del self.enemies[i]
-                del self.angles[i]
-                del self.distance_travelled[i]
-                del self.shoot_intervals[i]
+                self.animate_destroy(i)
                 break
+    
+    def animate_destroy(self, enemy_index):
+        self.animating_destroy = True
+        self.animating_enemy_index = enemy_index
+        self.animation_timer = 0
+
+    def update_animation(self):
+        if hasattr(self, 'animating_destroy') and self.animating_destroy:
+            i = self.animating_enemy_index
+            rect = self.rect_list[i]
+
+            scale_factor = max(0.1, 1 - self.animation_timer * 0.05)
+            self.angles[i] += 20
+
+            rotated_image = pygame.transform.rotozoom(self.enemies[i], self.angles[i], scale_factor)
+            rotated_image.set_colorkey([250, 105, 130])
+            rotated_rect = rotated_image.get_rect(center=rect.center)
+
+            self.display.blit(rotated_image, rotated_rect.topleft)
+
+            self.animation_timer += 1
+
+            if scale_factor <= 0.1:
+                self.remove_enemy(i)
+                self.animating_destroy = False
+
+
+    def remove_enemy(self, enemy_index):
+        del self.rect_list[enemy_index]
+        del self.enemies[enemy_index]
+        del self.angles[enemy_index]
+        del self.distance_travelled[enemy_index]
+        del self.shoot_intervals[enemy_index]

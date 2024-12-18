@@ -271,6 +271,9 @@ while game:
                                 time.sleep(0.4)
                                 fixer_on = False
                                 bar_count = 0
+                                garbage.hit_count = 0
+                                garbage_plus.hit_count = 0
+                                garbage_plus_2.hit_count = 0
 
                             elif button ==  buttons_right[4]:
                                 player.action['d'] = True
@@ -404,7 +407,10 @@ while game:
             for enemy_rect in enemy_1.rect_list[:]:
                 if bullet_rect.colliderect(enemy_rect):
                     if bullet:
-                        player.shoots_fired.remove(bullet)
+                        try:
+                            player.shoots_fired.remove(bullet)
+                        except:
+                            pass
                         explosion_on = True
                         enemy_r = enemy_rect
                     if player.shoot_type_a and random.randint(0, 1) == 0:
@@ -485,7 +491,8 @@ while game:
                 garbage_plus.draw(display)
                 garbage_plus.check_collisions(player)
             else:
-                bar_count = garbage_plus_2.hit_count
+                if garbage_plus_2.hit_count >= 2 :
+                    bar_count = garbage_plus_2.hit_count
                 garbage_plus_2.draw(display)
                 garbage_plus_2.check_collisions(player)
 
