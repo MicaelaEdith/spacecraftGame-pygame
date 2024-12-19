@@ -156,7 +156,7 @@ class Garbage():
         
 
         for i in range(amount):
-            self.xPosition = random.randrange(2, int(self.screenW - 95))
+            self.xPosition = random.randrange(int(self.screenW//10*2),int(self.screenW//10*8))
             self.yPosition = random.randrange(-500, -100)
 
             x_mov = random.randrange(-1, 2)
@@ -184,7 +184,7 @@ class Garbage():
                     yP += self.speed
                     xP += x_mov
                 else:
-                    xP = random.randrange(100, int(self.screenW - 250))
+                    xP = random.randrange(int(self.screenW//10*2),int(self.screenW/10*8))
                     yP = random.randrange(-500, -100)
                     x_mov = random.randrange(-1, 2)
 

@@ -82,7 +82,7 @@ starts3.quiet = True
 
 
 meteorite = Meteorite(screenWidth, screenHeight)
-garbage = Garbage(screenWidth, screenHeight, 4)
+garbage = Garbage(screenWidth, screenHeight, 3)
 garbage_plus = Garbage(screenWidth, screenHeight, 1)
 garbage_plus_2 = Garbage(screenWidth, screenHeight, 2)
 enemy_1 = Enemy(display, 15)
@@ -428,9 +428,6 @@ while game:
             transition = True
             player.transition = True
             chad_text = ''
-            #player.shoots_fired.clear()
-            #player.action['a'] = False    #check
-
 
 ############################################################################# UPDATE
     if start:
@@ -451,7 +448,7 @@ while game:
             
 
         if level == 1:
-            chad_text = 'Hey Guapo! Podemos usar esa basura espacial para arreglar la nave!'
+            chad_text = '¡Hey Guapo! Podemos usar esa basura espacial para arreglar la nave!'
             garbage.draw(display)
             garbage.check_collisions(player)
             bar_count = garbage.hit_count
@@ -459,10 +456,13 @@ while game:
                 chad_text = 'Ya tenemos suficiente chatarra espacial, ahora usa la llave de tuercas.'
 
         if level == 2:
+            chad_text = '¡Cuidado! Estamos entrando a una zona de naves muertas... elimínalas para poder pasar'
             enemy_1.draw()
             if explosion_on:
                 explosion(display, enemy_r)
-                explosion_on = False
+            
+            if len(enemy_1.rect_list) < 6 :
+                chad_text = '¡Ya casi lo logramo!'
 
 
         if level == 3:
@@ -506,6 +506,8 @@ while game:
             buttons_right[2].draw(display)
         else:
             buttons_right[3].draw(display)
+
+        explosion_on = False
 
     
     else:

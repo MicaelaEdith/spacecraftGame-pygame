@@ -31,7 +31,7 @@ class Enemy:
             rotation_speed = random.uniform(-1, 1)
             shoot_radius = random.randint(4, 8) if self.hd else 4
 
-            x = random.randint(0, self.screenW - self.enemy_sprite.get_width())
+            x = random.randint(int(self.screenW//10*2),int(self.screenW/10*8))
             y = random.randint(-700, -50)
             rect = self.enemy_sprite.get_rect(topleft=(x, y))
 
@@ -68,7 +68,7 @@ class Enemy:
 
                 if rect.y > self.screenH:
                     rect.y = random.randint(-500, -50)
-                    rect.x = random.randint(0, self.screenW - rect.width)
+                    rect.x = random.randint(int(self.screenW//10*2),int(self.screenW/10*8))
 
         self.update_bullets()
         self.update_animation() 

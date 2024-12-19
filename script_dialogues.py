@@ -7,3 +7,20 @@ intro_script_es = ['Guapo, un aventurero espacial, estaba ajustando su nave para
          'Pero durante el vuelo de prueba, un misterioso portal apareció de la nada. Sin tiempo para reaccionar, Guapo fue arrastrado hacia él, siendo transportado a un rincón lejano del universo.',
          'Ahora, perdido en un lugar desconocido, Guapo debe encontrar el camino de regreso. Poesita está en casa... y su comida se acabará pronto.'
          ]
+
+chad_texts = []
+
+
+"""
+
+Hola Chat, necesito traducir estos textos al ingles:
+
+'¡Hey Guapo! Parece que estamos lejos de casa, necesitamos cruzar esta zona de meteoritos con cuidado."
+
+'¡Mira! Podemos usar esa basura espacial para arreglar la nave!'
+'Ya tenemos suficiente chatarra espacial, ahora usa la llave de tuercas.'
+
+'¡Cuidado! Estamos entrando a una zona de naves muertas... dispárales para poder pasar'
+'¡Ya casi lo logramos!'
+
+"""
