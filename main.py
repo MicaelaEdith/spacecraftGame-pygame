@@ -35,6 +35,7 @@ fixer_on = False
 explosion_on = False
 bar_count = 0
 chad_text = ''
+chad_flag = False
 
 
 clock = pygame.time.Clock()
@@ -79,6 +80,8 @@ starts3 = Starts(screenWidth, screenHeight)
 starts3.speed = .1
 starts3.white = (105, 80, 80)
 starts3.quiet = True
+bullet_b = 200
+bullet_c = 2
 
 
 meteorite = Meteorite(screenWidth, screenHeight)
@@ -261,7 +264,25 @@ while game:
                     if button.is_clicked(touch_pos, True):
                         if event.type == pygame.FINGERDOWN:
                             if button == buttons_right[0]:
-                                player.action['a'] = True
+                                if player.shoot_type_a:
+                                    player.action['a'] = True
+                                elif player.shoot_type_b and bullet_b > 0:
+                                    player.action['a'] = True
+                                elif player.shoot_type_c and bullet_c > 0:
+                                    player.action['a'] = True
+                                elif not chad_flag:
+                                    chad_flag = True
+                                    chad_text = 'Parece que ya no tenemos ese tipo de munición'
+
+                                if player.action['a']:
+                                    if player.shoot_type_c:
+                                        bullet_c -= 1
+                                        print('bullet_c: ', bullet_c)
+
+                                    elif player.shoot_type_b:
+                                        bullet_b -= 1
+                                        print('bullet_b: ', bullet_b)
+
 
                             elif button == buttons_right[1]:
                                 player.action['b'] = True
@@ -274,6 +295,8 @@ while game:
                                 garbage.hit_count = 0
                                 garbage_plus.hit_count = 0
                                 garbage_plus_2.hit_count = 0
+                                bullet_b = 200
+                                bullet_c = 50
 
                             elif button ==  buttons_right[4]:
                                 player.action['d'] = True
@@ -284,6 +307,7 @@ while game:
                             player.action['c'] = False
                             player.action['d'] = False
                             button.clicked = False
+
 
             if start:
                 if event.type == pygame.FINGERDOWN:
@@ -406,13 +430,13 @@ while game:
 
             for enemy_rect in enemy_1.rect_list[:]:
                 if bullet_rect.colliderect(enemy_rect):
+                    explosion_on = True
                     if bullet:
                         try:
                             player.shoots_fired.remove(bullet)
                         except:
                             pass
-                        explosion_on = True
-                        enemy_r = enemy_rect
+                    enemy_r = enemy_rect
                     if player.shoot_type_a and random.randint(0, 1) == 0:
                         enemy_1.destroy_enemy(enemy_rect)
                         break
@@ -448,7 +472,8 @@ while game:
             
 
         if level == 1:
-            chad_text = '¡Hey Guapo! Podemos usar esa basura espacial para arreglar la nave!'
+            if not chad_flag:
+                chad_text = '¡Hey Guapo! Podemos usar esa basura espacial para arreglar la nave!'
             garbage.draw(display)
             garbage.check_collisions(player)
             bar_count = garbage.hit_count
@@ -460,9 +485,10 @@ while game:
             enemy_1.draw()
             if explosion_on:
                 explosion(display, enemy_r)
+                explosion_on = False
             
             if len(enemy_1.rect_list) < 6 :
-                chad_text = '¡Ya casi lo logramo!'
+                chad_text = '¡Ya casi lo logramos!'
 
 
         if level == 3:
@@ -507,7 +533,6 @@ while game:
         else:
             buttons_right[3].draw(display)
 
-        explosion_on = False
 
     
     else:
@@ -530,6 +555,7 @@ while game:
                 meteorite.draw(display)
             start = level_up.level_up_animation(display)
             transition = not start
+            chad_flag = False
             if not transition:
                 level += 1
                 player.transition = False

@@ -77,7 +77,7 @@ class Player():
         self.angle = 0
         self.collided = False
         self.explosion_images = []
-        self.shoot_type_a = False
+        self.shoot_type_a = True
         self.shoot_type_b = False
         self.shoot_type_c = False
         self.shoots_fired = []

@@ -57,3 +57,4 @@ def update_statebar(display, hit_count, screenWidth, screenHeight):
     )  
 
     return hit_count >= 3
+
