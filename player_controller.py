@@ -18,6 +18,7 @@ class Player():
         self.bullets = []
         self.chroma = [250, 105, 130]
 
+
         if screenWidth >= 1900 :
             self.hd = True
 
@@ -132,6 +133,8 @@ class Player():
         self.shoot_delay =50
         self.last_shoot_time = pygame.time.get_ticks()
         self.shoot_changed = False
+
+        self.masks = [pygame.mask.from_surface(img) for img in self.animation]
 
     def setPlayer(self, name):
         self.name = name
@@ -331,6 +334,7 @@ class Player():
                 else:
                     display.blit(rotated_image, [xPosition_current + offset, yPicker_position])
 
+
     def drawExplosion(self, display):        
         try:
             if self.explosion_active:
@@ -343,6 +347,30 @@ class Player():
                     display.blit(self.explosion_images[int(self.explosion_frame)], (self.xPosition-30, self.yPosition-25))
         except:
             pass
+
+
+    def check_collisions(self, enemy_rect, enemy_mask):
+        """
+        Verifica colisiones con un enemigo dado.
+
+        Args:
+            enemy_rect (pygame.Rect): Rectángulo del enemigo.
+            enemy_mask (pygame.mask.Mask): Máscara del enemigo.
+
+        Returns:
+            bool: True si hay colisión, False si no.
+        """
+        offset_x = enemy_rect.x - self.xPosition
+        offset_y = enemy_rect.y - self.yPosition
+
+        player_mask = self.masks[self.frame]
+
+        collision_point = player_mask.overlap(enemy_mask, (offset_x, offset_y))
+
+        if collision_point:
+            return True
+
+        return False
 
 
     def gameOver(self):

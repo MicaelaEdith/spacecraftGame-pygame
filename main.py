@@ -9,6 +9,7 @@ from menu import Menu, MainMenu, OptionsMenu, Button
 from cinematics import Intro, LevelUp
 from first_enemy_controller import Enemy
 from helper import explosion, update_statebar
+from second_enemy_controller import Enemy_2
 
 pygame.init()
 
@@ -90,6 +91,7 @@ garbage_plus = Garbage(screenWidth, screenHeight, 1)
 garbage_plus_2 = Garbage(screenWidth, screenHeight, 2)
 enemy_1 = Enemy(display, 15)
 enemy_r = None
+enemy_2 = Enemy_2(display)
 
 
 if not full_hd:
@@ -507,6 +509,7 @@ while game:
         player.drawPlayer(display)
         player.drawExplosion(display)
         status.updateStatus( player.health ,level)
+        enemy_2.draw()
         chad.draw(display, chad_text)
         status.draw(display, level, player.health, player.score,language)
         player.resetActions()
