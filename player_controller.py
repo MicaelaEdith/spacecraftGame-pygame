@@ -83,6 +83,7 @@ class Player():
         self.shoot_type_c = False
         self.shoots_fired = []
         self.quiet = True
+        self.image = self.animation[0]
 
         if screenWidth > 1920 or screenHeight > 1080:
             self.speed = 2
@@ -292,6 +293,8 @@ class Player():
         self.drawShoots(display)
         if self.health < 4:
             self.drawDemage(display)
+
+        self.image = self.animation[self.frame]
 
 
     def drawDemage(self, display):

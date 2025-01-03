@@ -89,7 +89,7 @@ meteorite = Meteorite(screenWidth, screenHeight)
 garbage = Garbage(screenWidth, screenHeight, 3)
 garbage_plus = Garbage(screenWidth, screenHeight, 1)
 garbage_plus_2 = Garbage(screenWidth, screenHeight, 2)
-enemy_1 = Enemy(display, 15)
+enemy_1 = Enemy(display, 6)
 enemy_r = None
 enemy_2 = Enemy_2(display)
 
@@ -279,12 +279,10 @@ while game:
                                 if player.action['a']:
                                     if player.shoot_type_c:
                                         bullet_c -= 1
-                                        print('bullet_c: ', bullet_c)
 
                                     elif player.shoot_type_b:
                                         bullet_b -= 1
-                                        print('bullet_b: ', bullet_b)
-
+                                        
 
                             elif button == buttons_right[1]:
                                 player.action['b'] = True
@@ -467,13 +465,14 @@ while game:
 
         player.updatePick()
         player.drawPick(display)
+        
 
         if level == 0:
             meteorite.draw(display)
             meteorite.check_collisions(player)
-            
 
-        if level == 1:
+
+        elif level == 1:
             if not chad_flag:
                 chad_text = '¡Hey Guapo! Podemos usar esa basura espacial para arreglar la nave!'
             garbage.draw(display)
@@ -482,7 +481,7 @@ while game:
             if ( bar_count > 2):
                 chad_text = 'Ya tenemos suficiente chatarra espacial, ahora usa la llave de tuercas.'
 
-        if level == 2:
+        elif level == 2:
             chad_text = '¡Cuidado! Estamos entrando a una zona de naves muertas... elimínalas para poder pasar'
             enemy_1.draw()
             if explosion_on:
@@ -493,23 +492,30 @@ while game:
                 chad_text = '¡Ya casi lo logramos!'
 
 
-        if level == 3:
+        elif level == 3:
             # meteorites & garbage
             pass
 
-        if level == 4:
-            #2nd enemy
-            pass
 
-        if level == 5:
+        elif level == 5:
             #meteorites, garbage and enemy
             pass
 
 
         player.drawPlayer(display)
+
+
+        if level == 3 :
+            enemy_2.draw()
+            if enemy_2.check_collisions(player) == 'collision' :
+                collision_detected = True
+                player.explosion_active = True
+                player.explosion_timer = 0
+                player.xPosition += random.randrange(-4,4)
+
         player.drawExplosion(display)
         status.updateStatus( player.health ,level)
-        enemy_2.draw()
+
         chad.draw(display, chad_text)
         status.draw(display, level, player.health, player.score,language)
         player.resetActions()

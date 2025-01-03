@@ -13,8 +13,6 @@ chad_texts = []
 
 """
 
-Hola Chat, necesito traducir estos textos al ingles:
-
 '¡Hey Guapo! Parece que estamos lejos de casa, necesitamos cruzar esta zona de meteoritos con cuidado."
 
 '¡Mira! Podemos usar esa basura espacial para arreglar la nave!'
