@@ -2,12 +2,13 @@ import pygame
 import random
 
 class Enemy_2:
-    def __init__(self, display):
+    def __init__(self, display, position):
         self.display = display
         self.screenW, self.screenH = display.get_size()
         self.hd = self.screenW > 1920
         self.speed = 2
         self.rotation_speed = 0.3
+        self.position = position
 
         self.enemy_sprite = pygame.image.load("Assets/Objects/enemy_2.png").convert_alpha()
 
@@ -20,8 +21,10 @@ class Enemy_2:
 
         self.mask = pygame.mask.from_surface(self.scaled_img)
 
-        self.x = random.randint(self.screenW // 3, self.screenW // 3 * 2)
-        self.y = self.screenH * 2
+        #self.x = random.randint(self.screenW // 3, self.screenW // 3 * 2)
+        self.x= (self.screenW // 3) * self.position
+        self.y = random.randint(int(self.screenH * 1.1), int(self.screenH * 1.6))
+        #self.y = self.screenH * 2
         self.angle = 0
         self.rotation_direction = random.choice([-1, 1])
         self.passes = 0

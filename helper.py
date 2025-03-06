@@ -1,4 +1,5 @@
 import pygame
+from script_dialogues import *
 
 explosion_images = []
 for i in range(1, 5):
@@ -58,3 +59,8 @@ def update_statebar(display, hit_count, screenWidth, screenHeight):
 
     return hit_count >= 3
 
+def found_text(lan, text):
+    if lan == 'es':
+        return chad_texts_es[text]
+    else:
+        return chad_texts_en[text]

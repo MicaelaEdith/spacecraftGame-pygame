@@ -8,17 +8,14 @@ intro_script_es = ['Guapo, un aventurero espacial, estaba ajustando su nave para
          'Ahora, perdido en un lugar desconocido, Guapo debe encontrar el camino de regreso. Poesita está en casa... y su comida se acabará pronto.'
          ]
 
-chad_texts = []
+chad_texts_es = ['Parece que ya no tenemos ese tipo de munición',
+                 '¡Hey Guapo! Podemos usar esa basura espacial para arreglar la nave!',
+                 'Ya tenemos suficiente chatarra espacial, ahora usa la llave de tuercas.',
+                 '¡Cuidado! Estamos entrando a una zona de naves muertas... elimínalas para poder pasar.',
+                 '¡Ya casi lo logramos!']
 
-
-"""
-
-'¡Hey Guapo! Parece que estamos lejos de casa, necesitamos cruzar esta zona de meteoritos con cuidado."
-
-'¡Mira! Podemos usar esa basura espacial para arreglar la nave!'
-'Ya tenemos suficiente chatarra espacial, ahora usa la llave de tuercas.'
-
-'¡Cuidado! Estamos entrando a una zona de naves muertas... dispárales para poder pasar'
-'¡Ya casi lo logramos!'
-
-"""
+chad_texts_en = ["Looks like we don't have that kind of ammo anymore.",
+                 "Hey Guapo! We can use that space junk to fix the ship!",
+                 "We have enough space junk now, use the wrench.",
+                 "Watch out! We're entering a dead ship zone... destroy them to get through.",
+                 "We're almost there!"]

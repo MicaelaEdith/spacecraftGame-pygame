@@ -8,7 +8,7 @@ from map import Starts, Meteorite, Garbage, Status, Chad
 from menu import Menu, MainMenu, OptionsMenu, Button
 from cinematics import Intro, LevelUp
 from first_enemy_controller import Enemy
-from helper import explosion, update_statebar
+from helper import explosion, update_statebar, found_text
 from second_enemy_controller import Enemy_2
 
 pygame.init()
@@ -91,7 +91,9 @@ garbage_plus = Garbage(screenWidth, screenHeight, 1)
 garbage_plus_2 = Garbage(screenWidth, screenHeight, 2)
 enemy_1 = Enemy(display, 6)
 enemy_r = None
-enemy_2 = Enemy_2(display)
+enemy_2 = Enemy_2(display, 0)
+enemy_3 = Enemy_2(display, 1)
+enemy_4 = Enemy_2(display, 2)
 
 
 if not full_hd:
@@ -274,7 +276,7 @@ while game:
                                     player.action['a'] = True
                                 elif not chad_flag:
                                     chad_flag = True
-                                    chad_text = 'Parece que ya no tenemos ese tipo de munición'
+                                    chad_text = found_text(language,0)
 
                                 if player.action['a']:
                                     if player.shoot_type_c:
@@ -474,22 +476,22 @@ while game:
 
         elif level == 1:
             if not chad_flag:
-                chad_text = '¡Hey Guapo! Podemos usar esa basura espacial para arreglar la nave!'
+                chad_text = found_text(language,1)
             garbage.draw(display)
             garbage.check_collisions(player)
             bar_count = garbage.hit_count
             if ( bar_count > 2):
-                chad_text = 'Ya tenemos suficiente chatarra espacial, ahora usa la llave de tuercas.'
+                chad_text = found_text(language,2)
 
         elif level == 2:
-            chad_text = '¡Cuidado! Estamos entrando a una zona de naves muertas... elimínalas para poder pasar'
+            chad_text =  chad_text = found_text(language,3)
             enemy_1.draw()
             if explosion_on:
                 explosion(display, enemy_r)
                 explosion_on = False
             
             if len(enemy_1.rect_list) < 6 :
-                chad_text = '¡Ya casi lo logramos!'
+                chad_text = chad_text = found_text(language,4)
 
 
         elif level == 3:
@@ -507,6 +509,8 @@ while game:
 
         if level == 3 :
             enemy_2.draw()
+            enemy_3.draw()
+            enemy_4.draw()
             if enemy_2.check_collisions(player) == 'collision' :
                 collision_detected = True
                 player.explosion_active = True
