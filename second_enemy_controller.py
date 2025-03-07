@@ -23,7 +23,7 @@ class Enemy_2:
         self.mask = pygame.mask.from_surface(self.scaled_img)
 
         self.x= (self.screenW // 3) * self.position
-        self.y = random.randint(int(self.screenH * 1.1), int(self.screenH * 1.8))
+        self.y = random.randint(int(self.screenH * 1.1), int(self.screenH * 1.4))
         self.angle = 0
         self.rotation_direction = random.choice([-1, 1])
         self.passes = 0
@@ -42,11 +42,11 @@ class Enemy_2:
         self.y -= self.speed
         self.angle += self.rotation_speed * self.rotation_direction
 
-        if self.y + rect.height < 0:
+        if self.y + int(rect.height / 4 * 3) <= 0:
             self.passes += 1
             if self.passes < 5:
-                self.y = self.screenH + rect.height
-                self.x = random.randint(self.screenW // 3, self.screenW // 3 * 2)
+                self.x= (self.screenW // 3) * self.position
+                self.y = random.randint(int(self.screenH * 1.1), int(self.screenH * 1.4))
                 self.rotation_direction = random.choice([-1, 1])
                 self.center_positioned = False
             else:
@@ -75,7 +75,7 @@ class Enemy_2:
                     return False
 
                 elif collision_pixels > threshold_borde:
-                    self.collision_accumulated += 0.08  
+                    self.collision_accumulated += 0.01
 
                     if self.collision_accumulated >= 1:
                         player.health -= 1

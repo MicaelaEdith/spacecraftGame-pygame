@@ -519,6 +519,12 @@ while game:
                 player.explosion_active = True
                 player.explosion_timer = 0
                 player.xPosition += random.randrange(-4,4)
+            
+            if enemy_2.passes >= 5 and enemy_3.passes >= 5 and enemy_4.passes >= 5 and enemy_5.passes >= 5:
+                start = False
+                transition = True
+                player.transition = True
+                chad_text = ''
 
         player.drawExplosion(display)
         status.updateStatus( player.health ,level)
