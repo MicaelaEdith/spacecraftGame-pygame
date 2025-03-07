@@ -8,7 +8,7 @@ from map import Starts, Meteorite, Garbage, Status, Chad
 from menu import Menu, MainMenu, OptionsMenu, Button
 from cinematics import Intro, LevelUp
 from first_enemy_controller import Enemy
-from helper import explosion, update_statebar, found_text
+from helper import explosion, update_statebar, found_text, game_over
 from second_enemy_controller import Enemy_2
 
 pygame.init()
@@ -23,7 +23,7 @@ white = (255, 255, 255)
 blue = (10, 8, 31)
 blue_light = (4, 19, 40)
 alpha = 5
-level = 0
+level = 3
 menus=1
 language = 'es'
 music_on = False
@@ -94,6 +94,7 @@ enemy_r = None
 enemy_2 = Enemy_2(display, 0)
 enemy_3 = Enemy_2(display, 1)
 enemy_4 = Enemy_2(display, 2)
+enemy_5 = Enemy_2(display, 3)
 
 
 if not full_hd:
@@ -511,7 +512,9 @@ while game:
             enemy_2.draw()
             enemy_3.draw()
             enemy_4.draw()
-            if enemy_2.check_collisions(player) == 'collision' :
+            enemy_5.draw()
+            
+            if enemy_2.check_collisions(player) or enemy_3.check_collisions(player) or enemy_4.check_collisions(player) or enemy_5.check_collisions(player):
                 collision_detected = True
                 player.explosion_active = True
                 player.explosion_timer = 0
@@ -534,7 +537,9 @@ while game:
                     bar_count = garbage_plus_2.hit_count
                 garbage_plus_2.draw(display)
                 garbage_plus_2.check_collisions(player)
-
+        
+        if player.health <= 0:
+            start = False
 
         if update_statebar(display, bar_count, screenWidth, screenHeight): fixer_on = True
 
@@ -556,10 +561,14 @@ while game:
         starts3.drawStarts(display)
 
         if not transition:
-            if not options_open:
-                main_menu.draw(display, language, game)
+            if player.health >= 1:
+                if not options_open:
+                    main_menu.draw(display, language, game)
+                else:
+                    option_menu.draw(display, language, music_on, sound_on)
             else:
-                option_menu.draw(display, language, music_on, sound_on)
+                game_over(display)
+
 
         if transition:
             player.drawPlayer(display)

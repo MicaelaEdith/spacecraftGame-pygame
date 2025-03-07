@@ -64,3 +64,28 @@ def found_text(lan, text):
         return chad_texts_es[text]
     else:
         return chad_texts_en[text]
+
+def game_over(display):
+
+    font_path = 'Assets/Fonts/KodeMono-VariableFont_wght.ttf'
+    font = pygame.font.Font(font_path, 80)
+    button_font = pygame.font.Font(font_path, 50)
+    blue = (10, 8, 31)
+    text_color = (160, 23, 208)
+    text_color_off = (50, 43, 40)
+
+    screen_width, screen_height = display.get_size()
+    game_over_text = font.render("Game Over", True, text_color)
+    text_rect = game_over_text.get_rect(center=(screen_width // 2, screen_height // 3))
+
+    button_width, button_height = 360, 60
+    button_x = (screen_width - button_width) // 2
+    button_y = screen_height // 1.5
+    button_rect = pygame.Rect(button_x, button_y, button_width, button_height)
+
+    retry_text = button_font.render("Reintentar", True, (251, 206, 60))
+    retry_rect = retry_text.get_rect(center=button_rect.center)
+
+    display.blit(game_over_text, text_rect)
+    pygame.draw.rect(display, text_color, button_rect, border_radius=10)
+    display.blit(retry_text, retry_rect)

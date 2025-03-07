@@ -9,6 +9,7 @@ class Enemy_2:
         self.speed = 2
         self.rotation_speed = 0.3
         self.position = position
+        self.collision_accumulated = 0
 
         self.enemy_sprite = pygame.image.load("Assets/Objects/enemy_2.png").convert_alpha()
 
@@ -21,10 +22,8 @@ class Enemy_2:
 
         self.mask = pygame.mask.from_surface(self.scaled_img)
 
-        #self.x = random.randint(self.screenW // 3, self.screenW // 3 * 2)
         self.x= (self.screenW // 3) * self.position
-        self.y = random.randint(int(self.screenH * 1.1), int(self.screenH * 1.6))
-        #self.y = self.screenH * 2
+        self.y = random.randint(int(self.screenH * 1.1), int(self.screenH * 1.8))
         self.angle = 0
         self.rotation_direction = random.choice([-1, 1])
         self.passes = 0
@@ -62,34 +61,28 @@ class Enemy_2:
 
 
     def check_collisions(self, player):
-        player_mask = pygame.mask.from_surface(player.image)
-        offset = (int(self.x - player.xPosition), int(self.y - player.yPosition))
+            player_mask = pygame.mask.from_surface(player.image)
+            offset = (int(self.x - player.xPosition), int(self.y - player.yPosition))
 
-        overlap = self.mask.overlap(player_mask, offset)
+            overlap_mask = self.mask.overlap_mask(player_mask, offset)
+            if overlap_mask:
+                collision_pixels = overlap_mask.count()
 
-        if overlap:
-            enemy_rect = self.scaled_img.get_rect(center=(self.x, self.y))
-            third_width = enemy_rect.width // 3
-            third_height = enemy_rect.height // 3
+                threshold_hueco = 10
+                threshold_borde = 50
 
-            central_rect = pygame.Rect(
-                self.x - third_width // 2, 
-                self.y - third_height // 2, 
-                third_width, 
-                third_height
-            )
+                if collision_pixels < threshold_hueco:
+                    return False
 
+                elif collision_pixels > threshold_borde:
+                    self.collision_accumulated += 0.08  
 
-            if central_rect.collidepoint(player.xPosition, player.yPosition):
-                self.center_positioned = True
-                player.x = self.x
-                player.y = self.y
-                return False
+                    if self.collision_accumulated >= 1:
+                        player.health -= 1
+                        self.collision_accumulated = 0
 
+                    self.update_opacity()
+                    return True
 
-            self.update_opacity()
-            return True
-
-        return False
-
+            return False
 
